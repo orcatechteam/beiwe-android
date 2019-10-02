@@ -18,7 +18,7 @@
 
     <!-- API URLs -->
     <string name="staging_website">https://staging.beiwe.org </string>
-    <string name="production_website">https://studies.beiwe.org </string>
+    <string name="production_website">https://beiwe.internal.orcatech.org:8080</string>
 
     <string name="data_upload_url">/upload</string>
     <string name="download_surveys_url">/download_surveys</string>

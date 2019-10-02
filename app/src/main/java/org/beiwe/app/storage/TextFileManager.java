@@ -1,11 +1,18 @@
 package org.beiwe.app.storage;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -437,7 +444,32 @@ public class TextFileManager {
 		makeNewFilesForEverything();
 		return file_list;
 	}
-		
+
+	public static synchronized byte[] calculateMD5(File file, byte[] prepend) throws IOException, NoSuchAlgorithmException {
+		MessageDigest digest = MessageDigest.getInstance("MD5");
+		digest.update(prepend);
+
+		InputStream inputStream = new FileInputStream(file);
+
+		int data;
+		String output = "";
+		try {
+			while ( ( data = inputStream.read() ) != -1 ) {
+				digest.update(String.valueOf((char)data).getBytes());
+			}
+			byte[] md5sum = digest.digest();
+
+			// Fill to 32 chars
+			output = new BigInteger(1, md5sum).toString(16);
+			output = String.format("%32s", output).replace(' ', '0');
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			inputStream.close();
+		}
+		return output.getBytes();
+	}
+
 	/**For Debug Only.  Deletes all files, creates new ones. */
 	public static synchronized void deleteEverything() {
 		//Get complete list of all files, then make new files, then delete all files from the old files list.

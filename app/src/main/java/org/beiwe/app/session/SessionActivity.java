@@ -93,6 +93,9 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 		if(!PersistentData.getCallResearchAssistantButtonEnabled()) {
 			menu.findItem(R.id.menu_call_research_assistant).setVisible(false);
 		}
+		if(!PersistentData.getViewSurveyAnswersEnabled()) {
+			menu.findItem(R.id.view_survey_answers).setVisible(false);
+		}
 		return true;
 	}
 

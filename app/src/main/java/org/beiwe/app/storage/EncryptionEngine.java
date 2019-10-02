@@ -227,6 +227,7 @@ public class EncryptionEngine {
 	 * @throws InvalidKeySpecException Thrown most commonly when there is no key file, this is expected behavior.*/
 	public static void readKey() throws InvalidKeySpecException {
 		String key_content = TextFileManager.getKeyFile().read();
+		Log.i("keyfile", "content: " + key_content);
 		byte[] key_bytes = Base64.decode(key_content, Base64.DEFAULT);
 		X509EncodedKeySpec x509EncodedKey = new X509EncodedKeySpec( key_bytes );
 		

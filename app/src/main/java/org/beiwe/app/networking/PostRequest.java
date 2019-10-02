@@ -1,6 +1,7 @@
 package org.beiwe.app.networking;
 
 import android.content.Context;
+import android.util.Base64;
 import android.util.Log;
 
 import org.beiwe.app.BuildConfig;
@@ -24,6 +25,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -43,6 +48,7 @@ public class PostRequest {
 
 	private static final Object FILE_UPLOAD_LOCK = new Object() {}; //Our lock for file uploading
 
+
 	/*##################################################################################
 	 ##################### Publicly Accessible Functions ###############################
 	 #################################################################################*/
@@ -58,6 +64,14 @@ public class PostRequest {
 		catch (MalformedURLException e) {
 			Log.e("PostRequestFileUpload", "malformed URL");
 			e.printStackTrace(); 
+			return 0; }
+		catch (NoSuchAlgorithmException e){
+			Log.e("PostRequestFileUpdate", "could not create digest");
+			e.printStackTrace();
+			return 0; }
+		catch (JSONException e){
+			Log.e("PostRequestFileUpdate", "could not parse JSON");
+			e.printStackTrace();
 			return 0; }
 		catch (IOException e) {
 			e.printStackTrace();
@@ -77,6 +91,14 @@ public class PostRequest {
 			Log.e("PostRequestFileUpload", "malformed URL");
 			e.printStackTrace();
 			return 0; }
+		catch (NoSuchAlgorithmException e){
+			Log.e("PostRequestFileUpdate", "could not create digest");
+			e.printStackTrace();
+			return 0; }
+		catch (JSONException e){
+			Log.e("PostRequestFileUpdate", "could not parse JSON");
+			e.printStackTrace();
+			return 0; }
 		catch (IOException e) {
 			e.printStackTrace();
 			Log.e("PostRequest","Network error: " + e.getMessage());
@@ -94,6 +116,14 @@ public class PostRequest {
 			Log.e("PosteRequestFileUpload", "malformed URL");
 			e.printStackTrace(); 
 			return 0; }
+		catch (NoSuchAlgorithmException e){
+			Log.e("PostRequestFileUpdate", "could not create digest");
+			e.printStackTrace();
+			return 0; }
+		catch (JSONException e){
+			Log.e("PostRequestFileUpdate", "could not parse JSON");
+			e.printStackTrace();
+			return 0; }
 		catch (IOException e) {
 			Log.e("PostRequest","Unable to establish network connection");
 			return 502; }
@@ -106,7 +136,16 @@ public class PostRequest {
 	 * @return a string of the contents of the return from an HTML request.*/
 	//TODO: Eli. low priority. investigate the android studio warning about making this a package local function
 	public static String httpRequestString(String parameters, String urlString)  {
-		try { return doPostRequestGetResponseString( parameters, urlString ); }
+		try {
+			return doPostRequestGetResponseString( parameters, urlString ); }
+		catch (NoSuchAlgorithmException e){
+			Log.e("PostRequestFileUpdate", "Download File failed with exception: " + e);
+			e.printStackTrace();
+			throw new NullPointerException("Download File failed.");}
+		catch (JSONException e){
+			Log.e("PostRequestFileUpdate", "Download File failed with exception: " + e);
+			e.printStackTrace();
+			throw new NullPointerException("Download File failed."); }
 		catch (IOException e) {
 			Log.e("PostRequest error", "Download File failed with exception: " + e);
 			e.printStackTrace();
@@ -130,8 +169,10 @@ public class PostRequest {
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Connection", "Keep-Alive");
 		connection.setRequestProperty("Cache-Control", "no-cache");
+		connection.setRequestProperty("Authorization", "Bearer " + Base64.encodeToString(DeviceInfo.getAndroidID().getBytes(), Base64.URL_SAFE| Base64.NO_PADDING | Base64.NO_WRAP));
 		connection.setConnectTimeout(3000);
 		connection.setReadTimeout(5000);
+		connection.setChunkedStreamingMode(1024);
 		return connection;
 	}
 
@@ -140,16 +181,47 @@ public class PostRequest {
 	 * @param parameters a string that has been created using the makeParameters function
 	 * @param url a URL object
 	 * @return a new HttpsURLConnection with common settings */
-	private static HttpsURLConnection setupHTTP( String parameters, URL url, String newPassword ) throws IOException {
+	private static HttpsURLConnection setupHTTP( String parameters, URL url, String newPassword ) throws IOException, NoSuchAlgorithmException, JSONException {
 		HttpsURLConnection connection = minimalHTTP(url);
 
+		byte[] securityBytes = securityParameters(newPassword).getBytes();
+		byte[] parameterBytes = parameters.getBytes();
+
+		ByteBuffer buff = ByteBuffer.wrap(new byte[securityBytes.length + parameterBytes.length]);
+		buff.put(securityBytes);
+		buff.put(parameterBytes);
+
+		byte[] content = buff.array();
+
+		connection.setRequestProperty("X-Content-Digest", computeDigest(url, content));
+
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
-		request.write( securityParameters(newPassword).getBytes() );
-		request.write( parameters.getBytes() );
+		request.write( content );
 		request.flush();
 		request.close();
 
 		return connection;
+	}
+
+	/**Takes the content and computes a base64 digest string to include in the POST header. This allows
+	 * the server to ensure that the POST body has not been altered
+	 * @param content the content of the POST body
+	 * @return a base64 encoded string representing the digest  */
+	private static String computeDigest(URL url, byte[] content) throws IOException, NoSuchAlgorithmException, JSONException {
+		String nonce = getNonce(url);
+		String unix = Long.toString(System.currentTimeMillis() / 1000L);
+		String base64 = Base64.encodeToString(content, Base64.NO_WRAP);
+		String parts = String.join(",",base64, nonce, unix);
+		byte[] sha256 =  MessageDigest.getInstance("SHA-256").digest(parts.getBytes(StandardCharsets.UTF_8));
+		return unix + " " + Base64.encodeToString(sha256,Base64.NO_WRAP );
+	}
+
+	/** Makes a GET request to the server to receive a one time use token.
+	 * @param url the url being used to data upload. The path will be replace with the path to get the nonce
+	 * @return a one time token string  */
+	private static String getNonce(URL url) throws IOException, JSONException {
+		String data = doGetRequestGetResponseString("", new URL(url, "/nonce").toString());
+		return new JSONObject(data).getString("nonce");
 	}
 
 	/**Reads in the response data from an HttpsURLConnection, returns it as a String.
@@ -173,7 +245,7 @@ public class PostRequest {
 	 ####################### Actual Post Request Functions #############################
 	 #################################################################################*/
 	
-	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException {
+	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException, NoSuchAlgorithmException, JSONException {
 		HttpsURLConnection connection = setupHTTP( parameters, new URL( urlString ), null );
 		connection.connect();
 		String data = readResponse(connection);
@@ -182,26 +254,44 @@ public class PostRequest {
 	}
 
 
-	private static int doPostRequestGetResponseCode(String parameters, URL url, String newPassword) throws IOException {
+	private static int doPostRequestGetResponseCode(String parameters, URL url, String newPassword) throws IOException, NoSuchAlgorithmException, JSONException {
 		HttpsURLConnection connection = setupHTTP(parameters, url, newPassword);
 		int response = connection.getResponseCode();
 		connection.disconnect();
 		return response;
 	}
 
+	private static String doGetRequestGetResponseString(String parameters, String urlString) throws IOException {
+		Log.i("nonce", "making request to " + urlString);
+		URL url = new URL(urlString);
+		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+		connection.setUseCaches(false);
+		connection.setConnectTimeout(3000);
+		connection.setReadTimeout(5000);
+		connection.setRequestMethod("GET");
+		connection.setRequestProperty("Authorization", "Bearer " + Base64.encodeToString(DeviceInfo.getAndroidID().getBytes(), Base64.URL_SAFE| Base64.NO_PADDING | Base64.NO_WRAP));
+		connection.connect();
+		String data = readResponse(connection);
+		connection.disconnect();
+		return data;
+	}
 
-	private static int doRegisterRequest(String parameters, URL url) throws IOException {
+
+	private static int doRegisterRequest(String parameters, URL url) throws IOException, NoSuchAlgorithmException, JSONException {
+		Log.i("register", "making request to " + url);
 		HttpsURLConnection connection = setupHTTP(parameters, url, null);
 		int response = connection.getResponseCode();
+		Log.i("register", "response code: " + response);
 		if ( response == 200 ) {
 			String responseBody = readResponse(connection);
 			try {
 				JSONObject responseJSON = new JSONObject(responseBody);
 				String key = responseJSON.getString("client_public_key");
-				writeKey(key, response);
+				response = writeKey(key, response);
 				JSONObject deviceSettings = responseJSON.getJSONObject("device_settings");
 				SetDeviceSettings.writeDeviceSettings(deviceSettings);
 			} catch (JSONException e) {
+				Log.e("register", responseBody);
 				// this gets called once per app lifecycle, print the error because this is a pain to debug.
 				e.printStackTrace();
 				CrashHandler.writeCrashlog(e, appContext); 
@@ -213,7 +303,7 @@ public class PostRequest {
 
 	// Simple registration that does not parse response data.
 	// This is used for resubmitting non anonymized identifier data during registration
-	private static int doRegisterRequestSimple(String parameters, URL url) throws IOException {
+	private static int doRegisterRequestSimple(String parameters, URL url) throws IOException, NoSuchAlgorithmException, JSONException  {
 		HttpsURLConnection connection = setupHTTP(parameters, url, null);
 		int response = connection.getResponseCode();
 		String responseBody = readResponse(connection);
@@ -241,15 +331,29 @@ public class PostRequest {
 	 * @param uploadUrl the destination URL that receives the upload
 	 * @return HTTP Response code as int
 	 * @throws IOException */
-	private static int doFileUpload(File file, URL uploadUrl, long stopTime) throws IOException {
+	private static int doFileUpload(File file, URL uploadUrl, long stopTime) throws IOException, NoSuchAlgorithmException, JSONException {
 		if (file.length() >  1024*1024*10) { Log.i("upload", "file length: " + file.length() ); }
+
+		byte[] securityBytes = securityParameters(null).getBytes();
+		byte[] nameBytes = makeParameter("file_name", file.getName() ).getBytes();
+		byte[] fileBytes = "file=".getBytes();
+
+		ByteBuffer buff = ByteBuffer.wrap(new byte[securityBytes.length + nameBytes.length + fileBytes.length]);
+		buff.put(securityBytes);
+		buff.put(nameBytes);
+		buff.put(fileBytes);
+
+		byte[] content = buff.array();
+
 		HttpsURLConnection connection = minimalHTTP( uploadUrl );
+		connection.setRequestProperty("X-Content-Digest-Type", "md5");
+		connection.setRequestProperty("X-Content-Digest", computeDigest(uploadUrl, TextFileManager.calculateMD5(file,content)));
+
 		BufferedOutputStream request = new BufferedOutputStream( connection.getOutputStream() , 65536);
 		BufferedInputStream inputStream = new BufferedInputStream( new FileInputStream(file) , 65536);
 
-		request.write( securityParameters(null).getBytes() );
-		request.write( makeParameter("file_name", file.getName() ).getBytes() );
-		request.write( "file=".getBytes() );
+		request.write( content );
+
 //		long start = System.currentTimeMillis();
 		// Read in data from the file, and pour it into the POST request stream
 		int data;
@@ -323,6 +427,10 @@ public class PostRequest {
 					if (PostRequest.doFileUpload(file, uploadUrl, stopTime) == 200) {
 						TextFileManager.delete(fileName);
 					}
+				} catch (JSONException e){
+					Log.w("PostRequest.java", "Failed to upload file " + fileName + ". Raised exception: " + e.getCause());
+				} catch (NoSuchAlgorithmException e){
+					Log.w("PostRequest.java", "Failed to upload file " + fileName + ". Raised exception: " + e.getCause());
 				} catch (IOException e) {
 					Log.w("PostRequest.java", "Failed to upload file " + fileName + ". Raised exception: " + e.getCause());
 				}

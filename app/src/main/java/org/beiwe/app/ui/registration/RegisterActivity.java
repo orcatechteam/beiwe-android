@@ -7,10 +7,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -108,7 +110,8 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				PersistentData.setServerUrl(serverUrl);
 			}
 			PersistentData.setLoginCredentials(userID, tempPassword);
-			// Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
+
+			//Log.d("RegisterActivity", "trying \"" + PersistentData.getPatientID() + "\" with password \"" + PersistentData.getPassword() + "\"" );
 			tryToRegisterWithTheServer(this, addWebsitePrefix(getApplicationContext().getString(R.string.register_url)), newPassword);
 		}
 	}
@@ -123,7 +126,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				DeviceInfo.initialize(currentActivity.getApplicationContext());
 				// Always use anonymized hashing when first registering the phone.
 				parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBluetoothMAC() ) +
-							PostRequest.makeParameter("new_password", newPassword) +
+							PostRequest.makeParameter("new_password", EncryptionEngine.safeHash(newPassword)) +
 							PostRequest.makeParameter("phone_number", ((RegisterActivity) activity).getPhoneNumber() ) +
 							PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() ) +
 							PostRequest.makeParameter("device_os", "Android") +
@@ -145,7 +148,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 						e.printStackTrace();
 					}
 					parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBluetoothMAC() ) +
-							PostRequest.makeParameter("new_password", newPassword) +
+							PostRequest.makeParameter("new_password", EncryptionEngine.safeHash(newPassword)) +
 							PostRequest.makeParameter("phone_number", ((RegisterActivity) activity).getPhoneNumber() ) +
 							PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() ) +
 							PostRequest.makeParameter("device_os", "Android") +
@@ -219,7 +222,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	
 	@Override
 	protected void onResume() {  
-		// Log.i("reg", "onResume");
+		Log.i("reg", "onResume");
 		super.onResume();
 		activityNotVisible = false;
 		
@@ -232,17 +235,20 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			return;
 		}
 		if (BuildConfig.READ_TEXT_AND_CALL_LOGS &&
+				getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY) &&
 				!PermissionHandler.checkAccessReadSms(getApplicationContext()) &&
 				!thisResumeCausedByFalseActivityReturn) {
+			Log.i("show", "Should show? " + Boolean.toString(shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)));
 			if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) ) {
 				if (!prePromptActive && !postPromptActive ) { showPostPermissionAlert(this); } 
 			}
-			else if (!prePromptActive && !postPromptActive ) { showPrePermissionAlert(this); }
+			//else if (!prePromptActive && !postPromptActive ) { showPrePermissionAlert(this); }
 		}
 	}
 	
 	@Override
 	protected void onPause() {
+		Log.i("reg", "onPause");
 		super.onPause();
 		activityNotVisible = true;
 	};
@@ -255,15 +261,21 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 
 	@Override
 	public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
-		// Log.i("reg", "onRequestPermissionResult");
+		Log.i("reg", "onRequestPermissionResult: " + Integer.toString(grantResults.length) + ", visible: " + Boolean.toString(activityNotVisible));
 		if (activityNotVisible) return; //this is identical logical progression to the way it works in SessionActivity.
 		for (int i = 0; i < grantResults.length; i++) {
 			if ( permissions[i].equals( Manifest.permission.READ_SMS ) ) {
-//				Log.i("permiss", "permission return: " + permissions[i]);
-				if ( grantResults[i] == PermissionHandler.PERMISSION_GRANTED ) { break; }
-				if ( shouldShowRequestPermissionRationale(permissions[i]) ) { showPostPermissionAlert(this); } //(shouldShow... "This method returns true if the app has requested this permission previously and the user denied the request.")
+				Log.i("permiss", "permission return: " + permissions[i] + ", grant return: " + Integer.toString(grantResults[i]) + ", capability: " + Boolean.toString(getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)));
+				if ( grantResults[i] == PermissionHandler.PERMISSION_GRANTED ) {
+					break;
+				}
+				//(shouldShow... "This method returns true if the app has requested this permission previously and the user denied the request.")
+				if ( shouldShowRequestPermissionRationale(permissions[i]) ) {
+					showPostPermissionAlert(this);
+				}
+			} else {
+				Log.i("permiss", "permission return: " + permissions[i]);
 			}
-//			else { Log.w("permiss", "permission return: " + permissions[i]); }
 		}
 	}
 	
@@ -280,7 +292,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			activity.requestPermissions(new String[]{ Manifest.permission.READ_SMS }, PERMISSION_CALLBACK );
 			prePromptActive = false;
 		} } );
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) { } } ); //Okay button
+		builder.setPositiveButton("Allow", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) { } } ); //Okay button
 		builder.create().show();
 	}
 	

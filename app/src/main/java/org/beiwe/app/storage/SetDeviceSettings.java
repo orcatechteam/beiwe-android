@@ -97,5 +97,11 @@ public class SetDeviceSettings {
 		try { callResearchAssistantButtonEnabled = deviceSettings.getBoolean("call_research_assistant_button_enabled"); }
 		catch (JSONException e) { callResearchAssistantButtonEnabled = true; }
 		PersistentData.setCallResearchAssistantButtonEnabled(callResearchAssistantButtonEnabled);
+
+		// Survey button toggles
+		boolean viewSurveyAnswersButtonEnabled;
+		try { viewSurveyAnswersButtonEnabled = deviceSettings.getBoolean("view_survey_answers_enabled"); }
+		catch (JSONException e) { viewSurveyAnswersButtonEnabled = true; }
+		PersistentData.setViewSurveyAnswersEnabled(viewSurveyAnswersButtonEnabled);
 	}
 }

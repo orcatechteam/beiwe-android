@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/menu_call_clinician"
-          android:title="@string/default_call_clinician_text" />
+        android:title="@string/default_call_clinician_text" />
     <item android:id="@+id/menu_call_research_assistant"
-          android:title="@string/call_research_assistant" />
+        android:title="@string/call_research_assistant" />
     <item android:id="@+id/menu_about"
-          android:title="@string/menu_about" />
+        android:title="@string/menu_about" />
 </menu>
