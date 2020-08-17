@@ -12,13 +12,13 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.beiwe.app.CrashHandler;
 import org.beiwe.app.listeners.AccelerometerListener;
+import org.beiwe.app.listeners.__AppUsageListener;
 import org.beiwe.app.listeners.GyroscopeListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
@@ -33,7 +33,6 @@ import org.beiwe.app.survey.SurveyTimingsRecorder;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 /**The (Text)FileManager.
  * The FileManager is implemented as a Singleton.  More accurately the static object contains several
@@ -66,9 +65,10 @@ public class TextFileManager {
 	private static TextFileManager surveyTimings;
 	private static TextFileManager surveyAnswers;
 	private static TextFileManager wifiLog;
-		
+	private static TextFileManager appUsageLog;
+
 	private static TextFileManager keyFile;
-	
+
 	//"global" static variables
 	private static Context appContext;
 	private static int GETTER_TIMEOUT = 50; //value is in milliseconds
@@ -88,6 +88,7 @@ public class TextFileManager {
 	public static TextFileManager getTextsLogFile() { checkAvailableWithTimeout("textsLog"); return textsLog; }
 	public static TextFileManager getBluetoothLogFile() { checkAvailableWithTimeout("bluetoothLog"); return bluetoothLog; }
 	public static TextFileManager getWifiLogFile() { checkAvailableWithTimeout("wifiLog"); return wifiLog; }
+	public static TextFileManager getAppUsageLogFile() { checkAvailableWithTimeout("appUsageLog"); return appUsageLog; }
 	public static TextFileManager getSurveyTimingsFile() { checkAvailableWithTimeout("surveyTimings"); return surveyTimings; }
 	public static TextFileManager getSurveyAnswersFile() { checkAvailableWithTimeout("surveyAnswers"); return surveyAnswers; }
 	//(the persistent files)
@@ -109,6 +110,7 @@ public class TextFileManager {
 		if (thing.equals("surveyAnswers") ) { return (surveyAnswers != null); }
 		if (thing.equals("debugLogFile") ) { return (debugLogFile != null); }
 		if (thing.equals("keyFile") ) { return (keyFile != null); }
+		if (thing.equals("appUsageLog")) { return (appUsageLog != null); }
 		throw new NullPointerException(String.format("invalid key %s provided for checking available text file.", thing));
 	}
 	
@@ -172,6 +174,8 @@ public class TextFileManager {
 		surveyTimings = new TextFileManager(appContext, "surveyTimings_", SurveyTimingsRecorder.header, false, false, true, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers_", SurveyAnswersRecorder.header, false, false, true, false);
 		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, false, true, !PersistentData.getWifiEnabled());
+		// @TODO add isDummy check with !PersistentData.getAppUsageEnabled()
+		appUsageLog = new TextFileManager(appContext, "appUsageLog", __AppUsageListener.header, false, false, false, false);
 	}
 	
 	/*###############################################################################
@@ -396,6 +400,7 @@ public class TextFileManager {
 		textsLog.newFile();
 		bluetoothLog.newFile();
 		debugLogFile.newFile();
+		appUsageLog.newFile();
 	}
 	
 	/** Very simple function, exists to make any function that needs to grab all extant files thread-safe.

@@ -10,6 +10,7 @@ import org.beiwe.app.CrashHandler;
 import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
+import org.beiwe.app.listeners.AppUsageListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.networking.SurveyDownloader;
 import org.beiwe.app.session.SessionActivity;
@@ -24,6 +25,9 @@ import org.json.JSONException;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -34,7 +38,7 @@ import android.widget.TextView;
 public class DebugInterfaceActivity extends SessionActivity {
 	//extends a session activity.
 	Context appContext;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -43,6 +47,8 @@ public class DebugInterfaceActivity extends SessionActivity {
 
 		if (BuildConfig.APP_IS_DEV) {
 			((TextView) findViewById(R.id.debugtexttwenty)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonDevListApps)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonDevCheckConnectivityStatus)).setVisibility(View.VISIBLE);
 			((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
 			((Button) findViewById(R.id.buttonPrintInternalLog)).setVisibility(View.VISIBLE);
 			((Button) findViewById(R.id.buttonClearInternalLog)).setVisibility(View.VISIBLE);
@@ -198,6 +204,22 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void testManualErrorReport(View view) {
 		try{ throw new NullPointerException("this is a test null pointer exception from the debug interface"); }
 		catch (Exception e) { CrashHandler.writeCrashlog(e, getApplicationContext()); }
+	}
+
+	public void checkConnectivityStatus(View view) {
+		ConnectivityManager connMgr = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+		assert connMgr != null;
+		NetworkInfo.State mobile = connMgr.getNetworkInfo(0).getState();
+		NetworkInfo.State wifi = connMgr.getNetworkInfo(1).getState();
+		String mobileStatus = (mobile == NetworkInfo.State.CONNECTED || mobile == NetworkInfo.State.CONNECTING) ? "enabled" : "disabled";
+		String wifiStatus = (wifi == NetworkInfo.State.CONNECTED || wifi == NetworkInfo.State.CONNECTING) ? "enabled" : "disabled";
+		Log.i("DebugAct", "mobile status: "+mobileStatus);
+		Log.i("DebugAct", "wifi status: "+wifiStatus);
+	}
+
+	public void getAppUsage(View view) throws PackageManager.NameNotFoundException {
+		AppUsageListener appUsageListener = new AppUsageListener(appContext);
+		appUsageListener.getAppUsage();
 	}
 
 	//runs tests on the json logic parser

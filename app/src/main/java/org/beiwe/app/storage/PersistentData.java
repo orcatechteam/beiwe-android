@@ -66,6 +66,7 @@ public class PersistentData {
 	private static final String WIFI_LOG_FREQUENCY_SECONDS = "wifi_log_frequency_seconds";
 	private static final String SURVEY_IDS = "survey_ids";
 //	private static final String SURVEY_QUESTION_IDS = "question_ids";
+	private static final String CHECK_APP_USAGE_FREQUENCY_SECONDS = "check_app_usage_frequency_seconds";
 
 	/*#####################################################################################
 	################################### Initializing ######################################
@@ -209,6 +210,7 @@ public class PersistentData {
 	private static final long DEFAULT_UPLOAD_DATA_FILES_PERIOD = 60;
 	private static final long DEFAULT_VOICE_RECORDING_MAX_TIME_LENGTH = 4 * 60;
 	private static final long DEFAULT_WIFI_LOG_FREQUENCY = 5 * 60;
+	private static final long DEFAULT_CHECK_APP_USAGE_FREQUENCY = 1 * 10; // 1 * 60;
 	
 	public static long getGyroscopeOffDurationMilliseconds() { return 1000L * pref.getLong(GYROSCOPE_OFF_DURATION_SECONDS, DEFAULT_GYROSCOPE_OFF_MINIMUM_DURATION); }
 	public static long getGyroscopeOnDurationMilliseconds() { return 1000L * pref.getLong(GYROSCOPE_ON_DURATION_SECONDS, DEFAULT_GYROSCOPE_ON_DURATION); }
@@ -225,6 +227,7 @@ public class PersistentData {
 	public static long getUploadDataFilesFrequencyMilliseconds() { return 1000L * pref.getLong(UPLOAD_DATA_FILES_FREQUENCY_SECONDS, DEFAULT_UPLOAD_DATA_FILES_PERIOD); }
 	public static long getVoiceRecordingMaxTimeLengthMilliseconds() { return 1000L * pref.getLong(VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS, DEFAULT_VOICE_RECORDING_MAX_TIME_LENGTH); }
 	public static long getWifiLogFrequencyMilliseconds() { return 1000L * pref.getLong(WIFI_LOG_FREQUENCY_SECONDS, DEFAULT_WIFI_LOG_FREQUENCY); }
+	public static long getCheckAppUsageFrequencyMilliseconds() { return 1000L * pref.getLong(CHECK_APP_USAGE_FREQUENCY_SECONDS, DEFAULT_CHECK_APP_USAGE_FREQUENCY); }
 
 	public static void setAccelerometerOffDurationSeconds(long seconds) {
 		editor.putLong(ACCELEROMETER_OFF_DURATION_SECONDS, seconds);
@@ -271,6 +274,11 @@ public class PersistentData {
 	public static void setWifiLogFrequencySeconds(long seconds) {
 		editor.putLong(WIFI_LOG_FREQUENCY_SECONDS, seconds);
 		editor.commit(); }
+	public static void setCheckAppUsageFrequencySeconds(long seconds) {
+		Log.i("PersistentData", String.valueOf(seconds));
+		editor.putLong(CHECK_APP_USAGE_FREQUENCY_SECONDS, seconds);
+		editor.commit();
+	}
 
 	
 	//accelerometer, gyroscope bluetooth, new surveys, create data files, gps, logout,upload, wifilog (not voice recording, that doesn't apply

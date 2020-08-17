@@ -175,6 +175,7 @@
     <string name="run_wifi_log">Wifi Log</string>
     <string name="check_for_sms_enabled">Check SMS</string>
     <string name="check_for_calls_enabled">Check Calls</string>
+    <string name="check_app_usage_intent">Check app usage</string>
 
     <!-- Menu Items -->
     <string name="menu_sign_out">Sign Out</string>

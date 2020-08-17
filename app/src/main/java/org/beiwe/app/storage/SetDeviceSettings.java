@@ -64,7 +64,10 @@ public class SetDeviceSettings {
 			wifiLogFrequencySeconds = 10;
 		}
 		PersistentData.setWifiLogFrequencySeconds(wifiLogFrequencySeconds);
-		
+
+		int checkAppUsageFrequencySeconds = deviceSettings.getInt("check_app_usage_frequency_seconds");
+		PersistentData.setCheckAppUsageFrequencySeconds(checkAppUsageFrequencySeconds);
+
 		// Write text strings
 		String aboutPageText = deviceSettings.getString("about_page_text");
 		PersistentData.setAboutPageText(aboutPageText);

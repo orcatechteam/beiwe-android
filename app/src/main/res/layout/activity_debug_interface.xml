@@ -10,6 +10,29 @@
 	    android:layout_height="wrap_content"
 	    android:orientation="vertical" >
 
+		<Button
+			android:id="@+id/buttonDevListApps"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@android:color/holo_blue_bright"
+			android:onClick="getAppUsage"
+			android:text="(dev) List Apps"
+			android:visibility="gone"/>
+		<Button
+			android:id="@+id/buttonDevCheckConnectivityStatus"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@android:color/holo_blue_bright"
+			android:onClick="checkConnectivityStatus"
+			android:text="(dev) Check Connectivity Status"
+			android:visibility="gone"/>
+
+		<TextView
+			android:id="@+id/debugtext2"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="\n\n" />
+
 		<TextView
 		    android:id="@+id/debugtext1"
 		    android:layout_width="wrap_content"
