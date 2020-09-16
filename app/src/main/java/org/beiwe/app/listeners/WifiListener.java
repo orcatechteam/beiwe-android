@@ -17,7 +17,7 @@ import android.util.Log;
  * @author Eli */
 public class WifiListener {
 	private static WifiManager wifiManager;
-	public static String header = "hashed MAC, frequency, RSSI";
+	public static String header = "hashed MAC, hashed SSID, frequency, RSSI";
 	
 	/** WifiListener requires an application context in order to access 
 	 * the devices wifi info.  
@@ -38,9 +38,11 @@ public class WifiListener {
 			if (scanResults != null) {
 				//we save some compute on the encryption here by dumping all the lines to print in one go.
 				StringBuilder data = new StringBuilder();
-				for (ScanResult result : scanResults){
-					data.append( EncryptionEngine.hashMAC( result.BSSID) + "," + result.frequency + "," + result.level );
-					data.append("\n"); }
+				for (ScanResult result : scanResults) {
+					String wifiLogEntry = EncryptionEngine.hashMAC( result.BSSID) + "," + EncryptionEngine.safeHash(result.SSID) + "," + result.frequency + "," + result.level;
+					data.append(wifiLogEntry);
+					data.append("\n");
+				}
 
 				// Create a new file, write the data to it, and close the file
 				TextFileManager.getWifiLogFile().newFile(); //note: the file name's timestamp is actually relevant, so we always make a new file.

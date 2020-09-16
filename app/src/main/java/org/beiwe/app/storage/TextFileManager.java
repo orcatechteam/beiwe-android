@@ -161,7 +161,7 @@ public class TextFileManager {
 //		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", EMPTY_HEADER, true, true, false);
 //		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", EMPTY_HEADER, true, true, false);
 		// The debug file is no longer persistent, so that we can upload it to the server associated with a user, otherwise it has the name "logfile.txt" and fails to upload.
-		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER", false, false, true, false);
+		debugLogFile = new TextFileManager(appContext, "debugLogFile", "THIS LINE IS A LOG FILE HEADER", false, false, true, false);
 		// Regularly/periodically-created files
 		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, false, true, !PersistentData.getGpsEnabled());
 		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false, false, true, !PersistentData.getAccelerometerEnabled());
