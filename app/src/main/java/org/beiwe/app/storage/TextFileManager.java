@@ -18,7 +18,7 @@ import java.util.Set;
 
 import org.beiwe.app.CrashHandler;
 import org.beiwe.app.listeners.AccelerometerListener;
-import org.beiwe.app.listeners.__AppUsageListener;
+import org.beiwe.app.listeners.AppUsageListener;
 import org.beiwe.app.listeners.GyroscopeListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
@@ -175,7 +175,7 @@ public class TextFileManager {
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers_", SurveyAnswersRecorder.header, false, false, true, false);
 		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, false, true, !PersistentData.getWifiEnabled());
 		// @TODO add isDummy check with !PersistentData.getAppUsageEnabled()
-		appUsageLog = new TextFileManager(appContext, "appUsageLog", __AppUsageListener.header, false, false, false, false);
+		appUsageLog = new TextFileManager(appContext, "appUsageLog", AppUsageListener.header, false, false, true, false);
 	}
 	
 	/*###############################################################################
@@ -313,7 +313,7 @@ public class TextFileManager {
 	 * @param data any unicode valid string */
 	public synchronized void writeEncrypted(String data) {
 		if (this.isDummy) { return; }
-		if ( !this.encrypted ) throw new NullPointerException( this.name + "is not supposed to have encrypted writes!" );
+		if ( !this.encrypted ) throw new NullPointerException( this.name + " is not supposed to have encrypted writes!" );
 		if ( fileName == null ) { //when newFile fails we are not allowed to write to files.
 			if (!this.newFile() ) { return; }
 		}
@@ -429,6 +429,7 @@ public class TextFileManager {
 		files.remove(TextFileManager.getTextsLogFile().fileName);
 		files.remove(TextFileManager.getDebugLogFile().fileName);
 		files.remove(TextFileManager.getBluetoothLogFile().fileName);
+		files.remove(TextFileManager.getAppUsageLogFile().fileName);
 
 		// These files are only occasionally open, but they may be currently open. If they are, don't upload them
 		files.remove(TextFileManager.getSurveyAnswersFile().fileName);
