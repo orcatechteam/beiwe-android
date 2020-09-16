@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.beiwe.app.listeners.AccelerometerListener;
+import org.beiwe.app.listeners.AppUsageListener;
 import org.beiwe.app.listeners.GyroscopeListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
@@ -51,6 +52,7 @@ public class BackgroundService extends Service {
 	public GyroscopeListener gyroscopeListener;
 	public BluetoothListener bluetoothListener;
 	public static Timer timer;
+	public AppUsageListener appUsageListener;
 	
 	//localHandle is how static functions access the currently instantiated background service.
 	//It is to be used ONLY to register new surveys with the running background service, because
@@ -100,6 +102,7 @@ public class BackgroundService extends Service {
 			DeviceInfo.initialize( appContext ); //if at registration this has already been initialized. (we don't care.)			
 			startTimers();
 		}
+		appUsageListener = new AppUsageListener(appContext);
 	}
 	
 	/** Stops the BackgroundService instance. */
@@ -196,6 +199,7 @@ public class BackgroundService extends Service {
 		filter.addAction( ConnectivityManager.CONNECTIVITY_ACTION );
 		filter.addAction("crashBeiwe");
 		filter.addAction("enterANR");
+		filter.addAction(appContext.getString(R.string.check_app_usage_intent));
 		List<String> surveyIds = PersistentData.getSurveyIds();
 		for (String surveyId : surveyIds) { filter.addAction(surveyId); }
 		appContext.registerReceiver(localHandle.timerReceiver, filter);
@@ -250,6 +254,10 @@ public class BackgroundService extends Service {
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) { timer.setupExactSingleAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.createNewDataFilesIntent)) { timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) { timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent); }
+
+		if (!timer.alarmIsSet(Timer.appUsageIntent)) {
+			timer.setupExactSingleAlarm(PersistentData.getCheckAppUsageFrequencyMilliseconds(), Timer.appUsageIntent);
+		}
 
 		//checks for the current expected state for survey notifications,
 		for (String surveyId : PersistentData.getSurveyIds() ){
@@ -368,7 +376,16 @@ public class BackgroundService extends Service {
 					if ( bluetoothListener != null) bluetoothListener.disableBLEScan(); }
 				timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
 				return; }			
-			
+
+			if (broadcastAction.equals( appContext.getString(R.string.check_app_usage_intent) ) ) {
+				try {
+					appUsageListener.getAppUsage();
+					timer.setupExactSingleAlarm(PersistentData.getCheckAppUsageFrequencyMilliseconds(), Timer.appUsageIntent);
+				} catch (PackageManager.NameNotFoundException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
 			//starts a data upload attempt.
 			if (broadcastAction.equals( appContext.getString(R.string.upload_data_files_intent) ) ) {
 				PostRequest.uploadAllFiles();

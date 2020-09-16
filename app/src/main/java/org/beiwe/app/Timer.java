@@ -41,6 +41,7 @@ public class Timer {
 	public static Intent checkForNewSurveysIntent;
 	public static Intent checkForSMSEnabled;
 	public static Intent checkForCallsEnabled;
+	public static Intent appUsageIntent;
 
 	// Intent filters
 	//TODO: Eli. These are never used? investigate.
@@ -82,6 +83,8 @@ public class Timer {
 
 		checkForSMSEnabled = setupIntent( appContext.getString( R.string.check_for_sms_enabled ) );
 		checkForCallsEnabled = setupIntent( appContext.getString( R.string.check_for_calls_enabled ) );
+
+		appUsageIntent = setupIntent(appContext.getString(R.string.check_app_usage_intent));
 	}
 	
 	/* ######################################################################
