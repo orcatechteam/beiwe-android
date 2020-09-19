@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import org.beiwe.app.BuildConfig;
 import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
@@ -23,6 +24,11 @@ public class MainMenuActivity extends SessionActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (BuildConfig.BYPASS_MAIN_CONTENT) {
+			setContentView(R.layout.activity_registration_complete);
+			return;
+		}
+
 		setContentView(R.layout.activity_main_menu);
 
 		Button callClinicianButton = (Button) findViewById(R.id.main_menu_call_clinician);

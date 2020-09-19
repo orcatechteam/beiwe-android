@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.beiwe.app">
 
 
@@ -28,7 +29,8 @@
     <!-- as of the android 6 compatibility update, Beiwe no longer supports installation onto external media -->
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
     <!-- Power management and monitoring, not sure where this would be used... -->
-    <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <uses-permission android:name="android.permission.BATTERY_STATS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
     
     <application
         android:allowBackup="true"
@@ -80,7 +82,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="org.beiwe.app.ui.user.MainMenuActivity"
-            android:label="@string/title_activity_main_menu" />
+            android:label="@string/title_activity_main_menu"
+            android:screenOrientation="fullSensor" />
         <activity
             android:name="org.beiwe.app.ui.user.GraphActivity"
             android:label="@string/title_activity_graph" >
@@ -147,6 +150,8 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
                 <action android:name="android.intent.action.ACTION_REBOOT" />
+                <action android:name="android.intent.action.ACTION_SCREEN_OFF" />
+                <action android:name="android.intent.action.ACTION_SCREEN_ON" />
                 <action android:name="android.intent.action.AIRPLANE_MODE" />
             </intent-filter>
         </receiver>
