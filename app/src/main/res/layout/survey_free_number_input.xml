@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EditText xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/EditTextStyle"
     android:inputType="number"
-    android:digits="01234567890.,-:" >
+    android:digits="01234567890.,-:"
+    tools:ignore="LabelFor">
 </EditText>

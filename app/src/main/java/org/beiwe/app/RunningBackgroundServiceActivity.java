@@ -21,6 +21,7 @@ import android.view.View;
 
 import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
 import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.ui.DebugInterfaceActivity;
 import org.beiwe.app.ui.user.AboutActivityLoggedOut;
 
 /**All Activities in the app extend this Activity.  It ensures that the app's key services (i.e.
@@ -36,6 +37,7 @@ import org.beiwe.app.ui.user.AboutActivityLoggedOut;
  * 
  * @author Eli Jones, Josh Zagorsky
  */
+@SuppressLint("Registered")
 public class RunningBackgroundServiceActivity extends AppCompatActivity {
 	/** The backgroundService variable is an Activity's connection to the ... BackgroundService.
 	 * We ensure the BackgroundService is running in the onResume call, and functionality that
@@ -102,6 +104,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 	########################## Common UI #################################
 	####################################################################*/
 	
+	@SuppressLint("LongLogTag")
 	@Override
 	/** Common UI element, the menu button.*/
 	public boolean onCreateOptionsMenu(Menu menu) {

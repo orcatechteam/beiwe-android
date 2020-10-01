@@ -1,5 +1,6 @@
 package org.beiwe.app.session;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -19,6 +20,7 @@ import org.beiwe.app.ui.user.LoginActivity;
  * This Activity also extends RunningBackgroundServiceActivity, which makes the app's key
  * services run before the interface is allowed to interact with it.
  * @author Eli Jones, Josh Zagorsky */
+@SuppressLint("Registered")
 public class SessionActivity extends RunningBackgroundServiceActivity {
 	
 	/*####################################################################

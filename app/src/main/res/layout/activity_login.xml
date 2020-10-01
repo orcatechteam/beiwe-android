@@ -31,14 +31,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/login_activity_please_enter_password" />
+            android:text="@string/login_activity_please_enter_password"
+            android:labelFor="@id/editText2" />
 
         <EditText
             android:id="@+id/editText2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:inputType="textPassword" >
+            android:inputType="textPassword"
+            android:hint="Please enter a password">
             <requestFocus />
         </EditText>
 

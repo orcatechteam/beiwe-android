@@ -48,6 +48,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	private final static int REQUEST_PERMISSIONS_IDENTIFIER = 1500;
 	
 	/** Users will go into this activity first to register information on the phone and on the server. */
+	@SuppressLint("SetTextI18n")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

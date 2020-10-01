@@ -79,7 +79,7 @@
     <string name="invalid_old_password">Old password incorrect</string>
     <string name="pass_reset_complete">Your password was successfully changed</string>
     <string name="password_mismatch">New Password doesn\'t match Confirm New Password.</string>
-    <string name="password_too_short">Your new password must be at least %d characters long.</string>
+    <string name="password_too_short" tools:ignore="PluralsCandidate">Your new password must be at least %d characters long.</string>
 
     <!-- Forgot Password Activity Strings -->
     <string name="title_activity_forgot_password">Forgot Password</string>
@@ -101,7 +101,7 @@
     <string name="registration_new_password_hint">At least 6 characters</string>
     <string name="registration_confirm_new_password_label">Confirm password:</string>
     <string name="registration_confirm_new_password_hint">At least 6 characters</string>
-    <string name="registration_replacement_password_hint">At least %d characters</string>
+    <string name="registration_replacement_password_hint" tools:ignore="PluralsCandidate">At least %d characters</string>
     <string name="registration_submit">Register</string>
     <string name="title_activity_loading">Loading Beiwe</string>
     <string name="empty_temp_password">Please enter the Temporary Password you were given at signup.</string>
@@ -189,7 +189,7 @@
     <string name="default_about_page_text">Beiwe is an application that runs on your cell phone and helps researchers collect information about your health and behaviors. It asks you to fill out short surveys, and to make a recording of your voice, once a day. Beiwe continuously collects information about your location (using your phone\'s GPS) and how much you move around (using your phone\'s accelerometer). It also monitors how much you use your phone for calling and texting, and it keeps track of the different people you communicate with. Importantly, Beiwe does not record the names or phone numbers of anyone you communicate with. While it can tell if you call the same person more than once, it does not know who that person is. Beiwe does not record the content of your text messages or phone calls. It also keeps track of the different Wi-Fi networks in your area, but the names of those networks are replaced with random codes. Finally, Beiwe can tell if you are near another phone that is also running this application.\n\nAlthough Beiwe collects a large amount of data, all of this data is processed to protect your privacy. This means that the application does not know your name, your phone number, or anything else that could identify you. Beiwe only knows you by an identification number. Because Beiwe does not know who you are, it cannot communicate with your clinician if you are ill or in danger. Researchers will not review the data Beiwe collects until the end of the study. To make it easier for you to connect with your clinician, the \"Call my Clinician\" button appears at the top of every page. In order for the button to work, you must enter your clinician\'s phone number into Beiwe. You can change it as often as needed.\n\nBeiwe was conceived and designed by Dr. Jukka-Pekka \"JP\" Onnela at the Harvard School of Public Health. The research study in which you are enrolled is run by Dr. Roy Perlis at Massachusetts General Hospital. The software was built by Zagaran, Inc., in Cambridge, Massachusetts.</string>
 
     <!-- Phone Numbers -->
-    <string name="phone_number_length_error"> "Phone numbers must be exactly %d digits long." </string>
+    <string name="phone_number_length_error" tools:ignore="PluralsCandidate"> "Phone numbers must be exactly %d digits long." </string>
     <string name="enter_clinician_number">You must enter a value for the clinician phone </string>
     <string name="enter_research_assitant_number">You must enter a value for the research assistant phone </string>
     <!-- Consent Form -->

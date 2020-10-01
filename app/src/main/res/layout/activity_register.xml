@@ -83,7 +83,7 @@
         <Button
             android:id="@+id/submitButton"
             style="@style/RegistrationSubmitButton"
-            android:onClick="registerButtonPressed"
+            android:onClick="registerButtonPressed2"
             android:text="@string/registration_submit" />
 
         <ProgressBar

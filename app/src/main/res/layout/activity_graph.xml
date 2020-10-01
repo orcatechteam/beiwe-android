@@ -23,7 +23,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:onClick="callClinician"
-            android:text="@string/default_call_clinician_text" />
+            android:text="@string/default_call_clinician_text"
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 

@@ -74,6 +74,7 @@ public class SmsSentLogger extends ContentObserver {
 					 * message length, same hashed phone number, and same timestamp),
 					 * so it should be easy to identify duplicate entries. */
 				}
+				cursor.close();
 			}
 		}
 		catch (Exception e) {

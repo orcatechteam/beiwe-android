@@ -1,12 +1,15 @@
 package org.beiwe.app.ui.user;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import org.beiwe.app.BuildConfig;
 import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.SurveyActivity;
@@ -21,9 +24,13 @@ import java.util.ArrayList;
 public class MainMenuActivity extends SessionActivity {
 	//extends a SessionActivity
 
+	@SuppressLint("LongLogTag")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		Log.i("MainMenuActivity.onCreate", "isDev: " + BuildConfig.APP_IS_DEV);
+
 		if (BuildConfig.BYPASS_MAIN_CONTENT) {
 			setContentView(R.layout.activity_registration_complete);
 			return;
@@ -80,4 +87,9 @@ public class MainMenuActivity extends SessionActivity {
 	}
 
 //	public void graphResults (View v) { startActivity( new Intent(getApplicationContext(), GraphActivity.class) ); }
+
+	public void callClinician(View view) {
+		RunningBackgroundServiceActivity runningBgSvc = new RunningBackgroundServiceActivity();
+		runningBgSvc.callClinician(view);
+	}
 }

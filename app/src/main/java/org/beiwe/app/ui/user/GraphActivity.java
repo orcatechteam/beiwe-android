@@ -2,6 +2,7 @@ package org.beiwe.app.ui.user;
 
 import org.apache.http.util.EncodingUtils;
 import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
@@ -71,4 +72,8 @@ public class GraphActivity extends SessionActivity {
 		browser.postUrl(graphUrl, EncodingUtils.getBytes(postData, "BASE64"));
 	}
 
+	public void callClinician(View view) {
+		RunningBackgroundServiceActivity runningBgSvc = new RunningBackgroundServiceActivity();
+		runningBgSvc.callClinician(view);
+	}
 }

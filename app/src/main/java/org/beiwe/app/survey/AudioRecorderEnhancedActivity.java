@@ -10,6 +10,7 @@ import org.beiwe.app.storage.PersistentData;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -38,6 +39,7 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
 	private AudioRecord recorder = null;
 	private Thread recordingThread = null;
 
+	@SuppressLint("LongLogTag")
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );

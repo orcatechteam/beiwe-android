@@ -23,6 +23,7 @@ import org.beiwe.app.ui.utils.SurveyNotifications;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -113,6 +114,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 		Log.i("test hash:", EncryptionEngine.safeHash( encrypted ) );
 		Log.i("test hash:", EncryptionEngine.hashMAC( encrypted ) );
 	}
+	@SuppressLint("LongLogTag")
 	public void logDataToggles(View view) {
 		Log.i("DebugInterfaceActivity.logDataToggles()", "Accelerometer: " + Boolean.toString(PersistentData.getAccelerometerEnabled()));
 		Log.i("DebugInterfaceActivity.logDataToggles()", "Gyroscope: " + Boolean.toString(PersistentData.getGyroscopeEnabled()));

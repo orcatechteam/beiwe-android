@@ -72,6 +72,7 @@ public class TextFieldKeyboard {
         if(!(rootView instanceof EditText) && !(rootView instanceof SeekBarEditableThumb)) {
             rootView.setOnTouchListener(new OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
+                    v.performClick();
                     hideSoftKeyboard(editText);
                     return false;
                 }

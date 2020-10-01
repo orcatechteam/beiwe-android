@@ -115,7 +115,8 @@ public class BackgroundService extends Service {
 	/** Initializes the Bluetooth listener 
 	 * Note: Bluetooth has several checks to make sure that it actually exists on the device with the capabilities we need.
 	 * Checking for Bluetooth LE is necessary because it is an optional extension to Bluetooth 4.0. */
-	public void startBluetooth(){
+	@SuppressLint("LongLogTag")
+    public void startBluetooth(){
 		//Note: the Bluetooth listener is a BroadcastReceiver, which means it must have a 0-argument constructor in order for android can instantiate it on broadcast receipts.
 		//The following check must be made, but it requires a Context that we cannot pass into the BluetoothListener, so we do the check in the BackgroundService.
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) && PersistentData.getBluetoothEnabled() ) {
@@ -303,7 +304,8 @@ public class BackgroundService extends Service {
 	 * Note: every condition has a return statement at the end; this is because the trigger survey notification
 	 * action requires a fairly expensive dive into PersistantData JSON unpacking.*/
 	private BroadcastReceiver timerReceiver = new BroadcastReceiver() {
-		@Override public void onReceive(Context appContext, Intent intent) {
+		@SuppressLint("LongLogTag")
+        @Override public void onReceive(Context appContext, Intent intent) {
 			Log.d("BackgroundService - timers", "Received broadcast: " + intent.toString() );
 			TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
 			String broadcastAction = intent.getAction();

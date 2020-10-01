@@ -3,6 +3,7 @@ package org.beiwe.app.survey;
 import java.io.IOException;
 
 import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.AudioFileManager;
 import org.beiwe.app.storage.PersistentData;
@@ -12,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -35,6 +37,7 @@ import android.widget.Toast;
  * http://developer.android.com/guide/topics/media/audio-capture.html
  *
  * @author Eli Jones, Josh Zagorsky */
+@SuppressLint("Registered")
 public class AudioRecorderCommon extends SessionActivity {
 
 	/**	This function is overridden here because audio recorder activities requires some different
@@ -271,6 +274,11 @@ public class AudioRecorderCommon extends SessionActivity {
 	public void disableRecordButton(){ recordingButton.setClickable(false); recordingButton.setAlpha(DISABLED_BUTTON_ALPHA); }
 	public void enableSaveButton(){ saveButton.setClickable(true); saveButton.setAlpha(1f); }
 	public void disableSaveButton(){ saveButton.setClickable(false); saveButton.setAlpha(DISABLED_BUTTON_ALPHA); }
+
+	public void callClinician(View view) {
+		RunningBackgroundServiceActivity runningBgSvc = new RunningBackgroundServiceActivity();
+		runningBgSvc.callClinician(view);
+	}
 
 	/*#########################################################
     ##################### Encryption ##########################

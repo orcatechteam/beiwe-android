@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,16 +19,16 @@ import java.util.List;
 import java.util.Map;
 
 public class AppUsageListener {
-	private Context appContext;
 	private PackageManager pkgManager;
 	private UsageStatsManager usageStatsManager;
 
 	public static String header = "appLabel, appPackageName, lastTimeUsed, lastTimeVisible, totalTimeInForeground, totalTimeVisible";
 
 	public AppUsageListener(Context applicationContext) {
-		this.appContext = applicationContext;
-		this.pkgManager = appContext.getPackageManager();
-		this.usageStatsManager = (UsageStatsManager) this.appContext.getSystemService(Context.USAGE_STATS_SERVICE);
+		this.pkgManager = applicationContext.getPackageManager();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+			this.usageStatsManager = (UsageStatsManager) applicationContext.getSystemService(Context.USAGE_STATS_SERVICE);
+		}
 	}
 
 	public void getAppUsage() throws PackageManager.NameNotFoundException {

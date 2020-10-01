@@ -36,7 +36,9 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="${appName}${appNameSuffix}"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        tools:targetApi="n"
+        android:fullBackupContent="@xml/backup_descriptor">
 
         <!-- ACTIVITIES -->
 
@@ -52,13 +54,15 @@
         <activity
             android:name="org.beiwe.app.survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
         </activity>
         
         <activity
             android:name="org.beiwe.app.survey.AudioRecorderEnhancedActivity"
             android:label="@string/title_activity_audio_recorder"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
         </activity>
 
         <activity
@@ -79,7 +83,8 @@
         <activity
             android:name="org.beiwe.app.ui.registration.RegisterActivity"
             android:label="@string/title_activity_register"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name="org.beiwe.app.ui.user.MainMenuActivity"
             android:label="@string/title_activity_main_menu"
@@ -103,12 +108,14 @@
         <activity
             android:name="org.beiwe.app.ui.registration.PhoneNumberEntryActivity"
             android:label="@string/title_activity_phone_number_entry"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
         </activity>
         <activity
             android:name="org.beiwe.app.ui.registration.ConsentFormActivity"
             android:label="@string/title_activity_consent_form"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
         </activity>
 
         <!-- SERVICE -->

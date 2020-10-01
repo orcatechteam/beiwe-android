@@ -2,6 +2,7 @@ package org.beiwe.app.listeners;
 
 import org.beiwe.app.storage.TextFileManager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -75,6 +76,7 @@ public class GyroscopeListener implements SensorEventListener {
     /** On receipt of a sensor change, record it.  Include accuracy.
      * (only ever triggered by the system.) */
     @Override
+    @SuppressLint("DefaultLocale")
     public synchronized void onSensorChanged(SensorEvent arg0) {
         Long javaTimeCode = System.currentTimeMillis();
         float[] values = arg0.values;
