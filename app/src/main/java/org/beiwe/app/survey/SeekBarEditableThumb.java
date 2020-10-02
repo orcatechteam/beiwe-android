@@ -3,14 +3,15 @@ package org.beiwe.app.survey;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.SeekBar;
+//import android.widget.SeekBar;
+import androidx.appcompat.widget.AppCompatSeekBar;
 
 /** A customized slider ui element so that we can have a grayed out effect for untouched sliders.
  * Based on http://stackoverflow.com/a/19008611
  * @author Josh Zagorsky
  *
  */
-public class SeekBarEditableThumb extends SeekBar {
+public class SeekBarEditableThumb extends AppCompatSeekBar {
 
 	public SeekBarEditableThumb(Context context) {
 		super(context);
@@ -53,7 +54,7 @@ public class SeekBarEditableThumb extends SeekBar {
 	
 	/**
 	 * Return a Boolean of whether or not the user has touched the SeekBar yet 
-	 * @return
+	 * @return bool
 	 */
 	public Boolean getHasBeenTouched() {
 		return hasBeenTouched;
@@ -70,7 +71,6 @@ public class SeekBarEditableThumb extends SeekBar {
 	
 	/**
 	 * The minimum doesn't have to be zero; the SeekBar can start at another number (even negative)
-	 * @param min
 	 */
 	public int getMin() {
 		return this.min;

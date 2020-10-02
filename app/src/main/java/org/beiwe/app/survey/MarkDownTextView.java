@@ -4,7 +4,8 @@ import android.content.Context;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
-import android.widget.TextView;
+//import android.widget.TextView;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.commonsware.cwac.anddown.AndDown;
 
@@ -12,12 +13,12 @@ import com.commonsware.cwac.anddown.AndDown;
  * Created by elijones on 1/20/17.
  */
 
-public class MarkDownTextView extends TextView {
+public class MarkDownTextView extends AppCompatTextView {
 	// Duplicating all Constructors for maximum trivial compatibility.
 	public MarkDownTextView(Context context) { super(context); }
 	public MarkDownTextView(Context context, AttributeSet attrs) { super(context, attrs); }
 	public MarkDownTextView(Context context, AttributeSet attrs, int defStyleAttr) { super(context, attrs, defStyleAttr); }
-	public MarkDownTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) { super(context, attrs, defStyleAttr, defStyleRes); }
+//	public MarkDownTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) { super(context, attrs, defStyleAttr, defStyleRes); }
 
 	/** Takes a markdown formatted String and applies the formatting to the TextView object.
 	 * @param markDownText markdown formatted text string */

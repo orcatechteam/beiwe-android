@@ -13,7 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,7 +21,6 @@ import android.view.View;
 
 import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
 import org.beiwe.app.storage.PersistentData;
-import org.beiwe.app.ui.DebugInterfaceActivity;
 import org.beiwe.app.ui.user.AboutActivityLoggedOut;
 
 /**All Activities in the app extend this Activity.  It ensures that the app's key services (i.e.
@@ -205,6 +204,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Log.i("sessionActivity", "onActivityResult. requestCode: " + requestCode + ", resultCode: " + resultCode );
+		super.onActivityResult(requestCode, resultCode, data);
 		aboutToResetFalseActivityReturn = true;
 	}
 
