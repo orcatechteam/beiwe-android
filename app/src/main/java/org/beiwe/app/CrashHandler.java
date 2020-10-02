@@ -10,6 +10,7 @@ import org.beiwe.app.ui.DebugInterfaceActivity;
 import org.beiwe.app.ui.LoadingActivity;
 import org.beiwe.app.ui.user.MainMenuActivity;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -56,7 +57,8 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 	 * Also writes error to the error log so that it is visible in logcat.
 	 * @param exception A Throwable (probably your error).
 	 * @param context An android Context */
-	public static void writeCrashlog(Throwable exception, Context context) {
+	@SuppressLint("LongLogTag")
+    public static void writeCrashlog(Throwable exception, Context context) {
 
 		try {
 			Sentry.getContext().addTag("user_id", PersistentData.getPatientID());

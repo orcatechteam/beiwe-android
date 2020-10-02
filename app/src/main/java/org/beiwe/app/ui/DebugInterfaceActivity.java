@@ -171,6 +171,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	//file operations
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
+	@SuppressLint("LongLogTag")
 	public void deleteEverything(View view) {
 		Log.i("Delete Everything button pressed", "poke.");
 		String[] files = TextFileManager.getAllFiles();

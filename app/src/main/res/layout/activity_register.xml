@@ -36,7 +36,8 @@
             android:id="@+id/serverUrlInput"
             style="@style/RegistrationInputStyle"
             android:inputType="textUri"
-            android:hint="@string/registration_server_url_hint" >
+            android:hint="@string/registration_server_url_hint"
+            android:importantForAutofill="no">
             <requestFocus />
         </EditText>
 
@@ -48,7 +49,8 @@
             android:id="@+id/registerUserIdInput"
             style="@style/RegistrationInputStyle"
             android:inputType="text"
-            android:hint="@string/registration_user_id_hint" />
+            android:hint="@string/registration_user_id_hint"
+            android:importantForAutofill="no" />
 
         <TextView
             style="@style/RegistrationInputLabelStyle"
@@ -58,7 +60,8 @@
             android:id="@+id/registerTempPasswordInput"
             style="@style/RegistrationInputStyle"
             android:inputType="textPassword"
-            android:hint="@string/registration_temp_password_hint"/>
+            android:hint="@string/registration_temp_password_hint"
+            android:importantForAutofill="no" />
 
         <TextView
             style="@style/RegistrationInputLabelStyle"
@@ -68,7 +71,8 @@
             android:id="@+id/registerNewPasswordInput"
             style="@style/RegistrationInputStyle"
             android:inputType="textPassword"
-            android:hint="@string/registration_new_password_hint"/>
+            android:hint="@string/registration_new_password_hint"
+            android:importantForAutofill="no" />
 
         <TextView
             style="@style/RegistrationInputLabelStyle"
@@ -78,7 +82,8 @@
             android:id="@+id/registerConfirmNewPasswordInput"
             style="@style/RegistrationInputStyle"
             android:inputType="textPassword"
-            android:hint="@string/registration_confirm_new_password_hint"/>
+            android:hint="@string/registration_confirm_new_password_hint"
+            android:importantForAutofill="no" />
 
         <Button
             android:id="@+id/submitButton"

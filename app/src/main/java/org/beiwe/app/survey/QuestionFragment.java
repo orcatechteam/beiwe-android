@@ -50,7 +50,7 @@ public class QuestionFragment extends Fragment {
 		 * unless we set it manually: */
 
         // Render the question and inflate the layout for this fragment
-        ScrollView fragmentQuestionLayout = (ScrollView) inflater.inflate(R.layout.fragment_question, null);
+        @SuppressLint("InflateParams") ScrollView fragmentQuestionLayout = (ScrollView) inflater.inflate(R.layout.fragment_question, null);
         FrameLayout questionContainer = (FrameLayout) fragmentQuestionLayout.findViewById(R.id.questionContainer);
         final View questionLayout = createQuestion(inflater, getArguments());
         questionContainer.addView(questionLayout);
@@ -101,6 +101,7 @@ public class QuestionFragment extends Fragment {
         return questionData;
     }
 
+    @SuppressLint("InflateParams")
     private View createQuestion(LayoutInflater inflater, Bundle args) {
         String questionID = args.getString("question_id");
         String questionType = args.getString("question_type");
@@ -150,7 +151,7 @@ public class QuestionFragment extends Fragment {
      */
     private TextView createInfoTextbox(LayoutInflater inflater, String questionID, String infoText) {
 
-        MarkDownTextView infoTextbox = (MarkDownTextView) inflater.inflate(R.layout.survey_info_textbox, null);
+        @SuppressLint("InflateParams") MarkDownTextView infoTextbox = (MarkDownTextView) inflater.inflate(R.layout.survey_info_textbox, null);
 
         // Clean inputs
         if (infoText == null) {
@@ -174,7 +175,7 @@ public class QuestionFragment extends Fragment {
     private LinearLayout createSliderQuestion(LayoutInflater inflater, String questionID,
                                              String questionText, int min, int max) {
 
-        LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
+        @SuppressLint("InflateParams") LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
         SeekBarEditableThumb slider = (SeekBarEditableThumb) question.findViewById(R.id.slider);
 
         // Set the text of the question itself
@@ -223,7 +224,7 @@ public class QuestionFragment extends Fragment {
      */
     private LinearLayout createRadioButtonQuestion(LayoutInflater inflater, String questionID, String questionText, String[] answers) {
 
-        LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
+        @SuppressLint("InflateParams") LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
         RadioGroup radioGroup = (RadioGroup) question.findViewById(R.id.radioGroup);
 
         // Set the text of the question itself
@@ -244,7 +245,7 @@ public class QuestionFragment extends Fragment {
 
         // Loop through the answer strings, and make each one a radio button option
         for (int i = 0; i < answers.length; i++) {
-            RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.survey_radio_button, null);
+            @SuppressLint("InflateParams") RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.survey_radio_button, null);
             if (answers[i] != null) {
                 radioButton.setText(answers[i]);
             }
@@ -275,7 +276,7 @@ public class QuestionFragment extends Fragment {
      */
     private LinearLayout createCheckboxQuestion(LayoutInflater inflater, String questionID, String questionText, String[] options) {
 
-        LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
+        @SuppressLint("InflateParams") LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
         LinearLayout checkboxesList = (LinearLayout) question.findViewById(R.id.checkboxesList);
 
         // Set the text of the question itself
@@ -299,7 +300,7 @@ public class QuestionFragment extends Fragment {
             for (int i = 0; i < options.length; i++) {
 
                 // Inflate the checkbox from an XML layout file
-                CheckBox checkbox = (CheckBox) inflater.inflate(R.layout.survey_checkbox, null);
+                @SuppressLint("InflateParams") CheckBox checkbox = (CheckBox) inflater.inflate(R.layout.survey_checkbox, null);
 
                 // Set the text if it's provided; otherwise leave text as default error message
                 if (options[i] != null) {
@@ -328,10 +329,11 @@ public class QuestionFragment extends Fragment {
      * @param inputTextType The type of answer (number, text, etc.)
      * @return LinearLayout question and answer
      */
+    @SuppressLint("InflateParams")
     private LinearLayout createFreeResponseQuestion(LayoutInflater inflater, String questionID,
-                                                   String questionText, TextFieldType.Type inputTextType) {
+                                                    String questionText, TextFieldType.Type inputTextType) {
         //TODO: Josh. Give open response questions autofocus and make the keyboard appear
-        LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
+        @SuppressLint("InflateParams") LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
         // Set the text of the question itself
         MarkDownTextView questionTextView = (MarkDownTextView) question.findViewById(R.id.questionText);

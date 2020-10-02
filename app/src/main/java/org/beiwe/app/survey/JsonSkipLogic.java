@@ -173,6 +173,7 @@ public class JsonSkipLogic {
 	 * due to json parsing the behavior is to invariably return true.
 	 * @param questionId
 	 * @return Boolean result of the logic */
+	@SuppressLint("LongLogTag")
 	private Boolean shouldQuestionDisplay(String questionId){
 		try {
 			JSONObject question = QuestionSkipLogic.get(questionId);

@@ -6,5 +6,6 @@
     style="@style/EditTextStyle"
     android:inputType="number"
     android:digits="01234567890.,-:"
-    tools:ignore="LabelFor">
+    tools:ignore="LabelFor"
+    android:importantForAutofill="no">
 </EditText>

@@ -40,7 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:inputType="textPassword"
-            android:hint="Please enter a password">
+            android:hint="Please enter a password"
+            android:importantForAutofill="no">
             <requestFocus />
         </EditText>
 

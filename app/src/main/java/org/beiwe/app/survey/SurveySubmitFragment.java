@@ -1,5 +1,6 @@
 package org.beiwe.app.survey;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -28,7 +29,7 @@ public class SurveySubmitFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        LinearLayout surveySubmitLayout = (LinearLayout) inflater.inflate(R.layout.fragment_survey_submit, null);
+        @SuppressLint("InflateParams") LinearLayout surveySubmitLayout = (LinearLayout) inflater.inflate(R.layout.fragment_survey_submit, null);
         FrameLayout submitScreenContent = (FrameLayout) surveySubmitLayout.findViewById(R.id.submitScreenContent);
         ArrayList<String> unansweredQuestions = getArguments().getStringArrayList("unansweredQuestions");
         if (unansweredQuestions.size() > 0) {
@@ -67,7 +68,7 @@ public class SurveySubmitFragment extends Fragment {
 
     private LinearLayout showUnansweredQuestionsListAndTheSubmitButton(LayoutInflater inflater,
                                                                        ArrayList<String> unansweredQuestions) {
-        LinearLayout unansweredQuestionsLayout = (LinearLayout) inflater.inflate(R.layout.survey_unanswered_questions_list, null);
+        @SuppressLint("InflateParams") LinearLayout unansweredQuestionsLayout = (LinearLayout) inflater.inflate(R.layout.survey_unanswered_questions_list, null);
         // Show a message about the number of unanswered questions
         TextView unansweredQuestionsMessage = (TextView) unansweredQuestionsLayout.findViewById(R.id.unansweredQuestionsMessage);
         if (unansweredQuestions.size() == 1) {
@@ -92,7 +93,7 @@ public class SurveySubmitFragment extends Fragment {
 
 
     private LinearLayout renderSubmitButton(LayoutInflater inflater, String labelText) {
-        LinearLayout submitButtonLayout = (LinearLayout) inflater.inflate(R.layout.survey_submit_button, null);
+        @SuppressLint("InflateParams") LinearLayout submitButtonLayout = (LinearLayout) inflater.inflate(R.layout.survey_submit_button, null);
         Button submitButton = (Button) submitButtonLayout.findViewById(R.id.buttonSubmit);
         submitButton.setText(labelText);
         submitButton.setOnClickListener(new View.OnClickListener() {

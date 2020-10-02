@@ -2,10 +2,13 @@ package org.beiwe.app.listeners;
 
 import org.beiwe.app.BackgroundService;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import java.util.Objects;
 
 /**The BootListener is never actually instantiated elsewhere in the app.  It's job is to sit
  * and wait for either the boot broadcast or the SD (external) applications available.
@@ -39,7 +42,15 @@ public class BootListener extends BroadcastReceiver {
 	
 	@Override
 	public void onReceive(Context externalContext, Intent intent) {
-		// Device turned on or other intents (see manifest)
-		startBackgroundService(externalContext);
+		switch (Objects.requireNonNull(intent.getAction())) {
+			case Intent.ACTION_BOOT_COMPLETED:
+			case Intent.ACTION_NEW_OUTGOING_CALL:
+			case "android.intent.action.PHONE_STATE":
+			case Intent.ACTION_TIMEZONE_CHANGED:
+			case "android.provider.Telephony.SMS_RECEIVED":
+				// Device turned on or other intents (see manifest)
+				startBackgroundService(externalContext);
+				break;
+		}
 	}
 }

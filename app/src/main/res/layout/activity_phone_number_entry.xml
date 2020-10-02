@@ -29,7 +29,8 @@
         android:id="@+id/primaryCareNumber"
         style="@style/RegistrationInputStyle"
         android:inputType="phone"
-        android:hint="@string/phone_number_entry_your_clinician_hint" >
+        android:hint="@string/phone_number_entry_your_clinician_hint"
+        android:importantForAutofill="no">
         <requestFocus />
     </EditText>
 
@@ -42,7 +43,8 @@
         android:id="@+id/passwordResetNumber"
         style="@style/RegistrationInputStyle"
         android:inputType="phone"
-        android:hint="@string/phone_number_entry_research_assistant_hint" />
+        android:hint="@string/phone_number_entry_research_assistant_hint"
+        android:importantForAutofill="no" />
 
     <Button
         android:id="@+id/phoneNumbersConfirmButton"

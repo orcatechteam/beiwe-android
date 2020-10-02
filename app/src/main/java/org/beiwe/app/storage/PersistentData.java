@@ -79,7 +79,7 @@ public class PersistentData {
 		appContext = context;
 		pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
 		editor = pref.edit();
-		editor.commit();
+		editor.apply();
 		isInitialized = true;
 	} 
 

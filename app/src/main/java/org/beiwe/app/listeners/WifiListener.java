@@ -23,7 +23,7 @@ public class WifiListener {
 	 * the devices wifi info.  
 	 * @param appContext requires a Context */
 	private WifiListener (Context appContext) {
-		wifiManager = (WifiManager) appContext.getSystemService(Context.WIFI_SERVICE); }
+		wifiManager = (WifiManager) appContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE); }
 	
 	public static void initialize( Context context ) { new WifiListener( context ); } 
 	
@@ -40,6 +40,7 @@ public class WifiListener {
 				StringBuilder data = new StringBuilder();
 				for (ScanResult result : scanResults) {
 					String wifiLogEntry = EncryptionEngine.hashMAC( result.BSSID) + "," + EncryptionEngine.safeHash(result.SSID) + "," + result.frequency + "," + result.level;
+					Log.i("WifiListener", "wifiLogEntry: `"+wifiLogEntry+"`");
 					data.append(wifiLogEntry);
 					data.append("\n");
 				}
