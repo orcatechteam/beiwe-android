@@ -37,7 +37,7 @@ public class GraphActivity extends SessionActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_graph);
 
-		Button callClinicianButton = (Button) findViewById(R.id.graph_call_clinician);
+		Button callClinicianButton = findViewById(R.id.graph_call_clinician);
 		if(PersistentData.getCallClinicianButtonEnabled()) {
 			callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
 		}
@@ -46,7 +46,7 @@ public class GraphActivity extends SessionActivity {
 		}
 
 		// Instantiating web view to be embedded in the page
-		WebView browser = (WebView) findViewById(R.id.graph_pastResults);
+		WebView browser = findViewById(R.id.graph_pastResults);
 		WebSettings browserSettings = browser.getSettings();
 		browserSettings.setBuiltInZoomControls(true);
 		browserSettings.setDisplayZoomControls(false);

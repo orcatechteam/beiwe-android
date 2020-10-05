@@ -3,6 +3,7 @@ package org.beiwe.app.ui;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.beiwe.app.BackgroundService;
 import org.beiwe.app.BuildConfig;
@@ -47,28 +48,28 @@ public class DebugInterfaceActivity extends SessionActivity {
 		appContext = this.getApplicationContext();
 
 		if (BuildConfig.APP_IS_DEV) {
-			((TextView) findViewById(R.id.debugtexttwenty)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonDevListApps)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonDevCheckConnectivityStatus)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonPrintInternalLog)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonClearInternalLog)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonDeleteEverything)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonListFiles)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonTimer)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonGetKeyFile)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.testEncryption)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonLogDataToggles)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonAlarmStates)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonFeaturesEnabled)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonFeaturesPermissable)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonCrashUi)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonCrashBackground)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonCrashBackgroundInFive)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonTestManualErrorReport)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.stopBackgroundService)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonEnterANRUI)).setVisibility(View.VISIBLE);
-			((Button) findViewById(R.id.buttonEnterANRBackground)).setVisibility(View.VISIBLE);
+			findViewById(R.id.debugtexttwenty).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonDevListApps).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonDevCheckConnectivityStatus).setVisibility(View.VISIBLE);
+			findViewById(R.id.button).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonPrintInternalLog).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonClearInternalLog).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonDeleteEverything).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonListFiles).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonTimer).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonGetKeyFile).setVisibility(View.VISIBLE);
+			findViewById(R.id.testEncryption).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonLogDataToggles).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonAlarmStates).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonFeaturesEnabled).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonFeaturesPermissable).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonCrashUi).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonCrashBackground).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonCrashBackgroundInFive).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonTestManualErrorReport).setVisibility(View.VISIBLE);
+			findViewById(R.id.stopBackgroundService).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonEnterANRUI).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonEnterANRBackground).setVisibility(View.VISIBLE);
 		}
 
 	}
@@ -103,7 +104,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 			throw new NullPointerException("some form of encryption error, type 1");
 		}
 		String encrypted;
-		try { encrypted = EncryptionEngine.encryptRSA("ThIs Is a TeSt".getBytes() ).toString(); }
+		try { encrypted = EncryptionEngine.encryptRSA("ThIs Is a TeSt".getBytes() ); }
 		catch (InvalidKeySpecException e) {
 			Log.e("DebugInterfaceActivity", "this is only partially implemented, unknown behavior");
 			e.printStackTrace();
@@ -116,14 +117,14 @@ public class DebugInterfaceActivity extends SessionActivity {
 	}
 	@SuppressLint("LongLogTag")
 	public void logDataToggles(View view) {
-		Log.i("DebugInterfaceActivity.logDataToggles()", "Accelerometer: " + Boolean.toString(PersistentData.getAccelerometerEnabled()));
-		Log.i("DebugInterfaceActivity.logDataToggles()", "Gyroscope: " + Boolean.toString(PersistentData.getGyroscopeEnabled()));
-		Log.i("DebugInterfaceActivity.logDataToggles()", "GPS: " + Boolean.toString(PersistentData.getGpsEnabled()));
-		Log.i("DebugInterfaceActivity.logDataToggles()", "Calls: " + Boolean.toString(PersistentData.getCallsEnabled()));
-		Log.i("DebugInterfaceActivity.logDataToggles()", "Texts: " + Boolean.toString(PersistentData.getTextsEnabled()));
-		Log.i("DebugInterfaceActivity.logDataToggles()", "WiFi: " + Boolean.toString(PersistentData.getWifiEnabled()));
-		Log.i("DebugInterfaceActivity.logDataToggles()", "Bluetooth: " + Boolean.toString(PersistentData.getBluetoothEnabled()));
-		Log.i("DebugInterfaceActivity.logDataToggles()", "Power State: " + Boolean.toString(PersistentData.getPowerStateEnabled()));
+		Log.i("DebugInterfaceActivity.logDataToggles()", "Accelerometer: " + PersistentData.getAccelerometerEnabled());
+		Log.i("DebugInterfaceActivity.logDataToggles()", "Gyroscope: " + PersistentData.getGyroscopeEnabled());
+		Log.i("DebugInterfaceActivity.logDataToggles()", "GPS: " + PersistentData.getGpsEnabled());
+		Log.i("DebugInterfaceActivity.logDataToggles()", "Calls: " + PersistentData.getCallsEnabled());
+		Log.i("DebugInterfaceActivity.logDataToggles()", "Texts: " + PersistentData.getTextsEnabled());
+		Log.i("DebugInterfaceActivity.logDataToggles()", "WiFi: " + PersistentData.getWifiEnabled());
+		Log.i("DebugInterfaceActivity.logDataToggles()", "Bluetooth: " + PersistentData.getBluetoothEnabled());
+		Log.i("DebugInterfaceActivity.logDataToggles()", "Power State: " + PersistentData.getPowerStateEnabled());
 	}
 	public void getAlarmStates(View view) {
 		List<String> ids = PersistentData.getSurveyIds();
@@ -212,8 +213,8 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void checkConnectivityStatus(View view) {
 		ConnectivityManager connMgr = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		assert connMgr != null;
-		NetworkInfo.State mobile = connMgr.getNetworkInfo(0).getState();
-		NetworkInfo.State wifi = connMgr.getNetworkInfo(1).getState();
+		NetworkInfo.State mobile = Objects.requireNonNull(connMgr.getNetworkInfo(0)).getState();
+		NetworkInfo.State wifi = Objects.requireNonNull(connMgr.getNetworkInfo(1)).getState();
 		String mobileStatus = (mobile == NetworkInfo.State.CONNECTED || mobile == NetworkInfo.State.CONNECTING) ? "enabled" : "disabled";
 		String wifiStatus = (wifi == NetworkInfo.State.CONNECTED || wifi == NetworkInfo.State.CONNECTING) ? "enabled" : "disabled";
 		Log.i("DebugAct", "mobile status: "+mobileStatus);

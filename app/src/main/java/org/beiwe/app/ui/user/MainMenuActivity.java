@@ -38,7 +38,7 @@ public class MainMenuActivity extends SessionActivity {
 
 		setContentView(R.layout.activity_main_menu);
 
-		Button callClinicianButton = (Button) findViewById(R.id.main_menu_call_clinician);
+		Button callClinicianButton = findViewById(R.id.main_menu_call_clinician);
 		if(PersistentData.getCallClinicianButtonEnabled()) {
 			callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
 		}
@@ -58,7 +58,7 @@ public class MainMenuActivity extends SessionActivity {
 		}
 		if (permSurveyIds.size() !=0 ) {
 			for (int i = 0; i < permSurveyIds.size(); i++) {
-				Button button = (Button) findViewById(getResources().getIdentifier("permSurvey" + i, "id", this.getPackageName()));
+				Button button = findViewById(getResources().getIdentifier("permSurvey" + i, "id", this.getPackageName()));
 				if (PersistentData.getSurveyType(permSurveyIds.get(i)).equals("audio_survey")){
 					button.setText(R.string.permaaudiosurvey);
 				}

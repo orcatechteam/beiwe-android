@@ -58,7 +58,7 @@ public class SurveyAnswersRecorder {
 	}
 
 	public static Integer getNullableIntAnswerFromSliderQuestion(View questionLayout) {
-		SeekBarEditableThumb slider = (SeekBarEditableThumb) questionLayout.findViewById(R.id.slider);
+		SeekBarEditableThumb slider = questionLayout.findViewById(R.id.slider);
 		if (slider.getHasBeenTouched()) {
 			return slider.getProgress() + slider.getMin();
 		}
@@ -72,7 +72,7 @@ public class SurveyAnswersRecorder {
         Integer selectedRadioButtonIndex = getIndexOfSelectedRadioButton(questionLayout);
         Log.i("SurveyAnswersRecorder", "selected answer index: " + selectedRadioButtonIndex);
         if (selectedRadioButtonIndex != null) {
-            RadioGroup radioGroup = (RadioGroup) questionLayout.findViewById(R.id.radioGroup);
+            RadioGroup radioGroup = questionLayout.findViewById(R.id.radioGroup);
             RadioButton selectedButton = (RadioButton) radioGroup.getChildAt(selectedRadioButtonIndex);
             return selectedButton.getText().toString();
         }
@@ -80,7 +80,7 @@ public class SurveyAnswersRecorder {
 	}
 
 	private static Integer getIndexOfSelectedRadioButton(View questionLayout) {
-		RadioGroup radioGroup = (RadioGroup) questionLayout.findViewById(R.id.radioGroup);
+		RadioGroup radioGroup = questionLayout.findViewById(R.id.radioGroup);
 		int numberOfChoices = radioGroup.getChildCount();
 		for (int i=0; i < numberOfChoices; i++) {
             if (((RadioButton) radioGroup.getChildAt(i)).isChecked()) {
@@ -94,7 +94,7 @@ public class SurveyAnswersRecorder {
 	/**Get the answer from a Checkbox Question
 	 * @return the answer as a String */
 	public static String getAnswerFromCheckboxQuestion(View questionLayout) {
-		LinearLayout checkboxesList = (LinearLayout) questionLayout.findViewById(R.id.checkboxesList);
+		LinearLayout checkboxesList = questionLayout.findViewById(R.id.checkboxesList);
 		String selectedAnswers = getSelectedCheckboxes(checkboxesList);
 		if (selectedAnswers.equals("[]")) {
 			return null;
@@ -107,7 +107,7 @@ public class SurveyAnswersRecorder {
 	/**Get the answer from an Open Response question
 	 * @return the answer as a String */
 	public static String getAnswerFromOpenResponseQuestion(View questionLayout) {
-		LinearLayout textFieldContainer = (LinearLayout) questionLayout.findViewById(R.id.textFieldContainer);
+		LinearLayout textFieldContainer = questionLayout.findViewById(R.id.textFieldContainer);
 		EditText textField = (EditText) textFieldContainer.getChildAt(0);
 		String answer = textField.getText().toString();
 		if (answer == null || answer.equals("")) {

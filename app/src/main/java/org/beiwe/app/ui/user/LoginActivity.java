@@ -25,14 +25,14 @@ public class LoginActivity extends RunningBackgroundServiceActivity {
 	private Context appContext;
 	
 	@Override
-	/**The login activity prompts the user for the password. */
+    /*The login activity prompts the user for the password. */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		appContext = getApplicationContext();
 
 		setContentView(R.layout.activity_login);
-		password = (EditText) findViewById(R.id.editText2);
+		password = findViewById(R.id.editText2);
 
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 		textFieldKeyboard.makeKeyboardBehave(password);
@@ -61,6 +61,6 @@ public class LoginActivity extends RunningBackgroundServiceActivity {
 	}
 	
 	@Override
-	/** LoginActivity needs to suppress use of the back button, otherwise it would log the user in without a password. */
+	/* LoginActivity needs to suppress use of the back button, otherwise it would log the user in without a password. */
 	public void onBackPressed() { }
 }

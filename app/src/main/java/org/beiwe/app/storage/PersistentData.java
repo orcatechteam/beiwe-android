@@ -335,7 +335,7 @@ public class PersistentData {
 		if (serverUrl.startsWith("https://")) {
 			return serverUrl;
 		} else if (serverUrl.startsWith("http://")) {
-			return "https://" + serverUrl.substring(7, serverUrl.length());
+			return "https://" + serverUrl.substring(7);
 		} else {
 			return "https://" + serverUrl;
 		}
@@ -424,7 +424,7 @@ public class PersistentData {
 	private static JSONArray getSurveyIdsJsonArray() {
 		String jsonString = pref.getString(SURVEY_IDS, "0");
 		// Log.d("persistant data", "getting ids: " + jsonString);
-		if (jsonString == "0") { return new JSONArray(); } //return empty if the list is empty
+		if (jsonString.equals("0")) { return new JSONArray(); } //return empty if the list is empty
 		try { return new JSONArray(jsonString); }
 		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
 	}
@@ -452,7 +452,7 @@ public class PersistentData {
 
 	private static JSONArray getSurveyQuestionMemoryJsonArray( String surveyId ) {
 		String jsonString = pref.getString(surveyId + "-questionIds", "0");
-		if (jsonString == "0") { return new JSONArray(); } //return empty if the list is empty
+		if (jsonString.equals("0")) { return new JSONArray(); } //return empty if the list is empty
 		try { return new JSONArray(jsonString); }
 		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
 	}

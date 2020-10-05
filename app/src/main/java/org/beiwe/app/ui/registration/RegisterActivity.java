@@ -55,17 +55,17 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		setContentView(R.layout.activity_register);
 
 		if (!BuildConfig.CUSTOMIZABLE_SERVER_URL) {
-			TextView serverUrlCaption = (TextView) findViewById(R.id.serverUrlCaption);
-			EditText serverUrlInput = (EditText) findViewById(R.id.serverUrlInput);
+			TextView serverUrlCaption = findViewById(R.id.serverUrlCaption);
+			EditText serverUrlInput = findViewById(R.id.serverUrlInput);
 			serverUrlCaption.setVisibility(View.GONE);
 			serverUrlInput.setVisibility(View.GONE);
 		}
 
-		serverUrlInput = (EditText) findViewById(R.id.serverUrlInput);
-		userIdInput = (EditText) findViewById(R.id.registerUserIdInput);
-		tempPasswordInput = (EditText) findViewById(R.id.registerTempPasswordInput);
-		newPasswordInput = (EditText) findViewById(R.id.registerNewPasswordInput);
-		confirmNewPasswordInput = (EditText) findViewById(R.id.registerConfirmNewPasswordInput);
+		serverUrlInput = findViewById(R.id.serverUrlInput);
+		userIdInput = findViewById(R.id.registerUserIdInput);
+		tempPasswordInput = findViewById(R.id.registerTempPasswordInput);
+		newPasswordInput = findViewById(R.id.registerNewPasswordInput);
+		confirmNewPasswordInput = findViewById(R.id.registerConfirmNewPasswordInput);
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(getApplicationContext());
 		textFieldKeyboard.makeKeyboardBehave(serverUrlInput);
 		textFieldKeyboard.makeKeyboardBehave(userIdInput);
@@ -93,7 +93,6 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		} else if (userID.length() == 0) {
 			// If the user id length is too short, alert the user
 			AlertsManager.showAlert(getString(R.string.invalid_user_id), getString(R.string.couldnt_register), this);
-			return;
 		} else if (tempPassword.length() < 1) {
 			// If the temporary registration password isn't filled in
 			AlertsManager.showAlert(getString(R.string.empty_temp_password), getString(R.string.couldnt_register), this);
@@ -101,11 +100,9 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			// If the new password has too few characters
 			String alertMessage = String.format(getString(R.string.password_too_short), PersistentData.minPasswordLength());
 			AlertsManager.showAlert(alertMessage, getString(R.string.couldnt_register), this);
-			return;
 		} else if (!newPassword.equals(confirmNewPassword)) {
 			// If the new password doesn't match the confirm new password
 			AlertsManager.showAlert(getString(R.string.password_mismatch), getString(R.string.couldnt_register), this);
-			return;
 		} else {
 			if (BuildConfig.CUSTOMIZABLE_SERVER_URL) {
 				PersistentData.setServerUrl(serverUrl);
@@ -187,7 +184,8 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	
 	/**This is the fuction that requires SMS permissions.  We need to supply a (unique) identifier for phone numbers to the registration arguments.
 	 * @return */
-	private String getPhoneNumber() {
+	@SuppressLint("HardwareIds")
+    private String getPhoneNumber() {
 		TelephonyManager phoneManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 		String phoneNumber;
 		try {
@@ -239,7 +237,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY) &&
 				!PermissionHandler.checkAccessReadSms(getApplicationContext()) &&
 				!thisResumeCausedByFalseActivityReturn) {
-			Log.i("show", "Should show? " + Boolean.toString(shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)));
+			Log.i("show", "Should show? " + shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS));
 			if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) ) {
 				if (!prePromptActive && !postPromptActive ) { showPostPermissionAlert(this); } 
 			}
@@ -252,21 +250,22 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		Log.i("reg", "onPause");
 		super.onPause();
 		activityNotVisible = true;
-	};
+	}
 	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Log.i("reg", "onActivityResult. requestCode: " + requestCode + ", resultCode: " + resultCode );
+		super.onActivityResult(requestCode, resultCode, data);
 		aboutToResetFalseActivityReturn = true;
     }
 
 	@Override
 	public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
-		Log.i("reg", "onRequestPermissionResult: " + Integer.toString(grantResults.length) + ", visible: " + Boolean.toString(activityNotVisible));
+		Log.i("reg", "onRequestPermissionResult: " + grantResults.length + ", visible: " + activityNotVisible);
 		if (activityNotVisible) return; //this is identical logical progression to the way it works in SessionActivity.
 		for (int i = 0; i < grantResults.length; i++) {
 			if ( permissions[i].equals( Manifest.permission.READ_SMS ) ) {
-				Log.i("permiss", "permission return: " + permissions[i] + ", grant return: " + Integer.toString(grantResults[i]) + ", capability: " + Boolean.toString(getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)));
+				Log.i("permiss", "permission return: " + permissions[i] + ", grant return: " + grantResults[i] + ", capability: " + getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY));
 				if ( grantResults[i] == PermissionHandler.PERMISSION_GRANTED ) {
 					break;
 				}

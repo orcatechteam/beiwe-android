@@ -9,6 +9,7 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Objects;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -63,7 +64,7 @@ public class EncryptionEngine {
 	 * @return a Base64 String of the hash result. */
 	public static String unsafeHash (String input) throws NoSuchAlgorithmException, UnsupportedEncodingException{
 		if (input == null ) { Log.e("Hashing", "The hash function received a null string, it should now crash...");}
-		if (input.length() == 0) { return "null_data"; } //if an empty string is provided, return a string describing this.
+		if (Objects.requireNonNull(input).length() == 0) { return "null_data"; } //if an empty string is provided, return a string describing this.
 		MessageDigest hash = null;
 		hash = MessageDigest.getInstance("SHA-256");
 		hash.update( input.getBytes("UTF-8") );

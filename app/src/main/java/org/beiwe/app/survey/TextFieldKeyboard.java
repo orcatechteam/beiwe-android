@@ -50,7 +50,7 @@ public class TextFieldKeyboard {
 	 */
 	private View getTopParentView(View view) {
 		ViewParent parent = view.getParent();
-		if ((parent != null) && (parent instanceof View)) {
+		if ((parent instanceof View)) {
 			return getTopParentView((View) parent);
 		}
 		else {

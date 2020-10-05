@@ -27,21 +27,21 @@ public class ForgotPasswordActivity extends RunningBackgroundServiceActivity {
 
 		/* Add the user's Patient ID to the heading in the activity, so the user can tell it to the
 		 * administrator when the user calls the research assistant asking for a temporary password. */
-		TextView instructionsText = (TextView) findViewById(R.id.forgotPasswordInstructionsText);
+		TextView instructionsText = findViewById(R.id.forgotPasswordInstructionsText);
 		String instructionsTextWithPlaceholder = getApplicationContext().getString(R.string.forgot_password_instructions_text);
 		String instructionsTextFilledOut = String.format(instructionsTextWithPlaceholder, PersistentData.getPatientID());
 		instructionsText.setText(instructionsTextFilledOut);
 
-		tempPasswordInput = (EditText) findViewById(R.id.forgotPasswordTempPasswordInput);
-		newPasswordInput = (EditText) findViewById(R.id.forgotPasswordNewPasswordInput);
-		confirmNewPasswordInput = (EditText) findViewById(R.id.forgotPasswordConfirmNewPasswordInput);
+		tempPasswordInput = findViewById(R.id.forgotPasswordTempPasswordInput);
+		newPasswordInput = findViewById(R.id.forgotPasswordNewPasswordInput);
+		confirmNewPasswordInput = findViewById(R.id.forgotPasswordConfirmNewPasswordInput);
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(getApplicationContext());
 		textFieldKeyboard.makeKeyboardBehave(tempPasswordInput);
 		textFieldKeyboard.makeKeyboardBehave(newPasswordInput);
 		textFieldKeyboard.makeKeyboardBehave(confirmNewPasswordInput);
 
 		if(!PersistentData.getCallResearchAssistantButtonEnabled()) {
-			Button callButton = (Button) findViewById(R.id.reset_password_call_button);
+			Button callButton = findViewById(R.id.reset_password_call_button);
 			callButton.setVisibility(View.GONE);
 		}
 	}

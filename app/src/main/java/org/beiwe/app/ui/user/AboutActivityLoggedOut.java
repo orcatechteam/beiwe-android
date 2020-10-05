@@ -16,7 +16,7 @@ public class AboutActivityLoggedOut extends RunningBackgroundServiceActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_about);
 
-		TextView aboutPageBody = (TextView) findViewById(R.id.about_page_body);
+		TextView aboutPageBody = findViewById(R.id.about_page_body);
 		aboutPageBody.setText(PersistentData.getAboutPageText());
 	}
 }

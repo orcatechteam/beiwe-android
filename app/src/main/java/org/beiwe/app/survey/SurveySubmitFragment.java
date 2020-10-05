@@ -30,7 +30,7 @@ public class SurveySubmitFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         @SuppressLint("InflateParams") LinearLayout surveySubmitLayout = (LinearLayout) inflater.inflate(R.layout.fragment_survey_submit, null);
-        FrameLayout submitScreenContent = (FrameLayout) surveySubmitLayout.findViewById(R.id.submitScreenContent);
+        FrameLayout submitScreenContent = surveySubmitLayout.findViewById(R.id.submitScreenContent);
         ArrayList<String> unansweredQuestions = getArguments().getStringArrayList("unansweredQuestions");
         if (unansweredQuestions.size() > 0) {
             // If any questions haven't been answered, display the list of them with a "Submit Anyway" button
@@ -70,14 +70,14 @@ public class SurveySubmitFragment extends Fragment {
                                                                        ArrayList<String> unansweredQuestions) {
         @SuppressLint("InflateParams") LinearLayout unansweredQuestionsLayout = (LinearLayout) inflater.inflate(R.layout.survey_unanswered_questions_list, null);
         // Show a message about the number of unanswered questions
-        TextView unansweredQuestionsMessage = (TextView) unansweredQuestionsLayout.findViewById(R.id.unansweredQuestionsMessage);
+        TextView unansweredQuestionsMessage = unansweredQuestionsLayout.findViewById(R.id.unansweredQuestionsMessage);
         if (unansweredQuestions.size() == 1) {
             unansweredQuestionsMessage.setText("You did not answer 1 question:");
         } else {
             unansweredQuestionsMessage.setText("You did not answer " + unansweredQuestions.size() + " questions:");
         }
         // Show a list of the unanswered questions
-        ListView unansweredQuestionsListView = (ListView) unansweredQuestionsLayout.findViewById(R.id.unansweredQuestionsListView);
+        ListView unansweredQuestionsListView = unansweredQuestionsLayout.findViewById(R.id.unansweredQuestionsListView);
         ArrayAdapter adapter;
         try {
             adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, unansweredQuestions);
@@ -86,7 +86,7 @@ public class SurveySubmitFragment extends Fragment {
         }
         unansweredQuestionsListView.setAdapter(adapter);
         // Attach the submit button to the bottom of the list
-        LinearLayout submitButton = (LinearLayout) renderSubmitButton(inflater, "Submit Answers Anyway");
+        LinearLayout submitButton = renderSubmitButton(inflater, "Submit Answers Anyway");
         unansweredQuestionsListView.addFooterView(submitButton);
         return unansweredQuestionsLayout;
     }
@@ -94,7 +94,7 @@ public class SurveySubmitFragment extends Fragment {
 
     private LinearLayout renderSubmitButton(LayoutInflater inflater, String labelText) {
         @SuppressLint("InflateParams") LinearLayout submitButtonLayout = (LinearLayout) inflater.inflate(R.layout.survey_submit_button, null);
-        Button submitButton = (Button) submitButtonLayout.findViewById(R.id.buttonSubmit);
+        Button submitButton = submitButtonLayout.findViewById(R.id.buttonSubmit);
         submitButton.setText(labelText);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override

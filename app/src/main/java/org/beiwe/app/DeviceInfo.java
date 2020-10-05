@@ -106,7 +106,7 @@ public class DeviceInfo {
 	public static String getBeiweVersion() {
 		try {
 			PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(),0);
-			return String.valueOf(info.versionCode) + "-" + BuildConfig.BUILD_TYPE;
+			return info.versionCode + "-" + BuildConfig.BUILD_TYPE;
 		} catch (PackageManager.NameNotFoundException e) {
 			e.printStackTrace();
 			return "unknown";

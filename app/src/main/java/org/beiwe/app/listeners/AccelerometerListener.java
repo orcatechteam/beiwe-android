@@ -15,10 +15,10 @@ public class AccelerometerListener implements SensorEventListener{
 	
 	private SensorManager accelSensorManager;
 	private Sensor accelSensor;
-	
+
 	private Context appContext;
 	private PackageManager pkgManager;
-	
+
 	private Boolean exists = null;
 	private Boolean enabled = null;
 	

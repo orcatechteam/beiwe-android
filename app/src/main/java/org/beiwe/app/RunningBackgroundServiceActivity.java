@@ -234,7 +234,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 			if (permission == null) { return; }
 
 			if (!prePromptActive && !postPromptActive && !powerPromptActive) {
-				if (permission == PermissionHandler.POWER_EXCEPTION_PERMISSION ) {
+				if (permission.equals(PermissionHandler.POWER_EXCEPTION_PERMISSION)) {
 					showPowerManagementAlert(this, getString(R.string.power_management_exception_alert), 1000);
 					return;
 				}

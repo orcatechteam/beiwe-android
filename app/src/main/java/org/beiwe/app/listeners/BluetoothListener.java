@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
+import java.util.Objects;
+
 //http://code.tutsplus.com/tutorials/android-quick-look-bluetoothadapter--mobile-7813
 
 /* Tests.
@@ -137,7 +139,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	 * Sets the scanActive variable to false, and stops any running Bluetooth LE scan,
 	 * then disable Bluetooth (intelligently).
 	 * Note: we cannot actually guarantee the scan has stopped, that function returns void. */
-	@SuppressWarnings("deprecation")  //Yeah. This is totally safe.
+	//Yeah. This is totally safe.
 	@SuppressLint("NewApi")
 	public void disableBLEScan() {
 		if (!bluetoothExists) { return; }
@@ -150,7 +152,6 @@ public class BluetoothListener extends BroadcastReceiver {
 	
 	/** Intelligently ACTUALLY STARTS a Bluetooth LE scan.
 	 *  If Bluetooth is available, start scanning.  Makes verbose logging statements */
-	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	private void tryScanning() {
 		Log.i("bluetooth", "starting a scan: " + scanActive );
@@ -176,16 +177,16 @@ public class BluetoothListener extends BroadcastReceiver {
 ####################################################################################*/
 	
 	@Override
-	/** The onReceive method for the BluetoothListener listens for Bluetooth State changes.
-	 * The Bluetooth adaptor can be in any of 4 states: on, off, turning on, and turning off. 
-	 * Whenever the turning on or off state comes in, we update the externalBluetoothState variable
-	 * so that we never turn Bluetooth off when the user wants it on.
-	 * Additionally, if a Bluetooth On notification comes in AND the scanActive variable is set to TRUE
-	 * we start a Bluetooth LE scan. */
+	/* The onReceive method for the BluetoothListener listens for Bluetooth State changes.
+	  The Bluetooth adaptor can be in any of 4 states: on, off, turning on, and turning off.
+	  Whenever the turning on or off state comes in, we update the externalBluetoothState variable
+	  so that we never turn Bluetooth off when the user wants it on.
+	  Additionally, if a Bluetooth On notification comes in AND the scanActive variable is set to TRUE
+	  we start a Bluetooth LE scan. */
 	public synchronized void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
 		
-		if ( action.equals( BluetoothAdapter.ACTION_STATE_CHANGED ) ) {
+		if ( Objects.requireNonNull(action).equals( BluetoothAdapter.ACTION_STATE_CHANGED ) ) {
 			int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
 			
 			if ( state == BluetoothAdapter.ERROR) { Log.e("bluetooth", "BLUETOOTH ADAPTOR ERROR?"); }

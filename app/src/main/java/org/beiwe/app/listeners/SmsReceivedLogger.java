@@ -64,7 +64,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 	}
 	
 	/** pulls out source phone number and length from an SMS, writes info to texts log. */
-	@SuppressLint("InlinedApi") @SuppressWarnings("deprecation") //these yell at you in the old/new code paths.
+	@SuppressLint("InlinedApi")  //these yell at you in the old/new code paths.
 	private void handleIncomingSMS(Intent intent) {
 		Bundle bundle = intent.getExtras();
 		SmsMessage[] messages = null;

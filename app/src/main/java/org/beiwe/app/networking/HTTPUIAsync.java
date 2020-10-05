@@ -41,11 +41,11 @@ public class HTTPUIAsync extends HTTPAsync {
 	@Override
 	protected void onPreExecute() {
 		// If there's a progress spinner, make it appear
-		alertSpinner = (ProgressBar) activity.findViewById(R.id.progressBar);
+		alertSpinner = activity.findViewById(R.id.progressBar);
 		if (alertSpinner != null) alertSpinner.setVisibility(View.VISIBLE);
 
 		// If there's a submit button, disable it so the user can't submit twice
-		submitButton = (Button) activity.findViewById(R.id.submitButton);
+		submitButton = activity.findViewById(R.id.submitButton);
 		if (submitButton != null) submitButton.setEnabled(false);
 	}
 	

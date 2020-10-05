@@ -279,7 +279,7 @@ public class TextFileManager {
 	 * Prints a stacktrace on a write error, but does not crash. If there is no
 	 * file, a new file will be created.
 	 * @param data any unicode valid string*/
-	private synchronized void unsafeWritePlaintext(String data) throws FileNotFoundException, IOException{
+	private synchronized void unsafeWritePlaintext(String data) throws IOException{
 		FileOutputStream outStream;
 		//write the output, we always want mode append
 		outStream = appContext.openFileOutput(this.fileName, Context.MODE_APPEND);

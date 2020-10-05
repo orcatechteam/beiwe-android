@@ -69,7 +69,8 @@ public class JSONUtils {
 			questionId = questionJSON.optString("question_id");
 			if (questionId == null) { throw new NullPointerException("question_id does not exist in question..."); }
 			
-			if ( existingQuestionIds.contains(questionId) ) { continue; }
+			if ( existingQuestionIds.contains(questionId) ) {
+			}
 			else {
 				PersistentData.addSurveyQuestionMemory(surveyId, questionId);
 				returnList.add(questionString);

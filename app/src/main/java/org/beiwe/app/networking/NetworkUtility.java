@@ -8,6 +8,8 @@ import android.util.Log;
 
 import org.beiwe.app.storage.PersistentData;
 
+import java.util.Objects;
+
 
 /** Contains a single function to check whether wifi is active and functional.
  * @author Eli Jones, Joshua Zagorsky */
@@ -32,9 +34,9 @@ public class NetworkUtility {
 		ConnectivityManager connManager =
 				(ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		// Check if WiFi is connected for Android version 5 and below
-		if (android.os.Build.VERSION.SDK_INT < 23) { return oldTimeyWiFiConnectivityCheck(connManager); }
+		if (android.os.Build.VERSION.SDK_INT < 23) { return oldTimeyWiFiConnectivityCheck(Objects.requireNonNull(connManager)); }
 		// Check if WiFi is connected for Android version 6 and above
-		return newFangledWiFiConnectivityCheck(connManager);
+		return newFangledWiFiConnectivityCheck(Objects.requireNonNull(connManager));
 	}
 	
 
@@ -45,7 +47,6 @@ public class NetworkUtility {
 	}
 
 
-	@SuppressWarnings("deprecation")
 	/** This is the function for running pre-Android 6 wifi connectivity checks.
 	 *  This code is separated so that the @SuppressWarnings("deprecation") decorator 
 	 *  does not cause headaches if something else is deprecated in the future. */
@@ -62,7 +63,7 @@ public class NetworkUtility {
 		Network[] networks = connManager.getAllNetworks();
 		if (networks == null) { //No network connectivity at all,
 			return false; }     //so return no connectivity.
-		
+
 		for (Network network : networks ) {
 			// The documentation says this function returns null if it is not sent a valid network
 			NetworkInfo networkInfo = connManager.getNetworkInfo(network);

@@ -26,9 +26,9 @@ public class ResetPasswordActivity extends RunningBackgroundServiceActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_reset_password);
 
-		currentPasswordInput = (EditText) findViewById(R.id.resetPasswordCurrentPasswordInput);
-		newPasswordInput = (EditText) findViewById(R.id.resetPasswordNewPasswordInput);
-		confirmNewPasswordInput = (EditText) findViewById(R.id.resetPasswordConfirmNewPasswordInput);
+		currentPasswordInput = findViewById(R.id.resetPasswordCurrentPasswordInput);
+		newPasswordInput = findViewById(R.id.resetPasswordNewPasswordInput);
+		confirmNewPasswordInput = findViewById(R.id.resetPasswordConfirmNewPasswordInput);
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(getApplicationContext());
 		textFieldKeyboard.makeKeyboardBehave(currentPasswordInput);
 		textFieldKeyboard.makeKeyboardBehave(newPasswordInput);

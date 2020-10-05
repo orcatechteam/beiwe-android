@@ -3,6 +3,7 @@ package org.beiwe.app;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.PersistentData;
@@ -46,7 +47,7 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 		restartServiceIntent.setPackage( errorHandlerContext.getPackageName() );
 		PendingIntent restartServicePendingIntent = PendingIntent.getService( errorHandlerContext, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT );
 		AlarmManager alarmService = (AlarmManager) errorHandlerContext.getSystemService( Context.ALARM_SERVICE );
-		alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + millisecondsUntilRestart, restartServicePendingIntent);
+		Objects.requireNonNull(alarmService).set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + millisecondsUntilRestart, restartServicePendingIntent);
 		//exit beiwe
 		android.os.Process.killProcess(android.os.Process.myPid());
 		System.exit(10);
@@ -88,15 +89,13 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 			//We encountered an error exactly once where we had a null reference inside this function,
 			// this occurred when downloading a new survey to test that randomized surveys worked,
 			// crashed with a null reference error on an element of a stacktrace. We now check for null.
-			if (exception.fillInStackTrace().getStackTrace() != null) {
-				exceptionInfo += "\nError-fill:\n";
-				for (StackTraceElement element : exception.fillInStackTrace().getStackTrace()) {
-					exceptionInfo += "\t" + element.toString() + "\n";
-				}
+			exception.fillInStackTrace().getStackTrace();
+			exceptionInfo += "\nError-fill:\n";
+			for (StackTraceElement element : exception.fillInStackTrace().getStackTrace()) {
+				exceptionInfo += "\t" + element.toString() + "\n";
 			}
-			else { exceptionInfo += "java threw an error with an error-fill stack trace that was null."; }
 
-			if (exception.getCause() != null && exception.getCause().getStackTrace() != null) {
+			if (exception.getCause() != null) {
 				exceptionInfo += "\nActual Error:\n";
 				for (StackTraceElement element : exception.getCause().getStackTrace()) {
 					exceptionInfo += "\t" + element.toString() + "\n";

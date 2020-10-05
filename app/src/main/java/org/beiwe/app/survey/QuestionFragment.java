@@ -51,12 +51,12 @@ public class QuestionFragment extends Fragment {
 
         // Render the question and inflate the layout for this fragment
         @SuppressLint("InflateParams") ScrollView fragmentQuestionLayout = (ScrollView) inflater.inflate(R.layout.fragment_question, null);
-        FrameLayout questionContainer = (FrameLayout) fragmentQuestionLayout.findViewById(R.id.questionContainer);
+        FrameLayout questionContainer = fragmentQuestionLayout.findViewById(R.id.questionContainer);
         final View questionLayout = createQuestion(inflater, getArguments());
         questionContainer.addView(questionLayout);
 
         // Set an onClickListener for the "Next" button
-        Button nextButton = (Button) fragmentQuestionLayout.findViewById(R.id.nextButton);
+        Button nextButton = fragmentQuestionLayout.findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,12 +80,13 @@ public class QuestionFragment extends Fragment {
     http://stackoverflow.com/questions/32604552/onattach-not-called-in-fragment */
 
     @Override
-    /** This function will get called on NEW versions of Android (6+). */
+    /* This function will get called on NEW versions of Android (6+). */
     public void onAttach(Context context) {
         super.onAttach(context);
         goToNextQuestionListener = (OnGoToNextQuestionListener) context;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     /** This function will get called on OLD versions of Android (<6). */
     public void onAttach(Activity activity) {
@@ -106,30 +107,34 @@ public class QuestionFragment extends Fragment {
         String questionID = args.getString("question_id");
         String questionType = args.getString("question_type");
         String questionText = args.getString("question_text");
-        if (questionType.equals("info_text_box")) {
-            this.questionType = QuestionType.Type.INFO_TEXT_BOX;
-            return createInfoTextbox(inflater, questionID, questionText);
-        } else if (questionType.equals("slider")) {
-            this.questionType = QuestionType.Type.SLIDER;
-            int min = args.getInt("min");
-            int max = args.getInt("max");
-            return createSliderQuestion(inflater, questionID, questionText, min, max);
-        } else if (questionType.equals("radio_button")) {
-            this.questionType = QuestionType.Type.RADIO_BUTTON;
-            String[] answers = args.getStringArray("answers");
-            return createRadioButtonQuestion(inflater, questionID, questionText, answers);
-        } else if (questionType.equals("checkbox")) {
-            this.questionType = QuestionType.Type.CHECKBOX;
-            String[] answers = args.getStringArray("answers");
-            return createCheckboxQuestion(inflater, questionID, questionText, answers);
-        } else if (questionType.equals("free_response")) {
-            this.questionType = QuestionType.Type.FREE_RESPONSE;
-            int textFieldTypeInt = args.getInt("text_field_type");
-            TextFieldType.Type textFieldType = TextFieldType.Type.values()[textFieldTypeInt];
-            return createFreeResponseQuestion(inflater, questionID, questionText, textFieldType);
+        switch (questionType) {
+            case "info_text_box":
+                this.questionType = QuestionType.Type.INFO_TEXT_BOX;
+                return createInfoTextbox(inflater, questionID, questionText);
+            case "slider":
+                this.questionType = QuestionType.Type.SLIDER;
+                int min = args.getInt("min");
+                int max = args.getInt("max");
+                return createSliderQuestion(inflater, questionID, questionText, min, max);
+            case "radio_button": {
+                this.questionType = QuestionType.Type.RADIO_BUTTON;
+                String[] answers = args.getStringArray("answers");
+                return createRadioButtonQuestion(inflater, questionID, questionText, answers);
+            }
+            case "checkbox": {
+                this.questionType = QuestionType.Type.CHECKBOX;
+                String[] answers = args.getStringArray("answers");
+                return createCheckboxQuestion(inflater, questionID, questionText, answers);
+            }
+            case "free_response":
+                this.questionType = QuestionType.Type.FREE_RESPONSE;
+                int textFieldTypeInt = args.getInt("text_field_type");
+                TextFieldType.Type textFieldType = TextFieldType.Type.values()[textFieldTypeInt];
+                return createFreeResponseQuestion(inflater, questionID, questionText, textFieldType);
+            default:
+                // Default: return an error message
+                return inflater.inflate(R.layout.survey_info_textbox, null);
         }
-        // Default: return an error message
-        return inflater.inflate(R.layout.survey_info_textbox, null);
     }
 
 
@@ -176,10 +181,10 @@ public class QuestionFragment extends Fragment {
                                              String questionText, int min, int max) {
 
         @SuppressLint("InflateParams") LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
-        SeekBarEditableThumb slider = (SeekBarEditableThumb) question.findViewById(R.id.slider);
+        SeekBarEditableThumb slider = question.findViewById(R.id.slider);
 
         // Set the text of the question itself
-        MarkDownTextView questionTextView = (MarkDownTextView) question.findViewById(R.id.questionText);
+        MarkDownTextView questionTextView = question.findViewById(R.id.questionText);
         if (questionText != null) { questionTextView.setText(questionText); }
 
         // The min must be greater than the max, and the range must be at most 100.
@@ -225,10 +230,10 @@ public class QuestionFragment extends Fragment {
     private LinearLayout createRadioButtonQuestion(LayoutInflater inflater, String questionID, String questionText, String[] answers) {
 
         @SuppressLint("InflateParams") LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
-        RadioGroup radioGroup = (RadioGroup) question.findViewById(R.id.radioGroup);
+        RadioGroup radioGroup = question.findViewById(R.id.radioGroup);
 
         // Set the text of the question itself
-        MarkDownTextView questionTextView = (MarkDownTextView) question.findViewById(R.id.questionText);
+        MarkDownTextView questionTextView = question.findViewById(R.id.questionText);
         if (questionText != null) { questionTextView.setText(questionText); }
 
         // If the array of answers is null or too short, replace it with an error message
@@ -277,10 +282,10 @@ public class QuestionFragment extends Fragment {
     private LinearLayout createCheckboxQuestion(LayoutInflater inflater, String questionID, String questionText, String[] options) {
 
         @SuppressLint("InflateParams") LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
-        LinearLayout checkboxesList = (LinearLayout) question.findViewById(R.id.checkboxesList);
+        LinearLayout checkboxesList = question.findViewById(R.id.checkboxesList);
 
         // Set the text of the question itself
-        MarkDownTextView questionTextView = (MarkDownTextView) question.findViewById(R.id.questionText);
+        MarkDownTextView questionTextView = question.findViewById(R.id.questionText);
         if (questionText != null) { questionTextView.setText(questionText); }
 
         String[] checkedAnswers = null;
@@ -336,17 +341,13 @@ public class QuestionFragment extends Fragment {
         @SuppressLint("InflateParams") LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
         // Set the text of the question itself
-        MarkDownTextView questionTextView = (MarkDownTextView) question.findViewById(R.id.questionText);
+        MarkDownTextView questionTextView = question.findViewById(R.id.questionText);
         if (questionText != null) { questionTextView.setText(questionText); }
 
         EditText editText = null;
         switch (inputTextType) {
             case NUMERIC:
                 editText = (EditText) inflater.inflate(R.layout.survey_free_number_input, null);
-                break;
-
-            case SINGLE_LINE_TEXT:
-                editText = (EditText) inflater.inflate(R.layout.survey_free_text_input, null);
                 break;
 
             case MULTI_LINE_TEXT:
@@ -375,7 +376,7 @@ public class QuestionFragment extends Fragment {
         // Set the text field to listen for and record user input
         editText.setOnFocusChangeListener(new OpenResponseListener(questionData));
 
-        LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
+        LinearLayout textFieldContainer = question.findViewById(R.id.textFieldContainer);
         textFieldContainer.addView(editText);
 
         return question;
@@ -390,11 +391,11 @@ public class QuestionFragment extends Fragment {
      */
     private void addNumbersLabelingToSlider(LayoutInflater inflater, LinearLayout question, int min, int max) {
         // Replace the numbers label placeholder view (based on http://stackoverflow.com/a/3760027)
-        View numbersLabel = (View) question.findViewById(R.id.numbersPlaceholder);
+        View numbersLabel = question.findViewById(R.id.numbersPlaceholder);
         int index = question.indexOfChild(numbersLabel);
         question.removeView(numbersLabel);
         numbersLabel = inflater.inflate(R.layout.survey_slider_numbers_label, question, false);
-        LinearLayout label = (LinearLayout) numbersLabel.findViewById(R.id.linearLayoutNumbers);
+        LinearLayout label = numbersLabel.findViewById(R.id.linearLayoutNumbers);
 
 		/* Decide whether to put 2, 3, 4, or 5 number labels. Pick the highest number of labels
 		 * that can be achieved with each label above an integer value, and even spacing between
@@ -419,7 +420,7 @@ public class QuestionFragment extends Fragment {
             label.addView(number);
             number.setText("" + (min + (i * range) / (numberOfLabels - 1)));
 
-            View spacer = (View) inflater.inflate(R.layout.horizontal_spacer, label, false);
+            View spacer = inflater.inflate(R.layout.horizontal_spacer, label, false);
             label.addView(spacer);
         }
         // Create one last label (the rightmost one) without a spacer to its right
@@ -461,7 +462,7 @@ public class QuestionFragment extends Fragment {
     }
 
 
-    /**************************** ANSWER LISTENERS ***************************/
+    /* *************************** ANSWER LISTENERS ************************** */
 
     /** Listens for a touch/answer to a Slider Question, and records the answer */
     private class SliderListener implements SeekBar.OnSeekBarChangeListener {
@@ -504,7 +505,7 @@ public class QuestionFragment extends Fragment {
 
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
-            RadioButton selectedButton = (RadioButton) group.findViewById(checkedId);
+            RadioButton selectedButton = group.findViewById(checkedId);
             if (selectedButton.isChecked()) {
                 SurveyTimingsRecorder.recordAnswer(selectedButton.getText().toString(), questionDescription);
             }

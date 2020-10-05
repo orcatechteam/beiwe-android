@@ -23,6 +23,7 @@ android {
         versionCode 39       //TODO: update this Beiwe version code for new releases
         versionName '2.6.0'  //TODO: update this Beiwe version number for new releases
         setProperty("archivesBaseName", "Beiwe-$versionName")
+        buildConfigField("boolean", "BYPASS_MAIN_CONTENT", "true")
     }
     buildTypes {
         release {

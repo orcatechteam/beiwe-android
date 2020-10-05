@@ -21,7 +21,7 @@ public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_consent_form);
 		
-		TextView consentFormBody = (TextView) findViewById(R.id.consent_form_body);
+		TextView consentFormBody = findViewById(R.id.consent_form_body);
 		consentFormBody.setText(PersistentData.getConsentFormText());
 	}
 	
@@ -39,7 +39,8 @@ public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 			}
 		});
 		alertBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-			@Override public void onClick(DialogInterface dialog, int which) { return; }} );
+			@Override public void onClick(DialogInterface dialog, int which) {
+			}} );
 		alertBuilder.create().show();
 	}
 	

@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 public class AppUsageListener {
-	private PackageManager pkgManager;
+	private final PackageManager pkgManager;
 	private UsageStatsManager usageStatsManager;
 
-	public static String header = "appLabel, appPackageName, lastTimeUsed, lastTimeVisible, totalTimeInForeground, totalTimeVisible";
+	public static final String header = "appLabel, appPackageName, lastTimeUsed, lastTimeVisible, totalTimeInForeground, totalTimeVisible";
 
 	public AppUsageListener(Context applicationContext) {
 		this.pkgManager = applicationContext.getPackageManager();

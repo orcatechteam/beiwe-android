@@ -13,6 +13,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import java.util.Objects;
+
 /* Notes/observation on Location Services:
  * We are passing in "0" as the minimum time for location updates to be pushed to us, this results in about
  * 1 update every second.  This is based on logs made using a nexus 7 tablet.
@@ -79,14 +81,14 @@ public class GPSListener implements LocationListener {
 		if ( fineExists && finePermissible && coarsePermissible) { // parameters: provider, minTime, minDistance, listener);
 			//AndroidStudio insists that both of these require the same location permissions, which seems to be correct
 			// since there is only one toggle in userland anyway, yes or no to location permissions.
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+			Objects.requireNonNull(locationManager).requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 		}
 		if ( coarseExists && finePermissible && coarsePermissible) { // parameters: provider, minTime, minDistance, listener);
-			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+			Objects.requireNonNull(locationManager).requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 		}
 
 		//Verbose statements on the quality of GPS data streams.
-		Boolean fineAvailable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		Boolean fineAvailable = Objects.requireNonNull(locationManager).isProviderEnabled(LocationManager.GPS_PROVIDER);
 		Boolean coarseAvailable = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 		//using single & because we don't want to short-circuit these logical statements, we want exclusive behavior.
 		if (!fineAvailable) { makeDebugLogStatement("GPS data stream warning: fine location updates are currently disabled."); }

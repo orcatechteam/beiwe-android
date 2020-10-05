@@ -127,7 +127,8 @@
 
         <!-- RECEIVERS -->
 
-        <receiver android:name=".listeners.BootListener" >
+        <receiver android:name=".listeners.BootListener"
+            android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
@@ -137,7 +138,8 @@
 
             </intent-filter>
         </receiver>
-        <receiver android:name=".listeners.SmsReceivedLogger" >
+        <receiver android:name=".listeners.SmsReceivedLogger"
+            android:permission="android.permission.BROADCAST_SMS">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>

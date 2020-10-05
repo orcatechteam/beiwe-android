@@ -21,8 +21,8 @@ public class PhoneNumberEntryActivity extends RunningBackgroundServiceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_phone_number_entry);
-		primaryCarePhone = (EditText) findViewById(R.id.primaryCareNumber);
-		passwordResetPhone = (EditText) findViewById(R.id.passwordResetNumber);
+		primaryCarePhone = findViewById(R.id.primaryCareNumber);
+		passwordResetPhone = findViewById(R.id.passwordResetNumber);
 
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard( getApplicationContext() );
 
@@ -30,7 +30,7 @@ public class PhoneNumberEntryActivity extends RunningBackgroundServiceActivity {
 			textFieldKeyboard.makeKeyboardBehave(primaryCarePhone);
 		}
 		else {
-			TextView primaryCarePhoneText = (TextView) findViewById(R.id.primaryCareNumberLabel);
+			TextView primaryCarePhoneText = findViewById(R.id.primaryCareNumberLabel);
 			primaryCarePhoneText.setVisibility(View.GONE);
 			primaryCarePhone.setVisibility(View.GONE);
 		}
@@ -39,7 +39,7 @@ public class PhoneNumberEntryActivity extends RunningBackgroundServiceActivity {
 			textFieldKeyboard.makeKeyboardBehave(passwordResetPhone);
 		}
 		else{
-			TextView passwordResetPhoneText = (TextView) findViewById(R.id.passwordResetNumberLabel);
+			TextView passwordResetPhoneText = findViewById(R.id.passwordResetNumberLabel);
 			passwordResetPhoneText.setVisibility(View.GONE);
 			passwordResetPhone.setVisibility(View.GONE);
 		}

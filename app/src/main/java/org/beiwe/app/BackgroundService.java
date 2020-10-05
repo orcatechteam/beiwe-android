@@ -2,6 +2,7 @@ package org.beiwe.app;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.AppUsageListener;
@@ -274,7 +275,7 @@ public class BackgroundService extends Service {
 		restartServiceIntent.setPackage( getPackageName() );
 		PendingIntent restartServicePendingIntent = PendingIntent.getService(getApplicationContext(), 1, restartServiceIntent, 0 );
 		AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
-		alarmService.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 60 * 2, 1000 * 60 * 2, restartServicePendingIntent);
+		Objects.requireNonNull(alarmService).setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 60 * 2, 1000 * 60 * 2, restartServicePendingIntent);
 	}
 	
 	/**Refreshes the logout timer.
@@ -310,12 +311,12 @@ public class BackgroundService extends Service {
 			TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
 			String broadcastAction = intent.getAction();
 
-			/** For GPS and Accelerometer the failure modes are:
-			 * 1. If a recording event is triggered and followed by Doze being enabled then Beiwe will record until the Doze period ends.
-			 * 2. If, after Doze ends, the timers trigger out of order Beiwe ceaces to record and triggers a new recording event in the future. */
+			/* For GPS and Accelerometer the failure modes are:
+			  1. If a recording event is triggered and followed by Doze being enabled then Beiwe will record until the Doze period ends.
+			  2. If, after Doze ends, the timers trigger out of order Beiwe ceaces to record and triggers a new recording event in the future. */
 
-			/** Disable active sensor */
-			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_off) ) ) {
+			/* Disable active sensor */
+			if (Objects.requireNonNull(broadcastAction).equals( appContext.getString(R.string.turn_accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
 				return; }
 			if (broadcastAction.equals( appContext.getString(R.string.turn_gyroscope_off) ) ) {
@@ -324,8 +325,8 @@ public class BackgroundService extends Service {
 			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_off) ) ) {
 				if ( PermissionHandler.checkGpsPermissions(appContext) ) { gpsListener.turn_off(); }
 				return; }
-			
-			/** Enable active sensors, reset timers. */
+
+			/* Enable active sensors, reset timers. */
 			//Accelerometer. We automatically have permissions required for accelerometer.
 			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_on) ) ) {
 				if ( !PersistentData.getAccelerometerEnabled() ) { Log.e("BackgroundService Listener", "invalid Accelerometer on received"); return; }
@@ -364,8 +365,8 @@ public class BackgroundService extends Service {
 				PersistentData.setMostRecentAlarmTime( getString(R.string.run_wifi_log), alarmTime );
 				return; }
 			
-			/** Bluetooth timers are unlike GPS and Accelerometer because it uses an absolute-point-in-time as a trigger, and therefore we don't need to store most-recent-timer state.
-			 * The Bluetooth-on action sets the corresponding Bluetooth-off timer, the Bluetooth-off action sets the next Bluetooth-on timer.*/
+			/* Bluetooth timers are unlike GPS and Accelerometer because it uses an absolute-point-in-time as a trigger, and therefore we don't need to store most-recent-timer state.
+			  The Bluetooth-on action sets the corresponding Bluetooth-off timer, the Bluetooth-off action sets the next Bluetooth-on timer.*/
 			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_on) ) ) {
 				if ( !PersistentData.getBluetoothEnabled() ) { Log.e("BackgroundService Listener", "invalid Bluetooth on received"); return; }
 				if ( PermissionHandler.checkBluetoothPermissions(appContext) ) {
@@ -429,7 +430,7 @@ public class BackgroundService extends Service {
 
 			if ( PersistentData.isRegistered() && broadcastAction.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
 				NetworkInfo networkInfo = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-				if(networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+				if(Objects.requireNonNull(networkInfo).getType() == ConnectivityManager.TYPE_WIFI) {
 					PostRequest.uploadAllFiles();
 					return;
 				}
@@ -500,7 +501,7 @@ public class BackgroundService extends Service {
 	    restartServiceIntent.setPackage( getPackageName() );
 	    PendingIntent restartServicePendingIntent = PendingIntent.getService( getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT );
 	    AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
-	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
+	    Objects.requireNonNull(alarmService).set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
 	}
 	
 	public void crashBackgroundService() { if (BuildConfig.APP_IS_BETA) {

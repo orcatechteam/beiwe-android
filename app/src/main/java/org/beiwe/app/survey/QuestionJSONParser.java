@@ -11,11 +11,18 @@ public class QuestionJSONParser {
         Bundle args = new Bundle();
         String questionType = getStringFromJSONObject(jsonQuestion, "question_type");
         args.putString("question_type", questionType);
-        if (questionType.equals("info_text_box")) { return getArgsForInfoTextBox(jsonQuestion, args); }
-        else if (questionType.equals("slider")) { return getArgsForSliderQuestion(jsonQuestion, args); }
-        else if (questionType.equals("radio_button")) { return getArgsForRadioButtonQuestion(jsonQuestion, args); }
-        else if (questionType.equals("checkbox")) { return getArgsForCheckboxQuestion(jsonQuestion, args); }
-        else if (questionType.equals("free_response")) { return getArgsForFreeResponseQuestion(jsonQuestion, args); }
+        switch (questionType) {
+            case "info_text_box":
+                return getArgsForInfoTextBox(jsonQuestion, args);
+            case "slider":
+                return getArgsForSliderQuestion(jsonQuestion, args);
+            case "radio_button":
+                return getArgsForRadioButtonQuestion(jsonQuestion, args);
+            case "checkbox":
+                return getArgsForCheckboxQuestion(jsonQuestion, args);
+            case "free_response":
+                return getArgsForFreeResponseQuestion(jsonQuestion, args);
+        }
         return args;
     }
 

@@ -154,9 +154,7 @@ public class Timer {
 	 *  or below), and returns FALSE if alarms are inexact.  */
 	public static Boolean alarmsAreExactInThisApiVersion() {
 		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
-		if (currentApiVersion < android.os.Build.VERSION_CODES.KITKAT) {
-			return true; }
-		else { return false; }
+		return currentApiVersion < android.os.Build.VERSION_CODES.KITKAT;
 	}
 	
 	/** Calls AlarmManager.set() for API < 19, and AlarmManager.setExact() for API 19+
@@ -180,7 +178,6 @@ public class Timer {
 	 * @return Returns TRUE if there is an alarm set matching that intent; otherwise false. */
 	public Boolean alarmIsSet(Intent intent) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intent, PendingIntent.FLAG_NO_CREATE);
-		if (pendingIntent == null) { return false; }
-		else { return true; }
+		return pendingIntent != null;
 	}
 }

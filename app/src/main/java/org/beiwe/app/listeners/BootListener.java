@@ -15,10 +15,10 @@ import java.util.Objects;
  * @author Eli */
 public class BootListener extends BroadcastReceiver {
 	
-	/** Checks whether the app is installed on the SD card; needs a context passed in 
-	 *  Grab a pagkageManager (general info) -> get packageInfo (info about this package) ->
-	 *  ApplicationInfo (information about this application instance).
-	 *  http://stackoverflow.com/questions/5814474/how-can-i-find-out-if-my-app-is-installed-on-sd-card */
+	/* Checks whether the app is installed on the SD card; needs a context passed in
+	   Grab a pagkageManager (general info) -> get packageInfo (info about this package) ->
+	   ApplicationInfo (information about this application instance).
+	   http://stackoverflow.com/questions/5814474/how-can-i-find-out-if-my-app-is-installed-on-sd-card */
 //	private Boolean checkForSDCardInstall(Context externalContext) throws NameNotFoundException{
 //		PackageManager pkgManager = externalContext.getPackageManager();
 //		try {

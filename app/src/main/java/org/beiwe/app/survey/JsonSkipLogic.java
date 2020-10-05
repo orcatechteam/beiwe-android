@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /** Created by elijones on 12/1/16. */
@@ -250,7 +251,7 @@ public class JsonSkipLogic {
 //		Log.d("json logic", "inside numeric logic: " + comparator + ", " + parameters.toString());
 		String targetQuestionId = parameters.getString(0);
 		if ( !QuestionAnswer.containsKey(targetQuestionId) ) { return false; } // false if DNE
-		Double userAnswer = QuestionAnswer.get(targetQuestionId).getAnswerDouble();
+		Double userAnswer = Objects.requireNonNull(QuestionAnswer.get(targetQuestionId)).getAnswerDouble();
 		Double surveyValue = parameters.getDouble(1);
 
 //		Log.d("logic...", "evaluating useranswer " + userAnswer + comparator + surveyValue);
@@ -304,7 +305,6 @@ public class JsonSkipLogic {
 
 
 	/** @return a list of QuestionData objects for serialization to the answers file. */
-	@SuppressWarnings("ObjectAllocationInLoop")
 	public List<QuestionData> getQuestionsForSerialization() {
 		List<QuestionData> answers = new ArrayList<QuestionData>(QuestionOrder.size());
 		for (String questionId : QuestionOrder)
@@ -339,7 +339,7 @@ public class JsonSkipLogic {
 				question = QuestionAnswer.get(questionId);
 
 				//INFO_TEXT_BOX - skip it.
-				if ( question.getType().equals(QuestionType.Type.INFO_TEXT_BOX) ) {
+				if ( Objects.requireNonNull(question).getType().equals(QuestionType.Type.INFO_TEXT_BOX) ) {
 					continue;
 				}
 				//check if should display, store value

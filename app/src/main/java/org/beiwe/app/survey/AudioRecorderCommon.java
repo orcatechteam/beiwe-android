@@ -85,17 +85,17 @@ public class AudioRecorderCommon extends SessionActivity {
         surveyId = getIntent().getStringExtra("surveyId");
 
     	// grab the layout element objects that we will add questions to:
-		MarkDownTextView textbox = (MarkDownTextView) findViewById(R.id.record_activity_textview );
+		MarkDownTextView textbox = findViewById(R.id.record_activity_textview );
 		textbox.setText( getPromptText(surveyId, getApplicationContext() ) );
         // Handle file path issues with this variable
 
         unencryptedTempAudioFilePath = getApplicationContext().getFilesDir().getAbsolutePath() + "/" + unencryptedTempAudioFileName;
 
-    	playButton = (Button) findViewById(R.id.play_button);
-    	recordingButton = (Button) findViewById(R.id.recording_button);
-		saveButton = (Button) findViewById(R.id.done_button);
+    	playButton = findViewById(R.id.play_button);
+    	recordingButton = findViewById(R.id.recording_button);
+		saveButton = findViewById(R.id.done_button);
 
-		Button callClinicianButton = (Button) findViewById(R.id.record_activity_call_clinician);
+		Button callClinicianButton = findViewById(R.id.record_activity_call_clinician);
 		if(PersistentData.getCallClinicianButtonEnabled()) {
 			callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
 		}
