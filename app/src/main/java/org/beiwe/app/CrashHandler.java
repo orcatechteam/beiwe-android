@@ -7,9 +7,6 @@ import java.util.Objects;
 
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.PersistentData;
-import org.beiwe.app.ui.DebugInterfaceActivity;
-import org.beiwe.app.ui.LoadingActivity;
-import org.beiwe.app.ui.user.MainMenuActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -67,22 +64,22 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 			Sentry.capture(exception);
 		}
 		catch(Exception e1) {
-			String exceptionInfo =  System.currentTimeMillis() + "\n"
-									+ "BeiweVersion:" + DeviceInfo.getBeiweVersion()
-									+ ", AndroidVersion:" + DeviceInfo.getAndroidVersion()
-									+ ", Product:" + DeviceInfo.getProduct()
-									+ ", Brand:" + DeviceInfo.getBrand()
-									+ ", HardwareId:" + DeviceInfo.getHardwareId()
-									+ ", Manufacturer:" + DeviceInfo.getManufacturer()
-									+ ", Model:" + DeviceInfo.getModel() + "\n";
+			StringBuilder exceptionInfo = new StringBuilder(System.currentTimeMillis() + "\n"
+					+ "BeiweVersion:" + DeviceInfo.getBeiweVersion()
+					+ ", AndroidVersion:" + DeviceInfo.getAndroidVersion()
+					+ ", Product:" + DeviceInfo.getProduct()
+					+ ", Brand:" + DeviceInfo.getBrand()
+					+ ", HardwareId:" + DeviceInfo.getHardwareId()
+					+ ", Manufacturer:" + DeviceInfo.getManufacturer()
+					+ ", Model:" + DeviceInfo.getModel() + "\n");
 
-			exceptionInfo += "Error message: " + exception.getMessage() + "\n";
-			exceptionInfo += "Error type: " + exception.getClass() + "\n";
+			exceptionInfo.append("Error message: ").append(exception.getMessage()).append("\n");
+			exceptionInfo.append("Error type: ").append(exception.getClass()).append("\n");
 
 			if (exception.getSuppressed().length > 0) {
 				for (Throwable throwable: exception.getSuppressed() ) {
-					exceptionInfo += "\nSuppressed Error:\n";
-					for (StackTraceElement element : throwable.getStackTrace() ) { exceptionInfo +="\t" + element.toString() + "\n"; }
+					exceptionInfo.append("\nSuppressed Error:\n");
+					for (StackTraceElement element : throwable.getStackTrace() ) { exceptionInfo.append("\t").append(element.toString()).append("\n"); }
 				}
 			}
 
@@ -90,27 +87,27 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 			// this occurred when downloading a new survey to test that randomized surveys worked,
 			// crashed with a null reference error on an element of a stacktrace. We now check for null.
 			exception.fillInStackTrace().getStackTrace();
-			exceptionInfo += "\nError-fill:\n";
+			exceptionInfo.append("\nError-fill:\n");
 			for (StackTraceElement element : exception.fillInStackTrace().getStackTrace()) {
-				exceptionInfo += "\t" + element.toString() + "\n";
+				exceptionInfo.append("\t").append(element.toString()).append("\n");
 			}
 
 			if (exception.getCause() != null) {
-				exceptionInfo += "\nActual Error:\n";
+				exceptionInfo.append("\nActual Error:\n");
 				for (StackTraceElement element : exception.getCause().getStackTrace()) {
-					exceptionInfo += "\t" + element.toString() + "\n";
+					exceptionInfo.append("\t").append(element.toString()).append("\n");
 				}
 			}
-			else { exceptionInfo += "java threw an error with a null error cause or stack trace, this means we are manually creating a crash report."; }
+			else { exceptionInfo.append("java threw an error with a null error cause or stack trace, this means we are manually creating a crash report."); }
 
 			//Print an error log if debug mode is active.
 			if (BuildConfig.APP_IS_BETA) {
-				Log.e("BEIWE ENCOUNTERED THIS ERROR", exceptionInfo); //Log error...
+				Log.e("BEIWE ENCOUNTERED THIS ERROR", exceptionInfo.toString()); //Log error...
 			}
 
 			FileOutputStream outStream; //write a file...
 			try { outStream = context.openFileOutput("crashlog_" + System.currentTimeMillis(), Context.MODE_APPEND);
-				outStream.write( ( exceptionInfo ).getBytes() );
+				outStream.write( exceptionInfo.toString().getBytes() );
 				outStream.flush(); outStream.close(); }
 			catch (FileNotFoundException e) {
 				Log.e("Error Handler Failure", "Could not write to file, file DNE.");

@@ -33,8 +33,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 
 public class DebugInterfaceActivity extends SessionActivity {

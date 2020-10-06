@@ -1,6 +1,5 @@
 package org.beiwe.app.listeners;
 
-import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.BroadcastReceiver;

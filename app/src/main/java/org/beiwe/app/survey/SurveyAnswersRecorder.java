@@ -167,7 +167,7 @@ public class SurveyAnswersRecorder {
 	public static String getSelectedCheckboxes(LinearLayout checkboxesList) {
 
 		// Make a list of the checked answers that reads like a printed array of strings
-		String answersList = "[";
+		StringBuilder answersList = new StringBuilder("[");
 
 		// Iterate over the whole list of CheckBoxes in this LinearLayout
 		for (int i = 0; i < checkboxesList.getChildCount(); i++) {
@@ -178,17 +178,17 @@ public class SurveyAnswersRecorder {
 
 				// If this CheckBox is selected, add it to the list of selected answers
 				if (checkBox.isChecked()) {
-					answersList += checkBox.getText().toString() + ", ";
+					answersList.append(checkBox.getText().toString()).append(", ");
 				}
 			}
 		}
 
 		// Trim the last comma off the list so that it's formatted like a String[] printed to a String
 		if (answersList.length() > 3) {
-			answersList = answersList.substring(0, answersList.length() - 2);
+			answersList = new StringBuilder(answersList.substring(0, answersList.length() - 2));
 		}
-		answersList += "]";
+		answersList.append("]");
 
-		return answersList;
+		return answersList.toString();
 	}
 }

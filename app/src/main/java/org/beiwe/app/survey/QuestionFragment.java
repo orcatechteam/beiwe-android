@@ -465,7 +465,7 @@ public class QuestionFragment extends Fragment {
     /* *************************** ANSWER LISTENERS ************************** */
 
     /** Listens for a touch/answer to a Slider Question, and records the answer */
-    private class SliderListener implements SeekBar.OnSeekBarChangeListener {
+    private static class SliderListener implements SeekBar.OnSeekBarChangeListener {
 
         QuestionData questionDescription;
 
@@ -495,7 +495,7 @@ public class QuestionFragment extends Fragment {
 
 
     /** Listens for a touch/answer to a Radio Button Question, and records the answer */
-    private class RadioButtonListener implements RadioGroup.OnCheckedChangeListener {
+    private static class RadioButtonListener implements RadioGroup.OnCheckedChangeListener {
 
         QuestionData questionDescription;
 
@@ -519,7 +519,7 @@ public class QuestionFragment extends Fragment {
 
 
     /** Listens for a touch/answer to a Checkbox Question, and records the answer */
-    private class CheckboxListener implements View.OnClickListener {
+    private static class CheckboxListener implements View.OnClickListener {
 
         QuestionData questionDescription;
 

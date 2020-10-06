@@ -1,6 +1,5 @@
 package org.beiwe.app.listeners;
 
-import org.beiwe.app.CrashHandler;
 import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;

@@ -3,7 +3,6 @@ package org.beiwe.app.networking;
 import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
 import org.beiwe.app.R;
 

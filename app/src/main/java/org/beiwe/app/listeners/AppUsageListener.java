@@ -1,6 +1,5 @@
 package org.beiwe.app.listeners;
 
-import android.annotation.SuppressLint;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;

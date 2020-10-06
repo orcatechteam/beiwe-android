@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.CallLog;
-import android.util.Log;
 
 /** The CallLogger logs data from voice call, sent or received.
  *  @author Dor Samet */
