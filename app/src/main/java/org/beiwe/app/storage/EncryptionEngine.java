@@ -1,5 +1,6 @@
 package org.beiwe.app.storage;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -67,7 +68,7 @@ public class EncryptionEngine {
 		if (Objects.requireNonNull(input).length() == 0) { return "null_data"; } //if an empty string is provided, return a string describing this.
 		MessageDigest hash = null;
 		hash = MessageDigest.getInstance("SHA-256");
-		hash.update( input.getBytes("UTF-8") );
+		hash.update( input.getBytes(StandardCharsets.UTF_8) );
 		return toBase64String( hash.digest() );		
 	}
 

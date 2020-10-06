@@ -86,7 +86,6 @@ public class QuestionFragment extends Fragment {
         goToNextQuestionListener = (OnGoToNextQuestionListener) context;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     /** This function will get called on OLD versions of Android (<6). */
     public void onAttach(Activity activity) {

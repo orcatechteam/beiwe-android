@@ -31,6 +31,8 @@ public class AppUsageListener {
 	}
 
 	public void getAppUsage() throws PackageManager.NameNotFoundException {
+		Log.i("AppUsageListener", "Getting app usage...");
+
 		// @TODO [~] add conditional to check of the app has permission, if not, fire the startActivityForResult
 //		startActivityForResult(new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS), 2);
 
@@ -74,5 +76,7 @@ public class AppUsageListener {
 
 			TextFileManager.getAppUsageLogFile().writeEncrypted(appUsageLogEntry);
 		}
+
+		Log.i("AppUsageListener", "Finished getting app usage...");
 	}
 }

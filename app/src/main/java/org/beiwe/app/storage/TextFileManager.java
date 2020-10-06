@@ -468,8 +468,6 @@ public class TextFileManager {
 			// Fill to 32 chars
 			output = new BigInteger(1, md5sum).toString(16);
 			output = String.format("%32s", output).replace(' ', '0');
-		} catch (IOException e) {
-			throw e;
 		} finally {
 			inputStream.close();
 		}

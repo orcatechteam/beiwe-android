@@ -9,6 +9,8 @@ import android.os.Handler;
 import org.beiwe.app.CrashHandler;
 import org.beiwe.app.storage.TextFileManager;
 
+import java.util.Objects;
+
 /**MMSSentLogger listens for outgoing MMSes.
  * In order to catch outgoing MMSes we need to monitor the texts database using a ContentObserver
  * and then make a database query based on the 
@@ -37,7 +39,7 @@ public class MMSSentLogger extends ContentObserver{
 			//test the MMS and SMS cursors for basic validity, move them into position.  If anything is invalid, exit.
 			if ( !checkAndPositionCursor(cursor) ){ return; }
 			//test that the data in these cursors are useful, if not, exit.
-			if ( !checkValidData(cursor) ) { return; }
+			if ( !checkValidData(Objects.requireNonNull(cursor)) ) { return; }
 
 			long timestamp = cursor.getInt(cursor.getColumnIndexOrThrow("date")) * 1000L;
 			String write_to_file = timestamp + TextFileManager.DELIMITER + "" + TextFileManager.DELIMITER + "sent MMS" + TextFileManager.DELIMITER + "MMS";

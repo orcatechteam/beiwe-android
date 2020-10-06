@@ -53,6 +53,7 @@ public class JSONUtils {
 
 		
 	
+	@SuppressWarnings("ConstantConditions")
 	public static JSONArray shuffleJSONArrayWithMemory(JSONArray jsonArray, int numberElements, String surveyId) {
 		List<String> javaQuestionsList = JSONUtils.jsonArrayToStringList(jsonArray);
 		Collections.shuffle(javaQuestionsList, new Random(System.currentTimeMillis()) );

@@ -32,7 +32,7 @@ public class SurveyDownloader {
 		protected Void doInBackground(Void... arg0) {
 			String parameters = "";
 			try { jsonResponseString = PostRequest.httpRequestString( parameters, url); }
-			catch (NullPointerException e) {  }  //We do not care.
+			catch (NullPointerException ignored) {  }  //We do not care.
 			return null; //hate
 		}
 		@Override

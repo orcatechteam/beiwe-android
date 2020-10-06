@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.PowerManager;
 import android.util.Log;
 
+import java.util.Objects;
+
 /** Listens for power state changes.
  *  Screen On/Off, Power Connect/Disconnect, Airplane Mode.
  *  @author Josh Zagorsky, Eli Jones, May/June 2014 */
@@ -40,7 +42,7 @@ public class PowerStateListener extends BroadcastReceiver {
 		String action = intent.getAction();
 
 		// Screen on/off
-		if (action.equals(Intent.ACTION_SCREEN_OFF)) { makeLogStatement("Screen turned off"); }
+		if (Objects.requireNonNull(action).equals(Intent.ACTION_SCREEN_OFF)) { makeLogStatement("Screen turned off"); }
 		if (action.equals(Intent.ACTION_SCREEN_ON)) { makeLogStatement("Screen turned on"); }
 		
 		// Power connected/disconnected
