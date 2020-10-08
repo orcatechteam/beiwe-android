@@ -44,20 +44,24 @@ public class AppUsageListener {
 
 		List<PackageInfo> apps = pkgManager.getInstalledPackages(0);
 		int appsSize = apps.size();
+		Log.i("AppUsageListener", "Got "+appsSize+" apps...");
 		for (int i = 0; i < appsSize; i++) {
 			PackageInfo app = apps.get(i);
 			ApplicationInfo appInfo = pkgManager.getApplicationInfo(app.packageName, 0);
 			CharSequence appLabel = pkgManager.getApplicationLabel(appInfo);
 			UsageStats appStats = usageStatsMap.get(app.packageName);
 			if (appStats == null) {
+				Log.d("AppUsageListener", "Skipping `"+appLabel+"`, null appStats");
 				continue;
 			}
 
 			long totalTimeInForeground = appStats.getTotalTimeInForeground();
 			if (totalTimeInForeground <= 0) {
+				Log.d("AppUsageListener", "Skipping `"+appLabel+"`, total foreground time <= 0");
 				continue;
 			}
 
+			Log.i("AppUsageListener", "Gathering stats for `"+appLabel+"`");
 			Long javaTimeCode = System.currentTimeMillis();
 			long lastTimeUsed = appStats.getLastTimeUsed();
 			long lastTimeVisible = appStats.getLastTimeVisible();

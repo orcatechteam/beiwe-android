@@ -1,9 +1,15 @@
 package org.beiwe.app;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.PowerManager;
+import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import org.beiwe.app.storage.PersistentData;
 
@@ -33,6 +39,7 @@ public class PermissionHandler {
 			permissionMap.put( Manifest.permission.ACCESS_COARSE_LOCATION, 15);
 			permissionMap.put( Manifest.permission.RECEIVE_MMS, 16);
 			permissionMap.put( Manifest.permission.RECEIVE_SMS, 17);
+			permissionMap.put( Manifest.permission.PACKAGE_USAGE_STATS, 18);
 			permissionMap = Collections.unmodifiableMap(permissionMap); }
 	
 	private static Map <String, String> permissionMessages = new HashMap <String, String> ();
@@ -52,6 +59,7 @@ public class PermissionHandler {
 			permissionMessages.put( Manifest.permission.ACCESS_COARSE_LOCATION, "use Location Services." );
 			permissionMessages.put( Manifest.permission.RECEIVE_MMS, "receive MMS messages.");
 			permissionMessages.put( Manifest.permission.RECEIVE_SMS, "receive SMS messages.");
+			permissionMessages.put( Manifest.permission.PACKAGE_USAGE_STATS, "view your app usage." );
 			permissionMessages = Collections.unmodifiableMap(permissionMessages); }
 
 	public static String getNormalPermissionMessage(String permission) {
@@ -113,6 +121,7 @@ public class PermissionHandler {
 	public static boolean confirmWifi( Context context ) { return ( PersistentData.getWifiEnabled() && checkWifiPermissions(context) && checkAccessFineLocation(context) && checkAccessCoarseLocation(context) ) ; }
 	public static boolean confirmBluetooth( Context context ) { return ( PersistentData.getBluetoothEnabled() && checkBluetoothPermissions(context)); }
 	
+	@RequiresApi(api = Build.VERSION_CODES.M)
 	public static String getNextPermission(Context context, Boolean includeRecording) {
 		if (PersistentData.getGpsEnabled()) {
 			if ( !checkAccessFineLocation(context) ) { return Manifest.permission.ACCESS_FINE_LOCATION; } }
@@ -134,6 +143,9 @@ public class PermissionHandler {
 			if ( !checkAccessReceiveSms(context)) return Manifest.permission.RECEIVE_SMS; }
 		if (includeRecording) {
 			if ( !checkAccessRecordAudio(context)) { return Manifest.permission.RECORD_AUDIO; } }
+		if (!checkAppUsagePermission(context)) {
+			return Manifest.permission.PACKAGE_USAGE_STATS;
+		}
 
 		//The phone call permission is invariant, it is required for all studies in order for the
 		// call clinician functionality to work
@@ -146,5 +158,19 @@ public class PermissionHandler {
 			}
 		}
 		return null;
+	}
+
+	@TargetApi(23)
+	public static boolean checkAppUsagePermission(Context ctx) {
+		boolean usageStatsPermissionGranted;
+		AppOpsManager appOps = (AppOpsManager) ctx.getSystemService(Context.APP_OPS_SERVICE);
+		assert appOps != null;
+		int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), ctx.getPackageName());
+		if (mode == AppOpsManager.MODE_DEFAULT) {
+			usageStatsPermissionGranted = (ctx.checkCallingOrSelfPermission(Manifest.permission.PACKAGE_USAGE_STATS) == PackageManager.PERMISSION_GRANTED);
+		} else {
+			usageStatsPermissionGranted = (mode == AppOpsManager.MODE_ALLOWED);
+		}
+		return usageStatsPermissionGranted;
 	}
 }

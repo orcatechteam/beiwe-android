@@ -100,10 +100,9 @@ public class BackgroundService extends Service {
 		else if (PersistentData.getCallsEnabled() ) { sendBroadcast(Timer.checkForCallsEnabled); }
 		//Only do the following if the device is registered
 		if ( PersistentData.isRegistered() ) {
-			DeviceInfo.initialize( appContext ); //if at registration this has already been initialized. (we don't care.)			
+			DeviceInfo.initialize( appContext ); //if at registration this has already been initialized. (we don't care.)
 			startTimers();
 		}
-		appUsageListener = new AppUsageListener(appContext);
 	}
 	
 	/** Stops the BackgroundService instance. */

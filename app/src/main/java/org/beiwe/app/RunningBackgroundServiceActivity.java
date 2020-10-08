@@ -13,11 +13,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
 import org.beiwe.app.storage.PersistentData;
@@ -201,6 +202,15 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 		startActivityForResult(powerSettings, powerCallbackIdentifier);
 	}
 
+	@TargetApi(21)
+	private void goToAppUsageSettings(Integer appUsageIdentifier) {
+		Intent appUsageSettings = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+		appUsageSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		appUsageSettings.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+		appUsageSettings.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+		startActivityForResult(appUsageSettings, appUsageIdentifier);
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Log.i("sessionActivity", "onActivityResult. requestCode: " + requestCode + ", resultCode: " + resultCode );
@@ -232,19 +242,40 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 		if ( !thisResumeCausedByFalseActivityReturn ) {
 			String permission = PermissionHandler.getNextPermission( getApplicationContext(), this.isAudioRecorderActivity() );
 			if (permission == null) { return; }
+//			Log.i("sessionActivity", "checking permissions for `"+permission+"`");
 
 			if (!prePromptActive && !postPromptActive && !powerPromptActive) {
+				if (permission.equals("android.permission.PACKAGE_USAGE_STATS")) {
+					showAppUsagePermissionAlert(
+						this,
+						"[app usage permission message]",
+						PermissionHandler.permissionMap.get(permission)
+					);
+					return;
+				}
+
 				if (permission.equals(PermissionHandler.POWER_EXCEPTION_PERMISSION)) {
 					showPowerManagementAlert(this, getString(R.string.power_management_exception_alert), 1000);
 					return;
 				}
 				// Log.d("sessionActivity", "shouldShowRequestPermissionRationale "+ permission +": " + shouldShowRequestPermissionRationale( permission ) );
-				if (shouldShowRequestPermissionRationale( permission ) ) {
-					if (!prePromptActive && !postPromptActive ) { showAlertThatForcesUserToGrantPermission(this, PermissionHandler.getBumpingPermissionMessage(permission),
-							PermissionHandler.permissionMap.get(permission) ); }
+				if (shouldShowRequestPermissionRationale(permission)) {
+					if (!prePromptActive && !postPromptActive) {
+						showAlertThatForcesUserToGrantPermission(
+							this,
+							PermissionHandler.getBumpingPermissionMessage(permission),
+							PermissionHandler.permissionMap.get(permission)
+						);
+					}
 				}
-				else if (!prePromptActive && !postPromptActive ) { showRegularPermissionAlert(this, PermissionHandler.getNormalPermissionMessage(permission),
-						permission, PermissionHandler.permissionMap.get(permission)); }
+				else if (!prePromptActive && !postPromptActive) {
+					showRegularPermissionAlert(
+						this,
+						PermissionHandler.getNormalPermissionMessage(permission),
+						permission,
+						PermissionHandler.permissionMap.get(permission)
+					);
+				}
 			}
 		}
 	}
@@ -315,6 +346,21 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 			powerPromptActive = false;
 		} } );
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) {  } } ); //Okay button
+		builder.create().show();
+	}
+
+	public static void showAppUsagePermissionAlert(final RunningBackgroundServiceActivity activity, final String message,  final Integer permissionCallback) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle("Permissions Requirement:");
+		builder.setMessage(message);
+		builder.setPositiveButton("Go to Settings", new DialogInterface.OnClickListener() {
+			@Override public void onClick(DialogInterface dialog, int arg1) {
+				activity.goToAppUsageSettings(permissionCallback);
+			}
+		});
+		builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			@Override public void onClick(DialogInterface dialog, int arg1) {}
+		});
 		builder.create().show();
 	}
 }
