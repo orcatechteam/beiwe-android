@@ -379,13 +379,16 @@ public class BackgroundService extends Service {
 				timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
 				return; }			
 
-			if (broadcastAction.equals( appContext.getString(R.string.check_app_usage_intent) ) ) {
-				try {
-					appUsageListener.getAppUsage();
-					timer.setupExactSingleAlarm(PersistentData.getCheckAppUsageFrequencyMilliseconds(), Timer.appUsageIntent);
-				} catch (PackageManager.NameNotFoundException e) {
-					e.printStackTrace();
+			if (broadcastAction.equals(appContext.getString(R.string.check_app_usage_intent))) {
+				if (PermissionHandler.checkAppUsagePermission(appContext) && appUsageListener != null) {
+					try {
+						Log.i("BackgroundService", "Starting app usage...");
+						appUsageListener.getAppUsage();
+					} catch (PackageManager.NameNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
+				timer.setupExactSingleAlarm(PersistentData.getCheckAppUsageFrequencyMilliseconds(), Timer.appUsageIntent);
 				return;
 			}
 			//starts a data upload attempt.

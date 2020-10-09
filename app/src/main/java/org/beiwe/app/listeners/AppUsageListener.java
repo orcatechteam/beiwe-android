@@ -51,21 +51,29 @@ public class AppUsageListener {
 			CharSequence appLabel = pkgManager.getApplicationLabel(appInfo);
 			UsageStats appStats = usageStatsMap.get(app.packageName);
 			if (appStats == null) {
-				Log.d("AppUsageListener", "Skipping `"+appLabel+"`, null appStats");
+//				Log.d("AppUsageListener", "Skipping `"+appLabel+"`, null appStats");
 				continue;
 			}
 
 			long totalTimeInForeground = appStats.getTotalTimeInForeground();
 			if (totalTimeInForeground <= 0) {
-				Log.d("AppUsageListener", "Skipping `"+appLabel+"`, total foreground time <= 0");
+//				Log.d("AppUsageListener", "Skipping `"+appLabel+"`, total foreground time <= 0");
 				continue;
 			}
 
 			Log.i("AppUsageListener", "Gathering stats for `"+appLabel+"`");
 			Long javaTimeCode = System.currentTimeMillis();
-			long lastTimeUsed = appStats.getLastTimeUsed();
-			long lastTimeVisible = appStats.getLastTimeVisible();
-			long totalTimeVisible = appStats.getTotalTimeVisible();
+			long lastTimeUsed = 0;
+			long lastTimeVisible = 0;
+			long totalTimeVisible = 0;
+
+			if (Build.VERSION.SDK_INT >= 21) {
+				lastTimeUsed = appStats.getLastTimeUsed();
+			}
+			if (Build.VERSION.SDK_INT >= 29) {
+				lastTimeVisible = appStats.getLastTimeVisible();
+				totalTimeVisible = appStats.getTotalTimeVisible();
+			}
 
 			ArrayList<Object> appStatsForExport = new ArrayList<>();
 			appStatsForExport.add(javaTimeCode);
@@ -76,7 +84,7 @@ public class AppUsageListener {
 			appStatsForExport.add(totalTimeInForeground);
 			appStatsForExport.add(totalTimeVisible);
 			String appUsageLogEntry = TextUtils.join(TextFileManager.DELIMITER, appStatsForExport);
-			Log.i("AppUsageListener", appUsageLogEntry);
+			Log.i("AppUsageListener", "appUsageLogEntry: `"+appUsageLogEntry+"`");
 
 			TextFileManager.getAppUsageLogFile().writeEncrypted(appUsageLogEntry);
 		}
