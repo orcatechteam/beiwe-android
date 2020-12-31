@@ -12,6 +12,7 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.MMSSentLogger;
 import org.beiwe.app.listeners.PowerStateListener;
+import org.beiwe.app.listeners.SettingsListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
@@ -54,14 +55,15 @@ public class BackgroundService extends Service {
 	public BluetoothListener bluetoothListener;
 	public static Timer timer;
 	public AppUsageListener appUsageListener;
-	
+	public SettingsListener settingsListener;
+
 	//localHandle is how static functions access the currently instantiated background service.
 	//It is to be used ONLY to register new surveys with the running background service, because
 	//that code needs to be able to update the IntentFilters associated with timerReceiver.
 	//This is Really Hacky and terrible style, but it is okay because the scheduling code can only ever
 	//begin to run with an already fully instantiated background service.
 	private static BackgroundService localHandle;
-	
+
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here. */
 	public void onCreate() {
@@ -74,13 +76,15 @@ public class BackgroundService extends Service {
 			Sentry.init(new AndroidSentryClientFactory(appContext));
 		}
 
+		settingsListener = new SettingsListener(appContext);
+
 		Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(appContext));
 		PersistentData.initialize( appContext );
 		TextFileManager.initialize( appContext );
 		PostRequest.initialize( appContext );
 		localHandle = this;  //yes yes, hacky, I know.
 		registerTimers(appContext);
-		
+
 		doSetup();
 	}
 
@@ -104,15 +108,15 @@ public class BackgroundService extends Service {
 			startTimers();
 		}
 	}
-	
+
 	/** Stops the BackgroundService instance. */
 	public void stop() { if (BuildConfig.APP_IS_BETA) { this.stopSelf(); } }
 	
 	/*#############################################################################
 	#########################         Starters              #######################
 	#############################################################################*/
-	
-	/** Initializes the Bluetooth listener 
+
+	/** Initializes the Bluetooth listener
 	 * Note: Bluetooth has several checks to make sure that it actually exists on the device with the capabilities we need.
 	 * Checking for Bluetooth LE is necessary because it is an optional extension to Bluetooth 4.0. */
 	@SuppressLint("LongLogTag")
@@ -136,12 +140,12 @@ public class BackgroundService extends Service {
 			// else { Log.d("BackgroundService bluetooth init", "Bluetooth not enabled for study."); }
 			this.bluetoothListener = null; }
 	}
-	
+
 	/** Initializes the sms logger. */
 	public void startSmsSentLogger() {
 		SmsSentLogger smsSentLogger = new SmsSentLogger(new Handler(), appContext);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger); }
-	
+
 	public void startMmsSentLogger(){
 		MMSSentLogger mmsMonitor = new MMSSentLogger(new Handler(), appContext);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://mms/"), true, mmsMonitor); }
@@ -150,8 +154,8 @@ public class BackgroundService extends Service {
 	private void startCallLogger() {
 		CallLogger callLogger = new CallLogger(new Handler(), appContext);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://call_log/calls/"), true, callLogger); }
-	
-	/** Initializes the PowerStateListener. 
+
+	/** Initializes the PowerStateListener.
 	 * The PowerStateListener requires the ACTION_SCREEN_OFF and ACTION_SCREEN_ON intents
 	 * be registered programatically. They do not work if registered in the app's manifest.
 	 * Same for the ACTION_POWER_SAVE_MODE_CHANGED and ACTION_DEVICE_IDLE_MODE_CHANGED filters,
@@ -173,8 +177,8 @@ public class BackgroundService extends Service {
 			PowerStateListener.start(appContext);
 		}
 	}
-	
-	
+
+
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
 	@SuppressWarnings("static-access")
@@ -201,6 +205,7 @@ public class BackgroundService extends Service {
 		filter.addAction("crashBeiwe");
 		filter.addAction("enterANR");
 		filter.addAction(appContext.getString(R.string.check_app_usage_intent));
+		filter.addAction(appContext.getString(R.string.check_settings));
 		List<String> surveyIds = PersistentData.getSurveyIds();
 		for (String surveyId : surveyIds) { filter.addAction(surveyId); }
 		appContext.registerReceiver(localHandle.timerReceiver, filter);
@@ -209,10 +214,15 @@ public class BackgroundService extends Service {
 	/*#############################################################################
 	####################            Timer Logic             #######################
 	#############################################################################*/
-	
+
 	public void startTimers() {
 		Long now = System.currentTimeMillis();
 		Log.i("BackgroundService", "running startTimer logic.");
+
+		// @TODO [~] Add 24 hour timer for checking settings...
+		Log.i("BgSvc", "Registering check settings timer...");
+		timer.setupExactSingleAlarm(settingsListener.getSettingsFrequency(), Timer.checkSettingsIntent);
+
 		if (PersistentData.getAccelerometerEnabled()) {  //if accelerometer data recording is enabled and...
 			if(PersistentData.getMostRecentAlarmTime( getString(R.string.turn_accelerometer_on )) < now || //the most recent accelerometer alarm time is in the past, or...
 					!timer.alarmIsSet(Timer.accelerometerOnIntent) ) { //there is no scheduled accelerometer-on timer.
@@ -265,7 +275,7 @@ public class BackgroundService extends Service {
 			if ( PersistentData.getSurveyNotificationState(surveyId) || PersistentData.getMostRecentSurveyAlarmTime(surveyId) < now ) {
 				//if survey notification should be active or the most recent alarm time is in the past, trigger the notification.
 				SurveyNotifications.displaySurveyNotification(appContext, surveyId); } }
-		
+
 		//checks that surveys are actually scheduled, if a survey is not scheduled, schedule it!
 		for (String surveyId : PersistentData.getSurveyIds() ) {
 			if ( !timer.alarmIsSet( new Intent(surveyId) ) ) { SurveyScheduler.scheduleSurvey(surveyId); } }
@@ -276,7 +286,7 @@ public class BackgroundService extends Service {
 		AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
 		Objects.requireNonNull(alarmService).setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 60 * 2, 1000 * 60 * 2, restartServicePendingIntent);
 	}
-	
+
 	/**Refreshes the logout timer.
 	 * This function has a THEORETICAL race condition, where the BackgroundService is not fully instantiated by a session activity,
 	 * in this case we log an error to the debug log, print the error, and then wait for it to crash.  In testing on a (much) older
@@ -290,17 +300,17 @@ public class BackgroundService extends Service {
 		timer.setupExactSingleAlarm(PersistentData.getMillisecondsBeforeAutoLogout(), Timer.signoutIntent);
 		PersistentData.loginOrRefreshLogin();
 	}
-	
+
 	/** cancels the signout timer */
 	public static void clearAutomaticLogoutCountdownTimer() { timer.cancelAlarm(Timer.signoutIntent); }
-	
+
 	/** The Timer requires the BackgroundService in order to create alarms, hook into that functionality here. */
 	public static void setSurveyAlarm(String surveyId, Calendar alarmTime) { timer.startSurveyAlarm(surveyId, alarmTime); }
 
 	public static void cancelSurveyAlarm(String surveyId) { timer.cancelAlarm(new Intent(surveyId)); }
-	
+
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
-	 * and then runs the appropriate code for that trigger. 
+	 * and then runs the appropriate code for that trigger.
 	 * Note: every condition has a return statement at the end; this is because the trigger survey notification
 	 * action requires a fairly expensive dive into PersistantData JSON unpacking.*/
 	private BroadcastReceiver timerReceiver = new BroadcastReceiver() {
@@ -333,7 +343,7 @@ public class BackgroundService extends Service {
 				//start both the sensor-off-action timer, and the next sensor-on-timer.
 				timer.setupExactSingleAlarm(PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getAccelerometerOffDurationMilliseconds() + PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOnIntent);
-				//record the system time that the next alarm is supposed to go off at, so that we can recover in the event of a reboot or crash. 
+				//record the system time that the next alarm is supposed to go off at, so that we can recover in the event of a reboot or crash.
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_accelerometer_on), alarmTime );
 				return; }
 			//Gyroscope. Almost identical logic to accelerometer above.
@@ -377,7 +387,14 @@ public class BackgroundService extends Service {
 				if ( PermissionHandler.checkBluetoothPermissions(appContext) ) {
 					if ( bluetoothListener != null) bluetoothListener.disableBLEScan(); }
 				timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
-				return; }			
+				return; }
+
+			if (broadcastAction.equals(appContext.getString(R.string.check_settings))) {
+				// @TODO [~] Add 24 hour timer for checking settings...
+				settingsListener.checkSettings();
+				timer.setupExactSingleAlarm(settingsListener.getSettingsFrequency(), Timer.checkSettingsIntent);
+				return;
+			}
 
 			if (broadcastAction.equals(appContext.getString(R.string.check_app_usage_intent))) {
 				if (PermissionHandler.checkAppUsagePermission(appContext) && appUsageListener != null) {
@@ -407,7 +424,7 @@ public class BackgroundService extends Service {
 				SurveyDownloader.downloadSurveys( getApplicationContext() );
 				timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent);
 				return; }
-			// Signs out the user. (does not set up a timer, that is handled in activity and sign-in logic) 
+			// Signs out the user. (does not set up a timer, that is handled in activity and sign-in logic)
 			if (broadcastAction.equals( appContext.getString(R.string.signout_intent) ) ) {
 				PersistentData.logout();
 				Intent loginPage = new Intent(appContext, LoginActivity.class);
@@ -452,13 +469,13 @@ public class BackgroundService extends Service {
 			}
 		}
 	};
-		
+
 	/*##########################################################################################
 	############## code related to onStartCommand and binding to an activity ###################
 	##########################################################################################*/
 	@Override
 	public IBinder onBind(Intent arg0) { return new BackgroundServiceBinder(); }
-	
+
 	/**A public "Binder" class for Activities to access.
 	 * Provides a (safe) handle to the background Service using the onStartCommand code
 	 * used in every RunningBackgroundServiceActivity */
@@ -471,7 +488,7 @@ public class BackgroundService extends Service {
 	/*##############################################################################
 	########################## Android Service Lifecycle ###########################
 	##############################################################################*/
-	
+
 	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
 	@Override public int onStartCommand(Intent intent, int flags, int startId){ //Log.d("BackgroundService onStartCommand", "started with flag " + flags );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"started with flag " + flags);
@@ -495,7 +512,7 @@ public class BackgroundService extends Service {
 	@Override public void onLowMemory() { //Log.w("BackroundService onLowMemory", "Low memory conditions encountered");
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onLowMemory called.");
 		restartService(); }
-	
+
 	/** Sets a timer that starts the service if it is not running in ten seconds. */
 	private void restartService(){
 		//how does this even...  Whatever, 10 seconds later the background service will start.
@@ -505,7 +522,7 @@ public class BackgroundService extends Service {
 	    AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
 	    Objects.requireNonNull(alarmService).set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
 	}
-	
+
 	public void crashBackgroundService() { if (BuildConfig.APP_IS_BETA) {
 		throw new NullPointerException("stop poking me!"); } }
 }

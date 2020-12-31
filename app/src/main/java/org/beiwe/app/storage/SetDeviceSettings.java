@@ -5,7 +5,14 @@ import org.json.JSONObject;
 
 public class SetDeviceSettings {
 	public static void writeDeviceSettings(JSONObject deviceSettings) throws JSONException {
+		// Write data stream strings
+		for (DataStream ds : DataStream.values()) {
+			String dsVal = deviceSettings.getString(ds.toString());
+			PersistentData.setDataStreamVal(ds.toString(), dsVal);
+		}
+
 		// Write data stream booleans
+/*
 		Boolean accelerometerEnabled = deviceSettings.getBoolean("accelerometer");
 		PersistentData.setAccelerometerEnabled(accelerometerEnabled);
 		Boolean gyroscopeEnabled = deviceSettings.getBoolean("gyro");
@@ -22,7 +29,7 @@ public class SetDeviceSettings {
 		PersistentData.setBluetoothEnabled(bluetoothEnabled);
 		Boolean powerStateEnabled = deviceSettings.getBoolean("power_state");
 		PersistentData.setPowerStateEnabled(powerStateEnabled);
-		
+ */
 		Boolean allowUploadOverCellularData; // This key was added late, and if the server is old it may not be present
 		try { allowUploadOverCellularData = deviceSettings.getBoolean("allow_upload_over_cellular_data");}
 		catch (JSONException e) { allowUploadOverCellularData = false; }

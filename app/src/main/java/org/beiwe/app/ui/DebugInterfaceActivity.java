@@ -12,9 +12,12 @@ import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
 import org.beiwe.app.listeners.AppUsageListener;
+import org.beiwe.app.listeners.SettingsListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.networking.SurveyDownloader;
 import org.beiwe.app.session.SessionActivity;
+import org.beiwe.app.storage.DataStream;
+import org.beiwe.app.storage.DataStreamPermission;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
@@ -31,6 +34,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 
@@ -38,6 +42,7 @@ import android.view.View;
 public class DebugInterfaceActivity extends SessionActivity {
 	//extends a session activity.
 	Context appContext;
+	private static final String LOG_TAG = "DebugAct";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,8 @@ public class DebugInterfaceActivity extends SessionActivity {
 			findViewById(R.id.debugtexttwenty).setVisibility(View.VISIBLE);
 			findViewById(R.id.buttonDevListApps).setVisibility(View.VISIBLE);
 			findViewById(R.id.buttonDevCheckConnectivityStatus).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonDevLogSettings).setVisibility(View.VISIBLE);
+			findViewById(R.id.buttonDevCheckSettings).setVisibility(View.VISIBLE);
 			findViewById(R.id.button).setVisibility(View.VISIBLE);
 			findViewById(R.id.buttonPrintInternalLog).setVisibility(View.VISIBLE);
 			findViewById(R.id.buttonClearInternalLog).setVisibility(View.VISIBLE);
@@ -208,6 +215,20 @@ public class DebugInterfaceActivity extends SessionActivity {
 		catch (Exception e) { CrashHandler.writeCrashlog(e, getApplicationContext()); }
 	}
 
+	public void checkSettings(View view) {
+		Log.i("DebugAct", "checkSettings...");
+		SettingsListener settingsListener = new SettingsListener(appContext);
+		settingsListener.checkSettings();
+	}
+
+	public void logSettings(View view) {
+		Log.i(LOG_TAG, "logSettings...");
+		for (DataStream ds : DataStream.values()) {
+			DataStreamPermission dsp = PersistentData.getDataStreamVal(ds);
+			Log.i(LOG_TAG, "data stream: `"+ds.toString()+"`, ds permission: `"+dsp+"`");
+		}
+	}
+
 	public void checkConnectivityStatus(View view) {
 		ConnectivityManager connMgr = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		assert connMgr != null;
@@ -215,8 +236,8 @@ public class DebugInterfaceActivity extends SessionActivity {
 		NetworkInfo.State wifi = Objects.requireNonNull(connMgr.getNetworkInfo(1)).getState();
 		String mobileStatus = (mobile == NetworkInfo.State.CONNECTED || mobile == NetworkInfo.State.CONNECTING) ? "enabled" : "disabled";
 		String wifiStatus = (wifi == NetworkInfo.State.CONNECTED || wifi == NetworkInfo.State.CONNECTING) ? "enabled" : "disabled";
-		Log.i("DebugAct", "mobile status: "+mobileStatus);
-		Log.i("DebugAct", "wifi status: "+wifiStatus);
+		Log.i(LOG_TAG, "mobile status: "+mobileStatus);
+		Log.i(LOG_TAG, "wifi status: "+wifiStatus);
 	}
 
 	public void getAppUsage(View view) throws PackageManager.NameNotFoundException {

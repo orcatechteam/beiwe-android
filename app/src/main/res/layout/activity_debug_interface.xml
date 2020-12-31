@@ -26,6 +26,22 @@
 			android:onClick="checkConnectivityStatus"
 			android:text="(dev) Check Connectivity Status"
 			android:visibility="gone"/>
+		<Button
+			android:id="@+id/buttonDevLogSettings"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@android:color/holo_blue_bright"
+			android:onClick="logSettings"
+			android:text="(dev) Log Settings"
+			android:visibility="gone"/>
+		<Button
+			android:id="@+id/buttonDevCheckSettings"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@android:color/holo_blue_bright"
+			android:onClick="checkSettings"
+			android:text="(dev) Check Settings"
+			android:visibility="gone"/>
 
 		<TextView
 			android:id="@+id/debugtext2"

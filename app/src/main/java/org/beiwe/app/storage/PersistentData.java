@@ -1,4 +1,5 @@
 package org.beiwe.app.storage;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -152,6 +153,7 @@ public class PersistentData {
 	################################# Listener Settings ###################################
 	#####################################################################################*/
 
+	/*
 	public static boolean getAccelerometerEnabled(){ return pref.getBoolean(ACCELEROMETER, false); }
 	public static boolean getGyroscopeEnabled(){return pref.getBoolean(GYROSCOPE, false); }
 	public static boolean getGpsEnabled(){ return pref.getBoolean(GPS, false); }
@@ -160,8 +162,49 @@ public class PersistentData {
 	public static boolean getWifiEnabled(){ return pref.getBoolean(WIFI, false); }
 	public static boolean getBluetoothEnabled(){ return pref.getBoolean(BLUETOOTH, false); }
 	public static boolean getPowerStateEnabled(){ return pref.getBoolean(POWER_STATE, false); }
+	*/
 	public static boolean getAllowUploadOverCellularData(){ return pref.getBoolean(ALLOW_UPLOAD_OVER_CELLULAR_DATA, false); }
-	
+
+	public static boolean getAccelerometerEnabled() {
+		return getDataStreamVal(DataStream.accelerometer).isEnabled();
+	}
+	public static boolean getGyroscopeEnabled() {
+		return getDataStreamVal(DataStream.gyroscope).isEnabled();
+	}
+	public static boolean getGpsEnabled() {
+		return getDataStreamVal(DataStream.gps).isEnabled();
+	}
+	public static boolean getCallsEnabled() {
+		return getDataStreamVal(DataStream.calls).isEnabled();
+	}
+	public static boolean getTextsEnabled() {
+		return getDataStreamVal(DataStream.texts).isEnabled();
+	}
+	public static boolean getWifiEnabled() {
+		return getDataStreamVal(DataStream.wifi).isEnabled();
+	}
+	public static boolean getBluetoothEnabled() {
+		return getDataStreamVal(DataStream.bluetooth).isEnabled();
+	}
+	public static boolean getPowerStateEnabled() {
+		return getDataStreamVal(DataStream.power_state).isEnabled();
+	}
+
+	public static void setDataStreamVal(String key, String value) {
+		editor.putString(key, value);
+		editor.commit();
+	}
+
+	public static DataStreamPermission getDataStreamVal(DataStream ds) {
+		String defaultVal = "";
+		String dsVal = pref.getString(ds.toString(), defaultVal);
+		if (dsVal.equals(defaultVal)) {
+			return DataStreamPermission.requested;
+		}
+		return DataStreamPermission.valueOf(dsVal);
+	}
+
+/*
 	public static void setAccelerometerEnabled(boolean enabled) {
 		editor.putBoolean(ACCELEROMETER, enabled);
 		editor.commit(); }
@@ -186,6 +229,7 @@ public class PersistentData {
 	public static void setPowerStateEnabled(boolean enabled) {
 		editor.putBoolean(POWER_STATE, enabled);
 		editor.commit(); }
+*/
 	public static void setAllowUploadOverCellularData(boolean enabled) {
 		editor.putBoolean(ALLOW_UPLOAD_OVER_CELLULAR_DATA, enabled);
 		editor.commit(); }

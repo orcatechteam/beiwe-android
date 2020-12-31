@@ -8,21 +8,20 @@ import android.content.Context
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Build
-import android.provider.Settings
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.DEFAULT_ALL
 import androidx.core.app.NotificationManagerCompat
 import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
 import org.beiwe.app.R
 import org.beiwe.app.networking.PostRequest
 import org.beiwe.app.networking.PostRequest.addWebsitePrefix
+import org.beiwe.app.storage.DataStream
+import org.beiwe.app.storage.DataStreamPermission
 import org.beiwe.app.storage.PersistentData
 import org.beiwe.app.ui.user.MainMenuActivity
 import org.json.JSONException
 import org.json.JSONObject
-import kotlin.reflect.KFunction
 
 class SettingsListener(val appContext: Context) {
 	companion object {
@@ -32,7 +31,7 @@ class SettingsListener(val appContext: Context) {
 
 	val stopTime = System.currentTimeMillis() + 1000 * 60 * 60 // One hour to upload files
 	val settingsFrequency: Long = 1000 * 10 // 1000 * 60 * 60 * 24 // 24 hrs
-	private lateinit var existingSettings: MutableMap<String, Boolean>
+	private lateinit var existingSettings: MutableMap<String, DataStreamPermission>
 
 	fun checkSettings() {
 		Log.i("SettingsListener", "Checking settings...")
@@ -40,20 +39,16 @@ class SettingsListener(val appContext: Context) {
 		getExistingSettings()
 		val settingsURL = addWebsitePrefix("/download_settings")
 		SettingsAsyncTask(settingsURL).execute()
-		// @TODO [~] Start a countdown to stop checking after an hour of attempting using `stopTime`
+		// @TODO [~] Start a countdown to stop checking after an hour of attempting using `stopTime`???
 	}
 
 	private fun getExistingSettings() {
-		existingSettings = mutableMapOf(
-				"accelerometer" to PersistentData.getAccelerometerEnabled(),
-				"gps" to PersistentData.getGpsEnabled(),
-				"calls" to PersistentData.getCallsEnabled(),
-				"texts" to PersistentData.getTextsEnabled(),
-				"wifi" to PersistentData.getWifiEnabled(),
-				"bluetooth" to PersistentData.getBluetoothEnabled(),
-				"power_state" to PersistentData.getPowerStateEnabled(),
-				"gyro" to PersistentData.getGyroscopeEnabled()
-		)
+		if (!::existingSettings.isInitialized) {
+			existingSettings = mutableMapOf()
+		}
+		for (ds in DataStream.values()) {
+			existingSettings[ds.toString()] = PersistentData.getDataStreamVal(ds)
+		}
 	}
 
 	private fun createNotificationChannel() {
@@ -91,21 +86,20 @@ class SettingsListener(val appContext: Context) {
 		}
 	}
 
-	private fun marshalSettings() {
-
+	private fun marshalExistingSettings(): String? {
+		val gson = Gson()
+		return gson.toJson(existingSettings)
 	}
 
 	private fun processSettings(settings: JSONObject) {
-		val permissions = listOf<String>("requested", "denied", "enabled", "disabled")
 		val changes = ArrayList<SettingModel>()
 
-		// @TODO [X] Loop through all the settings and check PersistentData for value
 		settings.keys().forEach {
 			var sM: SettingModel? = null
 			if (existingSettings.containsKey(it)) {
-				sM = SettingModel(it, existingSettings.getValue(it), settings.getBoolean(it))
+				val settingPerm = DataStreamPermission.valueOf(settings.getString(it))
+				sM = SettingModel(it, existingSettings.getValue(it), settingPerm)
 			}
-			// @TODO [X] If incoming value != stored value, keep track of it somewhere so we can store the new value
 			if (sM != null && sM.isChanged()) {
 				changes.add(sM)
 				Log.i(LOG_TAG, sM.msg())
@@ -121,45 +115,43 @@ class SettingsListener(val appContext: Context) {
 			return
 		}
 
-		val setters = mapOf(
-				"accelerometer" to PersistentData::setAccelerometerEnabled,
-				"gps" to PersistentData::setGpsEnabled,
-				"calls" to PersistentData::setCallsEnabled,
-				"texts" to PersistentData::setTextsEnabled,
-				"wifi" to PersistentData::setWifiEnabled,
-				"bluetooth" to PersistentData::setBluetoothEnabled,
-				"power_state" to PersistentData::setPowerStateEnabled,
-				"gyro" to PersistentData::setGyroscopeEnabled
-		)
+		var uploadChanges = false
 
-		// @TODO [~] Take action on the settings that have changed
 		changed.forEach {
-			val (key) = it
-			Log.i(LOG_TAG, "`$key` is changed? ${it.isChanged()}")
-			Log.i(LOG_TAG, it.toString())
-			// @TODO [~] Save new setting
-			if (setters.containsKey(key)) {
-				Log.i(LOG_TAG, "Triggering notification for `$key`...")
-				setters[key]?.invoke(it.settingsEnabled)
-				existingSettings[key] = it.settingsEnabled
+			val (key, persistentData, incomingSettings) = it
+			var saveChange = false
 
-				// @TODO [X] Trigger notification
-				if (it.settingsEnabled) {
-					handleNotification(key)
-				}
+			// existing stream is "disabled" and will become "requested"
+			if (persistentData.isDisabled && incomingSettings.isRequested) {
+				Log.i(LOG_TAG, "`$key` will change from `disabled` to `requested`")
+				handleNotification(key)
+				saveChange = true
+			}
 
-				// @TODO [X] Send a report back to the server to update beiwe_device_settings
-				// @TODO [X] Create a settings JSON to send to the producer
-				val settingsUploadURL = addWebsitePrefix("/upload_settings")
-				SettingsUploadAsyncTask(settingsUploadURL).execute()
+			// existing stream is "enabled" and will become "disabled"
+			if (persistentData.isEnabled && incomingSettings.isDisabled) {
+				Log.i(LOG_TAG, "`$key` will change from `enabled` to `disabled`")
+				saveChange = true
+			}
+
+			if (saveChange) {
+				PersistentData.setDataStreamVal(key, incomingSettings.toString())
+				existingSettings[key] = incomingSettings
+				uploadChanges = true
 			}
 		}
-		// @TODO [~] Add a retry interval if the settings pull fails.
+
+		val settingsUploadURL = addWebsitePrefix("/upload_settings")
+		if (uploadChanges) {
+			SettingsUploadAsyncTask(settingsUploadURL).execute()
+		}
+
+		// @TODO [~] Add a retry interval if the settings pull fails???
 	}
 
 	private fun handleNotification(key: String) {
-		// @TODO [~] Update with an intent that will handle requesting the perm... check RegisterActivity or MainActivity
 		val intent = Intent(appContext, MainMenuActivity::class.java)
+		intent.putExtra("changedPermission", key)
 		val pendingIntent = PendingIntent.getActivity(appContext, 0, intent, 0)
 		val notification = NotificationCompat.Builder(appContext, APP_NOTIFICATION_CHANNEL_ID)
 				.run {
@@ -183,13 +175,13 @@ class SettingsListener(val appContext: Context) {
 		}
 	}
 
-	data class SettingModel(val key: String = "", val persistentDataEnabled: Boolean = false, val settingsEnabled: Boolean = false) {
+	data class SettingModel(val key: String = "", val persistentData: DataStreamPermission, val incomingSettings: DataStreamPermission) {
 		fun isChanged(): Boolean {
-			return settingsEnabled != persistentDataEnabled
+			return incomingSettings != persistentData
 		}
 
 		fun msg(): String {
-			return "${key}: persist: ${persistentDataEnabled}, settings: $settingsEnabled"
+			return "${key}: persist: ${persistentData}, incomingSettings: $incomingSettings"
 		}
 	}
 
@@ -213,14 +205,15 @@ class SettingsListener(val appContext: Context) {
 	@SuppressLint("StaticFieldLeak")
 	inner class SettingsUploadAsyncTask constructor(val url: String): AsyncTask<String, String, String>() {
 		override fun doInBackground(vararg params: String?): String? {
-			val gson = Gson()
-			val smJson = gson.toJson(existingSettings)
-			Log.d(LOG_TAG, "smJson: `$smJson`")
+			val existingSettingsJson = marshalExistingSettings()
+			Log.d(LOG_TAG, "existingSettingsJson: `$existingSettingsJson`")
+			/*
 			try {
 				return PostRequest.httpRequestString(PostRequest.makeParameter("settings", smJson), url)
 			} catch (e: Exception) {
 				Log.e(LOG_TAG, "SettingsUploadTask//error encountered: `$e`")
 			}
+			*/
 			return null
 		}
 
