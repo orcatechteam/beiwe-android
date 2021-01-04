@@ -47,6 +47,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 
 	//an unused variable for tracking whether the background Service is connected, uncomment if we ever need that.
 //	protected boolean isBound = false;
+	private static String LOG_TAG = "RunningBgSvcAct";
 	
 	/**The ServiceConnection Class is our trigger for events that rely on the BackgroundService */
 	protected ServiceConnection backgroundServiceConnection = new ServiceConnection() {
@@ -226,6 +227,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 
 	protected void checkPermissionsLogic() {
 		//gets called as part of onResume,
+		Log.i(LOG_TAG, "checkPermissionsLogic()...");
 		activityNotVisible = false;
 		// Log.i("sessionactivity", "checkPermissionsLogic");
 		// Log.i("sessionActivity", "prePromptActive: " + prePromptActive);
@@ -243,6 +245,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 			String permission = PermissionHandler.getNextPermission( getApplicationContext(), this.isAudioRecorderActivity() );
 			if (permission == null) { return; }
 //			Log.i("sessionActivity", "checking permissions for `"+permission+"`");
+			Log.i(LOG_TAG, "checking permissions for `"+permission+"`");
 
 			if (!prePromptActive && !postPromptActive && !powerPromptActive) {
 				if (permission.equals("android.permission.PACKAGE_USAGE_STATS")) {

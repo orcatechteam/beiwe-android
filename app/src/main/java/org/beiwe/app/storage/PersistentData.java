@@ -19,6 +19,8 @@ import java.util.Random;
  * Uses SharedPreferences in order to save username-password combinations.
  * @author Dor Samet, Eli Jones, Josh Zagorsky */
 public class PersistentData {
+	private static String LOG_TAG = "PersistentData";
+
 	public static String NULL_ID = "NULLID";
 	private static final long MAX_LONG = 9223372036854775807L;
 
@@ -166,28 +168,28 @@ public class PersistentData {
 	public static boolean getAllowUploadOverCellularData(){ return pref.getBoolean(ALLOW_UPLOAD_OVER_CELLULAR_DATA, false); }
 
 	public static boolean getAccelerometerEnabled() {
-		return getDataStreamVal(DataStream.accelerometer).isEnabled();
+		return getDataStreamVal(DataStream.accelerometer).isRequested();
 	}
 	public static boolean getGyroscopeEnabled() {
-		return getDataStreamVal(DataStream.gyroscope).isEnabled();
+		return getDataStreamVal(DataStream.gyro).isRequested();
 	}
 	public static boolean getGpsEnabled() {
-		return getDataStreamVal(DataStream.gps).isEnabled();
+		return getDataStreamVal(DataStream.gps).isRequested();
 	}
 	public static boolean getCallsEnabled() {
-		return getDataStreamVal(DataStream.calls).isEnabled();
+		return getDataStreamVal(DataStream.calls).isRequested();
 	}
 	public static boolean getTextsEnabled() {
-		return getDataStreamVal(DataStream.texts).isEnabled();
+		return getDataStreamVal(DataStream.texts).isRequested();
 	}
 	public static boolean getWifiEnabled() {
-		return getDataStreamVal(DataStream.wifi).isEnabled();
+		return getDataStreamVal(DataStream.wifi).isRequested();
 	}
 	public static boolean getBluetoothEnabled() {
-		return getDataStreamVal(DataStream.bluetooth).isEnabled();
+		return getDataStreamVal(DataStream.bluetooth).isRequested();
 	}
 	public static boolean getPowerStateEnabled() {
-		return getDataStreamVal(DataStream.power_state).isEnabled();
+		return getDataStreamVal(DataStream.power_state).isRequested();
 	}
 
 	public static void setDataStreamVal(String key, String value) {

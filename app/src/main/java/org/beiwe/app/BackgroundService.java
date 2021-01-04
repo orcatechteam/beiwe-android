@@ -17,6 +17,8 @@ import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.networking.SurveyDownloader;
+import org.beiwe.app.storage.DataStream;
+import org.beiwe.app.storage.DataStreamPermission;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.SurveyScheduler;
@@ -64,6 +66,8 @@ public class BackgroundService extends Service {
 	//begin to run with an already fully instantiated background service.
 	private static BackgroundService localHandle;
 
+	private static String LOG_TAG = "BgSvc";
+
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here. */
 	public void onCreate() {
@@ -89,6 +93,7 @@ public class BackgroundService extends Service {
 	}
 
 	public void doSetup() {
+		Log.i(LOG_TAG, "doSetup()...");
 		//Accelerometer and power state don't need permissons
 		startPowerStateListener();
 		gpsListener = new GPSListener(appContext); // Permissions are checked in the broadcast receiver
@@ -367,6 +372,7 @@ public class BackgroundService extends Service {
 					return;
 				}
 				accelerometerListener.turn_on();
+				PersistentData.setDataStreamVal(DataStream.accelerometer.toString(), DataStreamPermission.enabled.toString());
 				//start both the sensor-off-action timer, and the next sensor-on-timer.
 				timer.setupExactSingleAlarm(PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getAccelerometerOffDurationMilliseconds() + PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOnIntent);
@@ -381,6 +387,7 @@ public class BackgroundService extends Service {
 					return;
 				}
 				gyroscopeListener.turn_on();
+				PersistentData.setDataStreamVal(DataStream.gyro.toString(), DataStreamPermission.enabled.toString());
 				//start both the sensor-off-action timer, and the next sensor-on-timer.
 				timer.setupExactSingleAlarm(PersistentData.getGyroscopeOnDurationMilliseconds(), Timer.gyroscopeOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getGyroscopeOffDurationMilliseconds() + PersistentData.getGyroscopeOnDurationMilliseconds(), Timer.gyroscopeOnIntent);
@@ -395,6 +402,8 @@ public class BackgroundService extends Service {
 					return;
 				}
 				gpsListener.turn_on();
+				Log.i(LOG_TAG, "gps has been enabled!!!");
+				PersistentData.setDataStreamVal(DataStream.gps.toString(), DataStreamPermission.enabled.toString());
 				timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds() + PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_gps_on), alarmTime );
@@ -489,13 +498,18 @@ public class BackgroundService extends Service {
 
 			if (broadcastAction.equals( appContext.getString(R.string.check_for_sms_enabled) ) ) {
 				if ( PermissionHandler.confirmTexts(appContext) ) {
-					startSmsSentLogger(); startMmsSentLogger();
+					Log.i(LOG_TAG, "texts have been enabled!!!");
+					PersistentData.setDataStreamVal(DataStream.texts.toString(), DataStreamPermission.enabled.toString());
+					startSmsSentLogger();
+					startMmsSentLogger();
 				} else if (PersistentData.getTextsEnabled() ) {
 					timer.setupExactSingleAlarm(30000L, Timer.checkForSMSEnabled);
 				}
 			}
 			if (broadcastAction.equals( appContext.getString(R.string.check_for_calls_enabled) ) ) {
 				if ( PermissionHandler.confirmCalls(appContext) ) {
+					Log.i(LOG_TAG, "calls have been enabled!!!");
+					PersistentData.setDataStreamVal(DataStream.calls.toString(), DataStreamPermission.enabled.toString());
 					startCallLogger();
 				} else if (PersistentData.getCallsEnabled() ) {
 					timer.setupExactSingleAlarm(30000L, Timer.checkForCallsEnabled);

@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PermissionHandler {
+	private static String LOG_TAG = "PermissionHandler";
+
 	public static final int PERMISSION_GRANTED = PackageManager.PERMISSION_GRANTED;
 	public static int PERMISSION_DENIED = PackageManager.PERMISSION_DENIED;
 	public static String POWER_EXCEPTION_PERMISSION = "POWER_EXCEPTION_PERMISSION";
@@ -107,7 +109,10 @@ public class PermissionHandler {
 	public static Boolean checkAccessRecordAudio(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PERMISSION_GRANTED;} else { return true; } }
 	
 	public static boolean checkGpsPermissions( Context context ) { return ( checkAccessFineLocation(context) ); }
-	public static boolean checkCallsPermissions( Context context ) { return ( checkAccessReadPhoneState(context) && checkAccessCallPhone(context) && checkAccessReadCallLog(context) ); }
+	public static boolean checkCallsPermissions( Context context ) {
+		Log.i(LOG_TAG, "checkCallsPermissions()...");
+		return ( checkAccessReadPhoneState(context) && checkAccessCallPhone(context) && checkAccessReadCallLog(context) );
+	}
 	public static boolean checkTextsPermissions( Context context ) { return ( checkAccessReadContacts(context) && checkAccessReadSms(context) && checkAccessReceiveMms(context) && checkAccessReceiveSms(context) ); }
 	// TODO: for unknown reasons, at some point in the past, the checkwifipermissions function included checkAccessCoarseLocation. This has been removed and tested on chris' android 6.0 phone and the nexus 7 tablet and does not appear to be necessary.
 	// TODO: We may need to re-enable this function because course location is required for wifi on Google Pixel phone as if Android 8.1.0
