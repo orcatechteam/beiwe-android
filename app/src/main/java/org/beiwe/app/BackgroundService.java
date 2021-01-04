@@ -93,15 +93,36 @@ public class BackgroundService extends Service {
 		startPowerStateListener();
 		gpsListener = new GPSListener(appContext); // Permissions are checked in the broadcast receiver
 		WifiListener.initialize( appContext );
-		if ( PersistentData.getAccelerometerEnabled() ) { accelerometerListener = new AccelerometerListener( appContext ); }
-		if ( PersistentData.getGyroscopeEnabled() ) { gyroscopeListener = new GyroscopeListener( appContext ); }
+		// @TODO [~] Update to support ENUM
+		if ( PersistentData.getAccelerometerEnabled() ) {
+			Log.i(LOG_TAG, "setting up accelerometer listener...");
+			accelerometerListener = new AccelerometerListener( appContext );
+		}
+		if ( PersistentData.getGyroscopeEnabled() ) {
+			Log.i(LOG_TAG, "setting up gyroscope listener...");
+			gyroscopeListener = new GyroscopeListener( appContext );
+		}
 		//Bluetooth, wifi, gps, calls, and texts need permissions
-		if ( PermissionHandler.confirmBluetooth(appContext)) { startBluetooth(); }
+		if ( PermissionHandler.confirmBluetooth(appContext)) {
+			Log.i(LOG_TAG, "setting up bluetooth...");
+			startBluetooth();
+		}
 //		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
-		if ( PermissionHandler.confirmTexts(appContext) ) { startSmsSentLogger(); startMmsSentLogger(); }
-		else if(PersistentData.getTextsEnabled() ){ sendBroadcast(Timer.checkForSMSEnabled); }
-		if ( PermissionHandler.confirmCalls(appContext) ) { startCallLogger(); }
-		else if (PersistentData.getCallsEnabled() ) { sendBroadcast(Timer.checkForCallsEnabled); }
+		if ( PermissionHandler.confirmTexts(appContext) ) {
+			Log.i(LOG_TAG, "setting up sms/mms...");
+			startSmsSentLogger();
+			startMmsSentLogger();
+		} else if (PersistentData.getTextsEnabled() ) {
+			Log.i(LOG_TAG, "scheduling timer for sms check...");
+			sendBroadcast(Timer.checkForSMSEnabled);
+		}
+		if ( PermissionHandler.confirmCalls(appContext) ) {
+			Log.i(LOG_TAG, "setting up calls...");
+			startCallLogger();
+		}  else if (PersistentData.getCallsEnabled() ) {
+			Log.i(LOG_TAG, "scheduling timer for calls check...");
+			sendBroadcast(Timer.checkForCallsEnabled);
+		}
 		//Only do the following if the device is registered
 		if ( PersistentData.isRegistered() ) {
 			DeviceInfo.initialize( appContext ); //if at registration this has already been initialized. (we don't care.)
@@ -327,28 +348,38 @@ public class BackgroundService extends Service {
 			/* Disable active sensor */
 			if (Objects.requireNonNull(broadcastAction).equals( appContext.getString(R.string.turn_accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
-				return; }
+				return;
+			}
 			if (broadcastAction.equals( appContext.getString(R.string.turn_gyroscope_off) ) ) {
 				gyroscopeListener.turn_off();
-				return; }
+				return;
+			}
 			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_off) ) ) {
 				if ( PermissionHandler.checkGpsPermissions(appContext) ) { gpsListener.turn_off(); }
-				return; }
+				return;
+			}
 
 			/* Enable active sensors, reset timers. */
 			//Accelerometer. We automatically have permissions required for accelerometer.
 			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_on) ) ) {
-				if ( !PersistentData.getAccelerometerEnabled() ) { Log.e("BackgroundService Listener", "invalid Accelerometer on received"); return; }
+				if ( !PersistentData.getAccelerometerEnabled() ) {
+					Log.e("BackgroundService Listener", "invalid Accelerometer on received");
+					return;
+				}
 				accelerometerListener.turn_on();
 				//start both the sensor-off-action timer, and the next sensor-on-timer.
 				timer.setupExactSingleAlarm(PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getAccelerometerOffDurationMilliseconds() + PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOnIntent);
 				//record the system time that the next alarm is supposed to go off at, so that we can recover in the event of a reboot or crash.
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_accelerometer_on), alarmTime );
-				return; }
+				return;
+			}
 			//Gyroscope. Almost identical logic to accelerometer above.
 			if (broadcastAction.equals( appContext.getString(R.string.turn_gyroscope_on) ) ) {
-				if ( !PersistentData.getGyroscopeEnabled() || !gyroscopeListener.exists ) { Log.e("BackgroundService Listener", "invalid Gyroscope on received"); return; }
+				if ( !PersistentData.getGyroscopeEnabled() || !gyroscopeListener.exists ) {
+					Log.e("BackgroundService Listener", "invalid Gyroscope on received");
+					return;
+				}
 				gyroscopeListener.turn_on();
 				//start both the sensor-off-action timer, and the next sensor-on-timer.
 				timer.setupExactSingleAlarm(PersistentData.getGyroscopeOnDurationMilliseconds(), Timer.gyroscopeOffIntent);
@@ -359,35 +390,54 @@ public class BackgroundService extends Service {
 			}
 			//GPS. Almost identical logic to accelerometer above.
 			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_on) ) ) {
-				if ( !PersistentData.getGpsEnabled() ) { Log.e("BackgroundService Listener", "invalid GPS on received"); return; }
+				if ( !PersistentData.getGpsEnabled() ) {
+					Log.e("BackgroundService Listener", "invalid GPS on received");
+					return;
+				}
 				gpsListener.turn_on();
 				timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds() + PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_gps_on), alarmTime );
-				return; }
+				return;
+			}
 			//run a wifi scan.  Most similar to GPS, but without an off-timer.
 			if (broadcastAction.equals( appContext.getString(R.string.run_wifi_log) ) ) {
-				if ( !PersistentData.getWifiEnabled() ) { Log.e("BackgroundService Listener", "invalid WiFi scan received"); return; }
-				if ( PermissionHandler.checkWifiPermissions(appContext) ) { WifiListener.scanWifi(); }
-				else { TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " user has not provided permission for Wifi."); }
+				if ( !PersistentData.getWifiEnabled() ) {
+					Log.e("BackgroundService Listener", "invalid WiFi scan received");
+					return;
+				}
+				if ( PermissionHandler.checkWifiPermissions(appContext) ) {
+					WifiListener.scanWifi();
+				} else {
+					TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " user has not provided permission for Wifi.");
+				}
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getWifiLogFrequencyMilliseconds(), Timer.wifiLogIntent);
 				PersistentData.setMostRecentAlarmTime( getString(R.string.run_wifi_log), alarmTime );
-				return; }
+				return;
+			}
 			
 			/* Bluetooth timers are unlike GPS and Accelerometer because it uses an absolute-point-in-time as a trigger, and therefore we don't need to store most-recent-timer state.
 			  The Bluetooth-on action sets the corresponding Bluetooth-off timer, the Bluetooth-off action sets the next Bluetooth-on timer.*/
 			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_on) ) ) {
-				if ( !PersistentData.getBluetoothEnabled() ) { Log.e("BackgroundService Listener", "invalid Bluetooth on received"); return; }
+				if ( !PersistentData.getBluetoothEnabled() ) {
+					Log.e("BackgroundService Listener", "invalid Bluetooth on received");
+					return;
+				}
 				if ( PermissionHandler.checkBluetoothPermissions(appContext) ) {
-					if (bluetoothListener != null) bluetoothListener.enableBLEScan(); }
-				else { TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " user has not provided permission for Bluetooth."); }
+					if (bluetoothListener != null) bluetoothListener.enableBLEScan();
+				} else {
+					TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " user has not provided permission for Bluetooth.");
+				}
 				timer.setupExactSingleAlarm(PersistentData.getBluetoothOnDurationMilliseconds(), Timer.bluetoothOffIntent);
-				return; }
+				return;
+			}
 			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_off) ) ) {
 				if ( PermissionHandler.checkBluetoothPermissions(appContext) ) {
-					if ( bluetoothListener != null) bluetoothListener.disableBLEScan(); }
+					if ( bluetoothListener != null) bluetoothListener.disableBLEScan();
+				}
 				timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
-				return; }
+				return;
+			}
 
 			if (broadcastAction.equals(appContext.getString(R.string.check_settings))) {
 				// @TODO [~] Add 24 hour timer for checking settings...
@@ -412,44 +462,56 @@ public class BackgroundService extends Service {
 			if (broadcastAction.equals( appContext.getString(R.string.upload_data_files_intent) ) ) {
 				PostRequest.uploadAllFiles();
 				timer.setupExactSingleAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent);
-				return; }
+				return;
+			}
 			//creates new data files
 			if (broadcastAction.equals( appContext.getString(R.string.create_new_data_files_intent) ) ) {
 				TextFileManager.makeNewFilesForEverything();
 				timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent);
                 PostRequest.uploadAllFiles();
-				return; }
+				return;
+			}
+
 			//Downloads the most recent survey questions and schedules the surveys.
 			if (broadcastAction.equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
 				SurveyDownloader.downloadSurveys( getApplicationContext() );
 				timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent);
-				return; }
+				return;
+			}
 			// Signs out the user. (does not set up a timer, that is handled in activity and sign-in logic)
 			if (broadcastAction.equals( appContext.getString(R.string.signout_intent) ) ) {
 				PersistentData.logout();
 				Intent loginPage = new Intent(appContext, LoginActivity.class);
 				loginPage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				appContext.startActivity(loginPage);
-				return; }
+				return;
+			}
 
 			if (broadcastAction.equals( appContext.getString(R.string.check_for_sms_enabled) ) ) {
-				if ( PermissionHandler.confirmTexts(appContext) ) { startSmsSentLogger(); startMmsSentLogger(); }
-				else if (PersistentData.getTextsEnabled() ) { timer.setupExactSingleAlarm(30000L, Timer.checkForSMSEnabled); }
+				if ( PermissionHandler.confirmTexts(appContext) ) {
+					startSmsSentLogger(); startMmsSentLogger();
+				} else if (PersistentData.getTextsEnabled() ) {
+					timer.setupExactSingleAlarm(30000L, Timer.checkForSMSEnabled);
+				}
 			}
 			if (broadcastAction.equals( appContext.getString(R.string.check_for_calls_enabled) ) ) {
-				if ( PermissionHandler.confirmCalls(appContext) ) { startCallLogger(); }
-				else if (PersistentData.getCallsEnabled() ) { timer.setupExactSingleAlarm(30000L, Timer.checkForCallsEnabled); }
+				if ( PermissionHandler.confirmCalls(appContext) ) {
+					startCallLogger();
+				} else if (PersistentData.getCallsEnabled() ) {
+					timer.setupExactSingleAlarm(30000L, Timer.checkForCallsEnabled);
+				}
 			}
 			//checks if the action is the id of a survey (expensive), if so pop up the notification for that survey, schedule the next alarm
 			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
 //				Log.i("BACKGROUND SERVICE", "new notification: " + broadcastAction);
 				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
 				SurveyScheduler.scheduleSurvey(broadcastAction);
-				return; }
+				return;
+			}
 
 			if ( PersistentData.isRegistered() && broadcastAction.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
 				NetworkInfo networkInfo = intent.getParcelableExtra(ConnectivityManager.EXTRA_NETWORK_INFO);
-				if(Objects.requireNonNull(networkInfo).getType() == ConnectivityManager.TYPE_WIFI) {
+				if (Objects.requireNonNull(networkInfo).getType() == ConnectivityManager.TYPE_WIFI) {
 					PostRequest.uploadAllFiles();
 					return;
 				}
@@ -457,13 +519,13 @@ public class BackgroundService extends Service {
 
 			//this is a special action that will only run if the app device is in debug mode.
 			if (broadcastAction.equals("crashBeiwe") && BuildConfig.APP_IS_BETA) {
-				throw new NullPointerException("beeeeeoooop."); }
+				throw new NullPointerException("beeeeeoooop.");
+			}
 			//this is a special action that will only run if the app device is in debug mode.
 			if (broadcastAction.equals("enterANR") && BuildConfig.APP_IS_BETA) {
 				try {
 					Thread.sleep(100000);
-				}
-				catch(InterruptedException ie) {
+				} catch(InterruptedException ie) {
 					ie.printStackTrace();
 				}
 			}
