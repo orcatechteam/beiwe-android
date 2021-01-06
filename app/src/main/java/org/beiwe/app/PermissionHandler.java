@@ -137,17 +137,6 @@ public class PermissionHandler {
 		Log.i(LOG_TAG, "checkTextsPermissions()...");
 		Boolean checkAccessReadSms = checkAccessReadSms(context);
 		Boolean checkAccessReceiveSms = checkAccessReceiveSms(context);
-/*
-		if (!checkAccessReadSms && !checkAccessReceiveSms) {
-			// update settings if sms is permission denied
-			Boolean receiveSMSDenied = context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PERMISSION_DENIED;
-			Boolean readSMSDenied = context.checkSelfPermission(Manifest.permission.READ_SMS) == PERMISSION_DENIED;
-			if (receiveSMSDenied && readSMSDenied) {
-				Log.i(LOG_TAG, "Setting texts to `denied`...");
-				PersistentData.setDataStreamVal(DataStream.texts.toString(), DataStreamPermission.denied.toString());
-			}
-		}
-*/
 		return (
 			checkAccessReadContacts(context) &&
 			checkAccessReadSms &&
@@ -171,25 +160,35 @@ public class PermissionHandler {
 	public static String getNextPermission(Context context, Boolean includeRecording) {
 		Log.i(LOG_TAG, "getNextPermission()...");
 		if (PersistentData.getGpsEnabled()) {
-			if ( !checkAccessFineLocation(context) ) { return Manifest.permission.ACCESS_FINE_LOCATION; } }
+			if ( !checkAccessFineLocation(context) ) return Manifest.permission.ACCESS_FINE_LOCATION;
+			if (PermissionHandler.confirmGps(context)) {
+				Log.i(LOG_TAG, "gps has been enabled!!!");
+				PersistentData.setDataStreamVal(DataStream.gps.toString(), DataStreamPermission.enabled.toString());
+			}
+		}
 		if (PersistentData.getWifiEnabled()) {
 			if ( !checkAccessWifiState(context)) return Manifest.permission.ACCESS_WIFI_STATE;
 			if ( !checkAccessNetworkState(context)) return Manifest.permission.ACCESS_NETWORK_STATE;
 			if ( !checkAccessCoarseLocation(context)) return Manifest.permission.ACCESS_COARSE_LOCATION;
-			if ( !checkAccessFineLocation(context)) return Manifest.permission.ACCESS_FINE_LOCATION; }
+			if ( !checkAccessFineLocation(context)) return Manifest.permission.ACCESS_FINE_LOCATION;
+		}
 		if (PersistentData.getBluetoothEnabled()) {
 			if ( !checkAccessBluetooth(context)) return Manifest.permission.BLUETOOTH;
-			if ( !checkAccessBluetoothAdmin(context)) return Manifest.permission.BLUETOOTH_ADMIN; }
+			if ( !checkAccessBluetoothAdmin(context)) return Manifest.permission.BLUETOOTH_ADMIN;
+		}
 		if (PersistentData.getCallsEnabled() && BuildConfig.READ_TEXT_AND_CALL_LOGS) {
 			if ( !checkAccessReadPhoneState(context)) return Manifest.permission.READ_PHONE_STATE;  
-			if ( !checkAccessReadCallLog(context)) return Manifest.permission.READ_CALL_LOG; }
+			if ( !checkAccessReadCallLog(context)) return Manifest.permission.READ_CALL_LOG;
+		}
 		if (PersistentData.getTextsEnabled() && BuildConfig.READ_TEXT_AND_CALL_LOGS) {
 			if ( !checkAccessReadContacts(context)) return Manifest.permission.READ_CONTACTS;  
 			if ( !checkAccessReadSms(context)) return Manifest.permission.READ_SMS;
 			if ( !checkAccessReceiveMms(context)) return Manifest.permission.RECEIVE_MMS;
-			if ( !checkAccessReceiveSms(context)) return Manifest.permission.RECEIVE_SMS; }
+			if ( !checkAccessReceiveSms(context)) return Manifest.permission.RECEIVE_SMS;
+		}
 		if (includeRecording) {
-			if ( !checkAccessRecordAudio(context)) { return Manifest.permission.RECORD_AUDIO; } }
+			if ( !checkAccessRecordAudio(context)) return Manifest.permission.RECORD_AUDIO;
+		}
 
 		//The phone call permission is invariant, it is required for all studies in order for the
 		// call clinician functionality to work

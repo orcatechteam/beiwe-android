@@ -206,32 +206,18 @@ public class PersistentData {
 		return DataStreamPermission.valueOf(dsVal);
 	}
 
-/*
-	public static void setAccelerometerEnabled(boolean enabled) {
-		editor.putBoolean(ACCELEROMETER, enabled);
-		editor.commit(); }
-	public static void setGyroscopeEnabled(boolean enabled) {
-		editor.putBoolean(GYROSCOPE, enabled);
-		editor.commit(); }
-	public static void setGpsEnabled(boolean enabled) {
-		editor.putBoolean(GPS, enabled);
-		editor.commit(); }
-	public static void setCallsEnabled(boolean enabled) {
-		editor.putBoolean(CALLS, enabled);
-		editor.commit(); }
-	public static void setTextsEnabled(boolean enabled) {
-		editor.putBoolean(TEXTS, enabled);
-		editor.commit(); }
-	public static void setWifiEnabled(boolean enabled) {
-		editor.putBoolean(WIFI, enabled);
-		editor.commit(); }
-	public static void setBluetoothEnabled(boolean enabled) {
-		editor.putBoolean(BLUETOOTH, enabled);
-		editor.commit(); }
-	public static void setPowerStateEnabled(boolean enabled) {
-		editor.putBoolean(POWER_STATE, enabled);
-		editor.commit(); }
-*/
+	public static boolean hasHandledAllDataStreamPermissions() {
+		boolean handled = true;
+		for (DataStream ds : DataStream.values()) {
+			DataStreamPermission dsVal = getDataStreamVal(ds);
+			if (dsVal.isRequested()) {
+				handled = false;
+				break;
+			}
+		}
+		return handled;
+	}
+
 	public static void setAllowUploadOverCellularData(boolean enabled) {
 		editor.putBoolean(ALLOW_UPLOAD_OVER_CELLULAR_DATA, enabled);
 		editor.commit(); }

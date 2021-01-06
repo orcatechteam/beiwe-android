@@ -4,18 +4,21 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.networking.SurveyDownloader;
+import org.beiwe.app.storage.DataStream;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.LoadingActivity;
 
 public class ConsentFormActivity extends RunningBackgroundServiceActivity {
-	
+	private static String LOG_TAG = "ConsentFormActivity";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,6 +50,10 @@ public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 	public void consentButton(View view) {
 		PersistentData.setRegistered(true);
 		PersistentData.loginOrRefreshLogin();
+
+		for (DataStream ds : DataStream.values()) {
+			Log.i(LOG_TAG, ds.toString() + ": " + PersistentData.getDataStreamVal(ds));
+		}
 
 		// Download the survey questions and schedule the surveys
 		SurveyDownloader.downloadSurveys(getApplicationContext());

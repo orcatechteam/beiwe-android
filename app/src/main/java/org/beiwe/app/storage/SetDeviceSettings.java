@@ -21,7 +21,7 @@ public class SetDeviceSettings {
 				case wifi:
 					dsPermissionVal = DataStreamPermission.enabled.toString();
 					break;
-				// i.e. accelerometer, gyro, wifi, power_state;
+				// i.e. accelerometer, gyro, gps, calls, texts
 				default:
 					dsPermissionVal = deviceSettings.getString(ds.toString());
 			}

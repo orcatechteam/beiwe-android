@@ -402,8 +402,6 @@ public class BackgroundService extends Service {
 					return;
 				}
 				gpsListener.turn_on();
-				Log.i(LOG_TAG, "gps has been enabled!!!");
-				PersistentData.setDataStreamVal(DataStream.gps.toString(), DataStreamPermission.enabled.toString());
 				timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds() + PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_gps_on), alarmTime );
@@ -449,10 +447,13 @@ public class BackgroundService extends Service {
 			}
 
 			if (broadcastAction.equals(appContext.getString(R.string.check_settings))) {
-				// @TODO [~] Add 24 hour timer for checking settings...
-				if (PersistentData.isRegistered()) {
+				// avoid checking settings until registration is done & permissions have been handled
+				if (PersistentData.isRegistered() && PersistentData.hasHandledAllDataStreamPermissions()) {
 					settingsListener.checkSettings();
+				} else {
+					Log.i(LOG_TAG, "Skipping check settings...");
 				}
+				// @TODO [~] Add 24 hour timer for checking settings...
 				timer.setupExactSingleAlarm(settingsListener.getSettingsFrequency(), Timer.checkSettingsIntent);
 				return;
 			}

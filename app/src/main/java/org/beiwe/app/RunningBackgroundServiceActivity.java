@@ -268,6 +268,31 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 				if (shouldShowRequestPermissionRationale(permission)) {
 					if (!prePromptActive && !postPromptActive) {
 						Log.i(LOG_TAG, "bumping perm: `"+permission+"`");
+						Context ctx = getApplicationContext();
+						switch (permission) {
+							case Manifest.permission.ACCESS_FINE_LOCATION:
+								boolean accessFineLocationDenied = ctx.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PermissionHandler.PERMISSION_DENIED;
+								if (accessFineLocationDenied) {
+									PersistentData.setDataStreamVal(DataStream.gps.toString(), DataStreamPermission.denied.toString());
+								}
+								break;
+							case Manifest.permission.RECEIVE_SMS:
+							case Manifest.permission.READ_SMS:
+								boolean receiveSMSDenied = ctx.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PermissionHandler.PERMISSION_DENIED;
+								boolean readSMSDenied = ctx.checkSelfPermission(Manifest.permission.READ_SMS) == PermissionHandler.PERMISSION_DENIED;
+								if (readSMSDenied || receiveSMSDenied) {
+									PersistentData.setDataStreamVal(DataStream.texts.toString(), DataStreamPermission.denied.toString());
+								}
+								break;
+							case Manifest.permission.READ_CALL_LOG:
+							case Manifest.permission.READ_PHONE_STATE:
+								boolean readCallLogDenied = ctx.checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PermissionHandler.PERMISSION_DENIED;
+								boolean readPhoneStateDenied = ctx.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PermissionHandler.PERMISSION_DENIED;
+								if (readCallLogDenied || readPhoneStateDenied) {
+									PersistentData.setDataStreamVal(DataStream.calls.toString(), DataStreamPermission.denied.toString());
+								}
+								break;
+						}
 						showAlertThatForcesUserToGrantPermission(
 							this,
 							PermissionHandler.getBumpingPermissionMessage(permission),
