@@ -11,6 +11,8 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import org.beiwe.app.storage.DataStream;
+import org.beiwe.app.storage.DataStreamPermission;
 import org.beiwe.app.storage.PersistentData;
 
 import java.util.Collections;
@@ -99,21 +101,60 @@ public class PermissionHandler {
 	public static Boolean checkAccessWifiState(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PERMISSION_GRANTED; } else { return true; } }
 	public static Boolean checkAccessBluetooth(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.BLUETOOTH) == PERMISSION_GRANTED; } else { return true; } }
 	public static Boolean checkAccessBluetoothAdmin(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkAccessCallPhone(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.CALL_PHONE) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessCallPhone(Context context) {
+		if ( android.os.Build.VERSION.SDK_INT >= 23) {
+			return context.checkSelfPermission(Manifest.permission.CALL_PHONE) == PERMISSION_GRANTED; } else { return true; } }
 	public static Boolean checkAccessReadCallLog(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PERMISSION_GRANTED; } else { return true; } }
 	public static Boolean checkAccessReadContacts(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PERMISSION_GRANTED; } else { return true; } }
 	public static Boolean checkAccessReadPhoneState(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkAccessReadSms(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_SMS) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessReadSms(Context context) {
+		if ( android.os.Build.VERSION.SDK_INT >= 23) {
+			return context.checkSelfPermission(Manifest.permission.READ_SMS) == PERMISSION_GRANTED;
+		} else {
+			return true;
+		}
+	}
 	public static Boolean checkAccessReceiveMms(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECEIVE_MMS) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkAccessReceiveSms(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessReceiveSms(Context context) {
+		if ( android.os.Build.VERSION.SDK_INT >= 23) {
+			return context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PERMISSION_GRANTED;
+		} else {
+			return true;
+		}
+	}
 	public static Boolean checkAccessRecordAudio(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PERMISSION_GRANTED;} else { return true; } }
 	
 	public static boolean checkGpsPermissions( Context context ) { return ( checkAccessFineLocation(context) ); }
 	public static boolean checkCallsPermissions( Context context ) {
 		Log.i(LOG_TAG, "checkCallsPermissions()...");
-		return ( checkAccessReadPhoneState(context) && checkAccessCallPhone(context) && checkAccessReadCallLog(context) );
+		return (
+			checkAccessReadPhoneState(context) &&
+			checkAccessCallPhone(context) &&
+			checkAccessReadCallLog(context)
+		);
 	}
-	public static boolean checkTextsPermissions( Context context ) { return ( checkAccessReadContacts(context) && checkAccessReadSms(context) && checkAccessReceiveMms(context) && checkAccessReceiveSms(context) ); }
+	public static boolean checkTextsPermissions( Context context ) {
+		Log.i(LOG_TAG, "checkTextsPermissions()...");
+		Boolean checkAccessReadSms = checkAccessReadSms(context);
+		Boolean checkAccessReceiveSms = checkAccessReceiveSms(context);
+/*
+		if (!checkAccessReadSms && !checkAccessReceiveSms) {
+			// update settings if sms is permission denied
+			Boolean receiveSMSDenied = context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PERMISSION_DENIED;
+			Boolean readSMSDenied = context.checkSelfPermission(Manifest.permission.READ_SMS) == PERMISSION_DENIED;
+			if (receiveSMSDenied && readSMSDenied) {
+				Log.i(LOG_TAG, "Setting texts to `denied`...");
+				PersistentData.setDataStreamVal(DataStream.texts.toString(), DataStreamPermission.denied.toString());
+			}
+		}
+*/
+		return (
+			checkAccessReadContacts(context) &&
+			checkAccessReadSms &&
+			checkAccessReceiveMms(context) &&
+			checkAccessReceiveSms
+		);
+	}
 	// TODO: for unknown reasons, at some point in the past, the checkwifipermissions function included checkAccessCoarseLocation. This has been removed and tested on chris' android 6.0 phone and the nexus 7 tablet and does not appear to be necessary.
 	// TODO: We may need to re-enable this function because course location is required for wifi on Google Pixel phone as if Android 8.1.0
 	// public static boolean checkWifiPermissions( Context context ) { return ( checkAccessWifiState(context) && checkAccessNetworkState(context) && checkAccessCoarseLocation(context) ) ; }
@@ -128,6 +169,7 @@ public class PermissionHandler {
 	
 	@RequiresApi(api = Build.VERSION_CODES.M)
 	public static String getNextPermission(Context context, Boolean includeRecording) {
+		Log.i(LOG_TAG, "getNextPermission()...");
 		if (PersistentData.getGpsEnabled()) {
 			if ( !checkAccessFineLocation(context) ) { return Manifest.permission.ACCESS_FINE_LOCATION; } }
 		if (PersistentData.getWifiEnabled()) {
@@ -148,9 +190,6 @@ public class PermissionHandler {
 			if ( !checkAccessReceiveSms(context)) return Manifest.permission.RECEIVE_SMS; }
 		if (includeRecording) {
 			if ( !checkAccessRecordAudio(context)) { return Manifest.permission.RECORD_AUDIO; } }
-		if (!checkAppUsagePermission(context)) {
-			return Manifest.permission.PACKAGE_USAGE_STATS;
-		}
 
 		//The phone call permission is invariant, it is required for all studies in order for the
 		// call clinician functionality to work
@@ -161,6 +200,10 @@ public class PermissionHandler {
 			if (! pm.isIgnoringBatteryOptimizations(context.getPackageName()) ) {
 				return POWER_EXCEPTION_PERMISSION;
 			}
+		}
+
+		if (!checkAppUsagePermission(context)) {
+			return Manifest.permission.PACKAGE_USAGE_STATS;
 		}
 		return null;
 	}

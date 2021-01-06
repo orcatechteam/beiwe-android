@@ -1,5 +1,6 @@
 package org.beiwe.app;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -21,6 +22,8 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
+import org.beiwe.app.storage.DataStream;
+import org.beiwe.app.storage.DataStreamPermission;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.user.AboutActivityLoggedOut;
 
@@ -264,14 +267,15 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 				// Log.d("sessionActivity", "shouldShowRequestPermissionRationale "+ permission +": " + shouldShowRequestPermissionRationale( permission ) );
 				if (shouldShowRequestPermissionRationale(permission)) {
 					if (!prePromptActive && !postPromptActive) {
+						Log.i(LOG_TAG, "bumping perm: `"+permission+"`");
 						showAlertThatForcesUserToGrantPermission(
 							this,
 							PermissionHandler.getBumpingPermissionMessage(permission),
 							PermissionHandler.permissionMap.get(permission)
 						);
 					}
-				}
-				else if (!prePromptActive && !postPromptActive) {
+				} else if (!prePromptActive && !postPromptActive) {
+					Log.i(LOG_TAG, "showing regular perm: `"+permission+"`");
 					showRegularPermissionAlert(
 						this,
 						PermissionHandler.getNormalPermissionMessage(permission),

@@ -179,6 +179,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="loadMainMenu"
+			android:background="@android:color/holo_green_light"
 	        android:text="Go To Main Menu" />
 
 		<TextView

@@ -1,5 +1,6 @@
 package org.beiwe.app.ui;
 
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -94,11 +95,15 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 	
 
 	/**CHecks whether device is registered, sends user to the correct screen. */
-	private void loadingSequence() {		
-		//if the device is not registered, push the user to the register activity
-		if ( !PersistentData.isRegistered() ){ startActivity(new Intent(this, RegisterActivity.class) ); }
-		//if device is registered push user to the main menu.
-		else {
+	@SuppressLint("LongLogTag")
+	private void loadingSequence() {
+		Log.i("LoadingActivity.loadingSequence", "isBeta: " + BuildConfig.APP_IS_BETA);
+		Log.i("LoadingActivity.loadingSequence", "isDev: " + BuildConfig.APP_IS_DEV);
+		// if the device is not registered, push the user to the register activity
+		if ( !PersistentData.isRegistered() ) {
+			startActivity(new Intent(this, RegisterActivity.class) );
+		} else {
+			// if device is registered push user to the main menu.
 			if (BuildConfig.APP_IS_BETA) {
 				startActivity(new Intent(this, DebugInterfaceActivity.class));
 			} else {

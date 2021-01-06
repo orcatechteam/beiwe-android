@@ -1,14 +1,32 @@
 package org.beiwe.app.storage;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SetDeviceSettings {
+	private static String LOG_TAG = "SetDeviceSettings";
+
 	public static void writeDeviceSettings(JSONObject deviceSettings) throws JSONException {
+//		PersistentData.clearSharedPrefs();
+
 		// Write data stream strings
 		for (DataStream ds : DataStream.values()) {
-			String dsVal = deviceSettings.getString(ds.toString());
-			PersistentData.setDataStreamVal(ds.toString(), dsVal);
+			String dsPermissionVal;
+			switch (ds) {
+				// these are enabled by default
+				case power_state:
+				case bluetooth:
+				case wifi:
+					dsPermissionVal = DataStreamPermission.enabled.toString();
+					break;
+				// i.e. accelerometer, gyro, wifi, power_state;
+				default:
+					dsPermissionVal = deviceSettings.getString(ds.toString());
+			}
+			Log.i(LOG_TAG, "Setting "+ds.toString()+" to `"+dsPermissionVal+"`");
+			PersistentData.setDataStreamVal(ds.toString(), dsPermissionVal);
 		}
 
 		// Write data stream booleans
