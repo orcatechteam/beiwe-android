@@ -450,7 +450,9 @@ public class BackgroundService extends Service {
 
 			if (broadcastAction.equals(appContext.getString(R.string.check_settings))) {
 				// @TODO [~] Add 24 hour timer for checking settings...
-				settingsListener.checkSettings();
+				if (PersistentData.isRegistered()) {
+					settingsListener.checkSettings();
+				}
 				timer.setupExactSingleAlarm(settingsListener.getSettingsFrequency(), Timer.checkSettingsIntent);
 				return;
 			}
