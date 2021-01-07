@@ -50,12 +50,13 @@ public class DebugInterfaceActivity extends SessionActivity {
 		setContentView(R.layout.activity_debug_interface);
 		appContext = this.getApplicationContext();
 
+		findViewById(R.id.debugtexttwenty).setVisibility(View.VISIBLE);
+		findViewById(R.id.buttonDevListApps).setVisibility(View.VISIBLE);
+		findViewById(R.id.buttonDevCheckConnectivityStatus).setVisibility(View.VISIBLE);
+		findViewById(R.id.buttonDevLogSettings).setVisibility(View.VISIBLE);
+		findViewById(R.id.buttonDevCheckSettings).setVisibility(View.VISIBLE);
+
 		if (BuildConfig.APP_IS_DEV) {
-			findViewById(R.id.debugtexttwenty).setVisibility(View.VISIBLE);
-			findViewById(R.id.buttonDevListApps).setVisibility(View.VISIBLE);
-			findViewById(R.id.buttonDevCheckConnectivityStatus).setVisibility(View.VISIBLE);
-			findViewById(R.id.buttonDevLogSettings).setVisibility(View.VISIBLE);
-			findViewById(R.id.buttonDevCheckSettings).setVisibility(View.VISIBLE);
 			findViewById(R.id.button).setVisibility(View.VISIBLE);
 			findViewById(R.id.buttonPrintInternalLog).setVisibility(View.VISIBLE);
 			findViewById(R.id.buttonClearInternalLog).setVisibility(View.VISIBLE);

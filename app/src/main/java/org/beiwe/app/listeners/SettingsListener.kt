@@ -18,6 +18,7 @@ import org.beiwe.app.networking.PostRequest
 import org.beiwe.app.networking.PostRequest.addWebsitePrefix
 import org.beiwe.app.storage.DataStream
 import org.beiwe.app.storage.DataStreamPermission
+import org.beiwe.app.storage.DataStreamUnsupported
 import org.beiwe.app.storage.PersistentData
 import org.beiwe.app.ui.user.MainMenuActivity
 import org.json.JSONException
@@ -30,7 +31,7 @@ class SettingsListener(val appContext: Context) {
 	}
 
 	val stopTime = System.currentTimeMillis() + 1000 * 60 * 60 // One hour to upload files
-	val settingsFrequency: Long = 1000 * 10 // 1000 * 60 * 60 * 24 // 24 hrs
+	val settingsFrequency: Long = 1000 * 60 * 60 * 24 // 24 hrs
 	private lateinit var existingSettings: MutableMap<String, DataStreamPermission>
 
 	fun checkSettings() {
@@ -39,7 +40,7 @@ class SettingsListener(val appContext: Context) {
 		getExistingSettings()
 		val settingsURL = addWebsitePrefix("/download_settings")
 		SettingsAsyncTask(settingsURL).execute()
-		// @TODO [~] Start a countdown to stop checking after an hour of attempting using `stopTime`???
+		// @TODO Start a countdown to stop checking after an hour of attempting using `stopTime`???
 	}
 
 	private fun getExistingSettings() {
@@ -79,16 +80,23 @@ class SettingsListener(val appContext: Context) {
 			processSettings(obj.getJSONObject("device_settings"))
 		} catch (e: JSONException) {
 			Log.e(LOG_TAG, "unmarshalSettings//JSONException encountered: `$e`")
-			// @TODO [~] Trigger retry
+			// @TODO Trigger retry
 		} catch (e: NullPointerException) {
 			Log.e(LOG_TAG, "unmarshalSettings//NullPointerException encountered: `$e`")
-			// @TODO [~] Trigger retry
+			// @TODO Trigger retry
 		}
 	}
 
 	private fun marshalExistingSettings(): String? {
+		val settingsForExport = HashMap(existingSettings)
+		// add the unsupported settings to the export that don't exist on Android so it gets sent
+		// along in the upload and help ensure that the value doesn't get set to something else
+		for (dsu in DataStreamUnsupported.values()) {
+			settingsForExport[dsu.toString()] = DataStreamPermission.disabled
+		}
 		val gson = Gson()
-		return gson.toJson(existingSettings)
+		val dataToExport = mapOf("device_settings" to settingsForExport)
+		return gson.toJson(dataToExport)
 	}
 
 	private fun processSettings(settings: JSONObject) {
@@ -115,8 +123,6 @@ class SettingsListener(val appContext: Context) {
 			return
 		}
 
-		var uploadChanges = false
-
 		changed.forEach {
 			val (key, persistentData, incomingSettings) = it
 			var saveChange = false
@@ -137,16 +143,13 @@ class SettingsListener(val appContext: Context) {
 			if (saveChange) {
 				PersistentData.setDataStreamVal(key, incomingSettings.toString())
 				existingSettings[key] = incomingSettings
-				uploadChanges = true
 			}
 		}
 
 		val settingsUploadURL = addWebsitePrefix("/upload_settings")
-		if (uploadChanges) {
-			SettingsUploadAsyncTask(settingsUploadURL).execute()
-		}
+		SettingsUploadAsyncTask(settingsUploadURL).execute()
 
-		// @TODO [~] Add a retry interval if the settings pull fails???
+		// @TODO Add a retry interval if the settings pull fails???
 	}
 
 	private fun handleNotification(key: String) {
@@ -207,13 +210,11 @@ class SettingsListener(val appContext: Context) {
 		override fun doInBackground(vararg params: String?): String? {
 			val existingSettingsJson = marshalExistingSettings()
 			Log.d(LOG_TAG, "existingSettingsJson: `$existingSettingsJson`")
-			/*
 			try {
-				return PostRequest.httpRequestString(PostRequest.makeParameter("settings", smJson), url)
+				return PostRequest.httpRequestString(PostRequest.makeParameter("settings", existingSettingsJson), url)
 			} catch (e: Exception) {
 				Log.e(LOG_TAG, "SettingsUploadTask//error encountered: `$e`")
 			}
-			*/
 			return null
 		}
 

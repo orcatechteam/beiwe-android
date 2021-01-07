@@ -98,7 +98,6 @@ public class BackgroundService extends Service {
 		startPowerStateListener();
 		gpsListener = new GPSListener(appContext); // Permissions are checked in the broadcast receiver
 		WifiListener.initialize( appContext );
-		// @TODO [~] Update to support ENUM
 		if ( PersistentData.getAccelerometerEnabled() ) {
 			Log.i(LOG_TAG, "setting up accelerometer listener...");
 			accelerometerListener = new AccelerometerListener( appContext );
@@ -451,7 +450,7 @@ public class BackgroundService extends Service {
 				if (PersistentData.isRegistered() && PersistentData.hasHandledAllDataStreamPermissions()) {
 					settingsListener.checkSettings();
 				} else {
-					Log.i(LOG_TAG, "Skipping check settings...");
+					Log.i(LOG_TAG, "Skipping check settings until registered & data stream permissions handled...");
 				}
 				// @TODO [~] Add 24 hour timer for checking settings...
 				timer.setupExactSingleAlarm(settingsListener.getSettingsFrequency(), Timer.checkSettingsIntent);
