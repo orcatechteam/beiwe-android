@@ -168,28 +168,36 @@ public class PersistentData {
 	public static boolean getAllowUploadOverCellularData(){ return pref.getBoolean(ALLOW_UPLOAD_OVER_CELLULAR_DATA, false); }
 
 	public static boolean getAccelerometerEnabled() {
-		return getDataStreamVal(DataStream.accelerometer).isRequested();
+		DataStreamPermission dsAccelerometer = getDataStreamVal(DataStream.accelerometer);
+		return dsAccelerometer.isRequested() || dsAccelerometer.isEnabled();
 	}
 	public static boolean getGyroscopeEnabled() {
-		return getDataStreamVal(DataStream.gyro).isRequested();
+		DataStreamPermission dsGyro = getDataStreamVal(DataStream.gyro);
+		return dsGyro.isRequested() || dsGyro.isEnabled();
 	}
 	public static boolean getGpsEnabled() {
-		return getDataStreamVal(DataStream.gps).isRequested();
+		DataStreamPermission dsGps = getDataStreamVal(DataStream.gps);
+		return dsGps.isRequested() || dsGps.isEnabled();
 	}
 	public static boolean getCallsEnabled() {
-		return getDataStreamVal(DataStream.calls).isRequested();
+		DataStreamPermission dsCalls = getDataStreamVal(DataStream.calls);
+		return dsCalls.isRequested() || dsCalls.isEnabled();
 	}
 	public static boolean getTextsEnabled() {
-		return getDataStreamVal(DataStream.texts).isRequested();
+		DataStreamPermission dsTexts = getDataStreamVal(DataStream.texts);
+		return dsTexts.isRequested() || dsTexts.isEnabled();
 	}
 	public static boolean getWifiEnabled() {
-		return getDataStreamVal(DataStream.wifi).isRequested();
+		DataStreamPermission dsWifi = getDataStreamVal(DataStream.wifi);
+		return dsWifi.isRequested() || dsWifi.isEnabled();
 	}
 	public static boolean getBluetoothEnabled() {
-		return getDataStreamVal(DataStream.bluetooth).isRequested();
+		DataStreamPermission dsBluetooth = getDataStreamVal(DataStream.bluetooth);
+		return dsBluetooth.isRequested() || dsBluetooth.isEnabled();
 	}
 	public static boolean getPowerStateEnabled() {
-		return getDataStreamVal(DataStream.power_state).isRequested();
+		DataStreamPermission dsPowerState = getDataStreamVal(DataStream.power_state);
+		return dsPowerState.isRequested() || dsPowerState.isEnabled();
 	}
 
 	public static void setDataStreamVal(String key, String value) {
