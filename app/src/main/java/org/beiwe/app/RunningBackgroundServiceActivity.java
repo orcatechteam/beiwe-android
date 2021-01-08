@@ -254,7 +254,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 				if (permission.equals("android.permission.PACKAGE_USAGE_STATS")) {
 					showAppUsagePermissionAlert(
 						this,
-						"[app usage permission message]",
+						"Beiwe needs permission to your app usage data. Beiwe will now bump you to its settings page so you can manually enable it.",
 						PermissionHandler.permissionMap.get(permission)
 					);
 					return;
