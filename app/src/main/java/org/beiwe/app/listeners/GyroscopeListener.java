@@ -83,7 +83,8 @@ public class GyroscopeListener implements SensorEventListener {
         String value0= String.format("%.16f", values[0]);
         String value1= String.format("%.16f", values[1]);
         String value2= String.format("%.16f", values[2]);
-        String data = javaTimeCode.toString() + ',' + accuracy + ',' + value0 + ',' + value1 + ',' + value2;
+        // String data = javaTimeCode.toString() + ',' + accuracy + ',' + value0 + ',' + value1 + ',' + value2;
+        String data = javaTimeCode.toString() + ',' + value0 + ',' + value1 + ',' + value2;
         TextFileManager.getGyroFile().writeEncrypted(data);
     }
 }
