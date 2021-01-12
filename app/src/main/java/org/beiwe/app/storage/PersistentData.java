@@ -133,7 +133,7 @@ public class PersistentData {
 		if (BuildConfig.APP_IS_BETA) {
 			return 1;
 		} else {
-			return 6;
+			return 8;
 		}
 	}
 
