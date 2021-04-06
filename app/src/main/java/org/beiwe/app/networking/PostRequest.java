@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -39,6 +40,7 @@ import javax.net.ssl.HttpsURLConnection;
 //TODO: Low priority. Eli. clean this up and update docs. It does not adequately state that it puts into any request automatic security parameters, and it is not obvious why some of the functions exist (minimal http thing)
 public class PostRequest {
 	private static Context appContext;
+	public static final String LOG_TAG = "PostReq";
 
 	/**Uploads must be initialized with an appContext before they can access the wifi state or upload a _file_. */
 	private PostRequest( Context applicationContext ) { appContext = applicationContext; }
@@ -167,6 +169,7 @@ public class PostRequest {
 		connection.setUseCaches(false);
 		connection.setDoOutput(true);
 		connection.setRequestMethod("POST");
+		connection.setRequestProperty("Origin", "beiwe-app");
 		connection.setRequestProperty("Connection", "Keep-Alive");
 		connection.setRequestProperty("Cache-Control", "no-cache");
 		connection.setRequestProperty("Authorization", "Bearer " + Base64.encodeToString(DeviceInfo.getAndroidID().getBytes(), Base64.URL_SAFE| Base64.NO_PADDING | Base64.NO_WRAP));
@@ -193,7 +196,9 @@ public class PostRequest {
 
 		byte[] content = buff.array();
 
-		connection.setRequestProperty("X-Content-Digest", computeDigest(url, content));
+		String nonce = getNonce(url);
+		connection.setRequestProperty("X-Content-Nonce", nonce);
+		connection.setRequestProperty("X-Content-Digest", computeDigest(nonce, content));
 
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
 		request.write( content );
@@ -207,8 +212,7 @@ public class PostRequest {
 	 * the server to ensure that the POST body has not been altered
 	 * @param content the content of the POST body
 	 * @return a base64 encoded string representing the digest  */
-	private static String computeDigest(URL url, byte[] content) throws IOException, NoSuchAlgorithmException, JSONException {
-		String nonce = getNonce(url);
+	private static String computeDigest(String nonce, byte[] content) throws IOException, NoSuchAlgorithmException, JSONException {
 		String unix = Long.toString(System.currentTimeMillis() / 1000L);
 		String base64 = Base64.encodeToString(content, Base64.NO_WRAP);
 		String parts = String.join(",",base64, nonce, unix);
@@ -229,7 +233,7 @@ public class PostRequest {
 	 * @return a String containing return data
 	 * @throws IOException */
 	private static String readResponse(HttpsURLConnection connection) throws IOException {
-		Integer responseCode = connection.getResponseCode();
+		int responseCode = connection.getResponseCode();
 		if (responseCode == 200) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader( new DataInputStream( connection.getInputStream() ) ) );
 			String line;
@@ -237,7 +241,7 @@ public class PostRequest {
 			while ( (line = reader.readLine() ) != null) { response.append(line); }
 			return response.toString();
 		}
-		return responseCode.toString();
+		return Integer.toString(responseCode);
 	}
 
 
@@ -333,6 +337,7 @@ public class PostRequest {
 	 * @throws IOException */
 	private static int doFileUpload(File file, URL uploadUrl, long stopTime) throws IOException, NoSuchAlgorithmException, JSONException {
 		if (file.length() >  1024*1024*10) { Log.i("upload", "file length: " + file.length() ); }
+//		Log.i(LOG_TAG, "upload file length: " + file.length());
 
 		byte[] securityBytes = securityParameters(null).getBytes();
 		byte[] nameBytes = makeParameter("file_name", file.getName() ).getBytes();
@@ -344,10 +349,18 @@ public class PostRequest {
 		buff.put(fileBytes);
 
 		byte[] content = buff.array();
+//		Log.i(LOG_TAG, "doFileUp()//file: `"+ file.getName() +"`");
+//		Log.i(LOG_TAG, "doFileUp()//content: `"+ Arrays.toString(content) +"`");
 
 		HttpsURLConnection connection = minimalHTTP( uploadUrl );
+//		HttpsURLConnection connection = minimalHTTP( new URL("https://rnb02281.lan:8185/register") );
 		connection.setRequestProperty("X-Content-Digest-Type", "md5");
-		connection.setRequestProperty("X-Content-Digest", computeDigest(uploadUrl, TextFileManager.calculateMD5(file,content)));
+		String nonce = getNonce(uploadUrl);
+//		String nonce = "xxx";
+		connection.setRequestProperty("X-Content-Nonce", nonce);
+		String digest = computeDigest(nonce, TextFileManager.calculateMD5(file,content));
+		connection.setRequestProperty("X-Content-Digest", digest);
+//		Log.i(LOG_TAG, "doFileUp()//digest: `"+ digest +"`");
 
 		BufferedOutputStream request = new BufferedOutputStream( connection.getOutputStream() , 65536);
 		BufferedInputStream inputStream = new BufferedInputStream( new FileInputStream(file) , 65536);
@@ -378,6 +391,10 @@ public class PostRequest {
 
 		// Get HTTP Response. Pretty sure this blocks, nothing can really be done about that.
 		int response = connection.getResponseCode();
+//		if (response != 200) {
+//			Log.i(LOG_TAG, "response code: `"+connection.getResponseCode()+"`");
+//			Log.i(LOG_TAG, "response msg: `"+connection.getResponseMessage()+"`");
+//		}
 		connection.disconnect();
 		if (BuildConfig.APP_IS_DEV) { Log.d("uploading", "finished attempt to upload " +
 				file.getName() + "; received code " + response); }
@@ -421,11 +438,22 @@ public class PostRequest {
 			}
 
 			for (String fileName : TextFileManager.getAllUploadableFiles()) {
+//				if (fileName.contains("debug")) {
+//				if (!fileName.contains(".jpg")) {
+//				if (!fileName.equals("1_gps_1611773082037.csv")) {
+//					Log.i("PostReq.doUpAllFiles", "skipping file: `"+fileName+"`");
+//					continue;
+//				}
 				try {
 					file = new File(appContext.getFilesDir() + "/" + fileName);
-//				Log.d("uploading", "uploading " + file.getName());
-					if (PostRequest.doFileUpload(file, uploadUrl, stopTime) == 200) {
-						TextFileManager.delete(fileName);
+				Log.d("uploading", "uploading " + file.getName());
+					int responseCode = PostRequest.doFileUpload(file, uploadUrl, stopTime);
+					if (responseCode == 200) {
+//						if (!fileName.contains(".mp3") || !fileName.contains(".jpg")) {
+//							TextFileManager.delete(fileName);
+//						}
+					} else {
+						Log.e(LOG_TAG, "For file: `"+file.getName()+"`, Got response code `"+responseCode+"`");
 					}
 				} catch (JSONException e){
 					Log.w("PostRequest.java", "Failed to upload file " + fileName + ". Raised exception: " + e.getCause());

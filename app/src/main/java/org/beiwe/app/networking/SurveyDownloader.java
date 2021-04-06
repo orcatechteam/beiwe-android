@@ -43,7 +43,11 @@ public class SurveyDownloader {
 	}
 
 	//Returns an appropriate return code for the httpAsync error parsing.  -1 if something goes wrong, 200 if it works.
-	private static int updateSurveys( Context appContext, String jsonString){
+	private static int updateSurveys( Context appContext, String jsonString) {
+		if (jsonString.equals("null")) {
+			Log.i("Survey Downloader", "jsonString == 'null', nothing to do");
+			return 200;
+		}
 		if (jsonString == null) {
 			Log.e("Survey Downloader", "jsonString is null, probably have no network connection. squashing.");
 			return -1; }
