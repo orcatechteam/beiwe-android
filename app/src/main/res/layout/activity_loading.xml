@@ -2,17 +2,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="org.beiwe.app.ui.LoadingActivity" >
+    tools:context="org.beiwe.app.ui.LoadingActivity">
 
-    <TextView
-        android:id="@+id/textView1"
+    <ImageView
+        android:layout_width="224dp"
+        android:layout_height="332dp"
+        android:layout_gravity="center"
+        android:src="@drawable/orcatech_logo"
+        android:contentDescription="ORCATECH Logo" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/loading_activity_loading_message"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_gravity="center"
+        android:indeterminate="true"/>
 
 </LinearLayout>

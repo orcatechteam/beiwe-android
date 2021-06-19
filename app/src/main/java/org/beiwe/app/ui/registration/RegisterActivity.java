@@ -55,9 +55,9 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		setContentView(R.layout.activity_register);
 
 		if (!BuildConfig.CUSTOMIZABLE_SERVER_URL) {
-			TextView serverUrlCaption = findViewById(R.id.serverUrlCaption);
+//			TextView serverUrlCaption = findViewById(R.id.serverUrlCaption);
 			EditText serverUrlInput = findViewById(R.id.serverUrlInput);
-			serverUrlCaption.setVisibility(View.GONE);
+//			serverUrlCaption.setVisibility(View.GONE);
 			serverUrlInput.setVisibility(View.GONE);
 		}
 

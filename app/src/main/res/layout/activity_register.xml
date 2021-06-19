@@ -1,8 +1,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/registerActivityMain"
@@ -15,7 +16,14 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="org.beiwe.app.DeviceInfo" >
 
-        <TextView
+        <ImageView
+            android:layout_width="148dp"
+            android:layout_height="101dp"
+            android:layout_gravity="center"
+            android:contentDescription="ORCATECH Logo"
+            android:src="@drawable/orcatech_logo" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/welcoming_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,72 +35,96 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp" />
 
-        <TextView
-            android:id="@+id/serverUrlCaption"
-            style="@style/RegistrationInputLabelStyle"
-            android:text="@string/registration_server_url_label" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/registration_server_url_label"
+            app:helperTextEnabled="true"
+            app:helperText="@string/registration_server_url_hint"
+            android:layout_marginBottom="15dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/serverUrlInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/serverUrlInput"
-            style="@style/RegistrationInputStyle"
-            android:inputType="textUri"
-            android:hint="@string/registration_server_url_hint"
-            android:importantForAutofill="no">
-            <requestFocus />
-        </EditText>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="User ID"
+            android:layout_marginBottom="15dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerUserIdInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            style="@style/RegistrationInputLabelStyle"
-            android:text="@string/registration_user_id_label" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/registration_temp_password_label"
+            android:layout_marginBottom="15dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:endIconMode="password_toggle">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerTempPasswordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/registerUserIdInput"
-            style="@style/RegistrationInputStyle"
-            android:inputType="text"
-            android:hint="@string/registration_user_id_hint"
-            android:importantForAutofill="no" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/registration_new_password_label"
+            app:helperTextEnabled="true"
+            app:helperText="@string/registration_new_password_hint"
+            android:layout_marginBottom="15dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:endIconMode="password_toggle">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerNewPasswordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            style="@style/RegistrationInputLabelStyle"
-            android:text="@string/registration_temp_password_label" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/registration_new_password_label"
+            android:layout_marginBottom="15dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:endIconMode="password_toggle">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/registerConfirmNewPasswordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/registerTempPasswordInput"
-            style="@style/RegistrationInputStyle"
-            android:inputType="textPassword"
-            android:hint="@string/registration_temp_password_hint"
-            android:importantForAutofill="no" />
-
-        <TextView
-            style="@style/RegistrationInputLabelStyle"
-            android:text="@string/registration_new_password_label"/>
-
-        <EditText
-            android:id="@+id/registerNewPasswordInput"
-            style="@style/RegistrationInputStyle"
-            android:inputType="textPassword"
-            android:hint="@string/registration_new_password_hint"
-            android:importantForAutofill="no" />
-
-        <TextView
-            style="@style/RegistrationInputLabelStyle"
-            android:text="@string/registration_confirm_new_password_label"/>
-
-        <EditText
-            android:id="@+id/registerConfirmNewPasswordInput"
-            style="@style/RegistrationInputStyle"
-            android:inputType="textPassword"
-            android:hint="@string/registration_confirm_new_password_hint"
-            android:importantForAutofill="no" />
-
-        <Button
-            android:id="@+id/submitButton"
-            style="@style/RegistrationSubmitButton"
+        <com.google.android.material.button.MaterialButton
+            android:layout_gravity="center"
+            android:id="@+id/submitButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="registerButtonPressed2"
+            android:backgroundTint="#283F71"
             android:text="@string/registration_submit" />
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progressBar"
+            android:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"/>
+
+        <ProgressBar
+            android:id="@+id/progressBarXXX"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

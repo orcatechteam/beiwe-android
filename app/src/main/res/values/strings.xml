@@ -91,15 +91,15 @@
 
     <!-- Registration Activity Strings -->
     <string name="registration_welcome_message">Welcome to the study</string>
-    <string name="registration_server_url_label">Study server:</string>
+    <string name="registration_server_url_label">Study server</string>
     <string name="registration_server_url_hint">For example, www.example.com</string>
-    <string name="registration_user_id_label">User ID:</string>
+    <string name="registration_user_id_label">User ID</string>
     <string name="registration_user_id_hint">User ID</string>
-    <string name="registration_temp_password_label">Temporary password:</string>
+    <string name="registration_temp_password_label">Temporary password</string>
     <string name="registration_temp_password_hint">Temp password</string>
-    <string name="registration_new_password_label">New password:</string>
+    <string name="registration_new_password_label">New password</string>
     <string name="registration_new_password_hint">At least 6 characters</string>
-    <string name="registration_confirm_new_password_label">Confirm password:</string>
+    <string name="registration_confirm_new_password_label">Confirm password</string>
     <string name="registration_confirm_new_password_hint">At least 6 characters</string>
     <string name="registration_replacement_password_hint" tools:ignore="PluralsCandidate">At least %d characters</string>
     <string name="registration_submit">Register</string>
