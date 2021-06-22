@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_marginTop="100dp"
+        android:layout_width="218dp"
+        android:layout_height="207dp"
+        android:layout_gravity="center"
+        android:contentDescription="ORCATECH Logo"
+        android:src="@drawable/orcatech_logo" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:background="@android:color/holo_blue_bright"
         android:text="Registration complete!\n\nYou may continue to use your device as you would normally."
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="@android:color/black"
-        android:padding="10dp"
         />
 
 </LinearLayout>

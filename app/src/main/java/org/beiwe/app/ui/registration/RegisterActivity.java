@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import org.beiwe.app.BuildConfig;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.PermissionHandler;
@@ -28,6 +30,8 @@ import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.TextFieldKeyboard;
 import org.beiwe.app.ui.utils.AlertsManager;
+
+import java.time.LocalDateTime;
 
 import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
 
@@ -56,9 +60,11 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 
 		if (!BuildConfig.CUSTOMIZABLE_SERVER_URL) {
 //			TextView serverUrlCaption = findViewById(R.id.serverUrlCaption);
-			EditText serverUrlInput = findViewById(R.id.serverUrlInput);
+//			EditText serverUrlInput = findViewById(R.id.serverUrlInput);
 //			serverUrlCaption.setVisibility(View.GONE);
-			serverUrlInput.setVisibility(View.GONE);
+//			serverUrlInput.setVisibility(View.GONE);
+			TextInputLayout serverUrlInputLayout = findViewById(R.id.serverUrlInputLayout);
+			serverUrlInputLayout.setVisibility(View.GONE);
 		}
 
 		serverUrlInput = findViewById(R.id.serverUrlInput);
@@ -73,10 +79,74 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		textFieldKeyboard.makeKeyboardBehave(newPasswordInput);
 		textFieldKeyboard.makeKeyboardBehave(confirmNewPasswordInput);
 
-		newPasswordInput.setHint(String.format(getString(R.string.registration_replacement_password_hint), PersistentData.minPasswordLength()));
-		confirmNewPasswordInput.setHint(String.format(getString(R.string.registration_replacement_password_hint), PersistentData.minPasswordLength()));
+//		newPasswordInput.setHint(String.format(getString(R.string.registration_replacement_password_hint), PersistentData.minPasswordLength()));
+//		confirmNewPasswordInput.setHint(String.format(getString(R.string.registration_replacement_password_hint), PersistentData.minPasswordLength()));
+		TextInputLayout registerNewPasswordInputInputLayout = findViewById(R.id.registerNewPasswordInputInputLayout);
+		registerNewPasswordInputInputLayout.setHelperText(String.format(getString(R.string.registration_replacement_password_hint), PersistentData.minPasswordLength()));
+
 	}
 
+	public synchronized void registerButtonPressed2(View view) {
+		Log.i("RegAct.regBtnPressed2", "reg btn pressed!!!");
+
+		String serverUrl = serverUrlInput.getText().toString();
+		String userID = userIdInput.getText().toString();
+		String tempPassword = tempPasswordInput.getText().toString();
+		String newPassword = newPasswordInput.getText().toString();
+
+		if (isValidRegistration(serverUrl, userID, tempPassword, newPassword)) {
+			PersistentData.setServerUrl(serverUrl);
+			PersistentData.setLoginCredentials(userID, tempPassword);
+//			String regUrl = addWebsitePrefix(getApplicationContext().getString(R.string.register_url)).replace("https://", "http://");
+			String regUrl = addWebsitePrefix(getApplicationContext().getString(R.string.register_url));
+			Log.i("RegAct.regUrl", regUrl);
+			tryToRegisterWithTheServer(this, regUrl, newPassword);
+		}
+	}
+
+	private boolean isValidRegistration(String serverUrl, String userID, String tempPassword, String newPassword) {
+		boolean validRegistration = true;
+
+		TextInputLayout serverUrlInputLayout = findViewById(R.id.serverUrlInputLayout);
+		TextInputLayout registerUserIdInputLayout = findViewById(R.id.registerUserIdInputLayout);
+		TextInputLayout registerTempPasswordInputLayout = findViewById(R.id.registerTempPasswordInputLayout);
+		TextInputLayout registerNewPasswordInputInputLayout = findViewById(R.id.registerNewPasswordInputInputLayout);
+		TextInputLayout registerConfirmNewPasswordInputLayout = findViewById(R.id.registerConfirmNewPasswordInputLayout);
+		serverUrlInputLayout.setError(null);
+		registerUserIdInputLayout.setError(null);
+		registerTempPasswordInputLayout.setError(null);
+		registerNewPasswordInputInputLayout.setError(null);
+		registerConfirmNewPasswordInputLayout.setError(null);
+
+		if ((BuildConfig.CUSTOMIZABLE_SERVER_URL) && (serverUrl.length() == 0)) {
+			// If the study URL is empty, alert the user
+			validRegistration = false;
+			serverUrlInputLayout.setError(getString(R.string.url_too_short));
+		}
+		if (userID.length() == 0) {
+			validRegistration = false;
+			// If the user id length is too short, alert the user
+			registerUserIdInputLayout.setError(getString(R.string.invalid_user_id));
+		}
+		if (tempPassword.length() < 1) {
+			validRegistration = false;
+			// If the temporary registration password isn't filled in
+			registerTempPasswordInputLayout.setError(getString(R.string.empty_temp_password));
+		}
+		if (!PersistentData.passwordMeetsRequirements(newPassword)) {
+			validRegistration = false;
+			// If the new password has too few characters
+			String errorMessage = String.format(getString(R.string.password_too_short), PersistentData.minPasswordLength());
+			registerNewPasswordInputInputLayout.setError(errorMessage);
+		}
+		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
+		if (!newPassword.equals(confirmNewPassword)) {
+			validRegistration = false;
+			// If the new password doesn't match the confirm new password
+			registerConfirmNewPasswordInputLayout.setError(getString(R.string.password_mismatch));
+		}
+		return validRegistration;
+	}
 
 	/** Registration sequence begins here, called when the submit button is pressed.
 	 * @param view */
@@ -108,8 +178,6 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				PersistentData.setServerUrl(serverUrl);
 			}
 			PersistentData.setLoginCredentials(userID, tempPassword);
-
-			//Log.d("RegisterActivity", "trying \"" + PersistentData.getPatientID() + "\" with password \"" + PersistentData.getPassword() + "\"" );
 			tryToRegisterWithTheServer(this, addWebsitePrefix(getApplicationContext().getString(R.string.register_url)), newPassword);
 		}
 	}

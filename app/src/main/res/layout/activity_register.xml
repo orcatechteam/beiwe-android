@@ -18,7 +18,7 @@
 
         <ImageView
             android:layout_width="148dp"
-            android:layout_height="101dp"
+            android:layout_height="69dp"
             android:layout_gravity="center"
             android:contentDescription="ORCATECH Logo"
             android:src="@drawable/orcatech_logo" />
@@ -27,8 +27,9 @@
             android:id="@+id/welcoming_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/registration_welcome_message"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/registration_welcome_message_2"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center"
             android:layout_gravity="center" />
 
         <View
@@ -36,11 +37,13 @@
             android:layout_height="30dp" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/serverUrlInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/registration_server_url_label"
             app:helperTextEnabled="true"
             app:helperText="@string/registration_server_url_hint"
+            app:errorEnabled="true"
             android:layout_marginBottom="15dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
@@ -50,6 +53,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerUserIdInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="User ID"
@@ -63,6 +67,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerTempPasswordInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/registration_temp_password_label"
@@ -77,6 +82,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerNewPasswordInputInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/registration_new_password_label"
@@ -93,9 +99,10 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/registerConfirmNewPasswordInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/registration_new_password_label"
+            android:hint="@string/registration_confirm_new_password_label"
             android:layout_marginBottom="15dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:endIconMode="password_toggle">

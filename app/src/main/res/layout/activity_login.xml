@@ -1,5 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
@@ -14,11 +15,19 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         tools:context="org.beiwe.app.ui.user.LoginActivity" >
 
+        <ImageView
+            android:layout_width="148dp"
+            android:layout_height="143dp"
+            android:layout_gravity="center"
+            android:contentDescription="ORCATECH Logo"
+            android:src="@drawable/orcatech_logo" />
+
         <TextView
             android:id="@+id/login_welcoming_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:text="@string/login_activity_welcoming_message"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -26,44 +35,43 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp" />
 
-        <TextView
-            android:id="@+id/textView2"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/login_activity_please_enter_password"
-            android:labelFor="@id/editText2" />
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:inputType="textPassword"
-            android:hint="Please enter a password"
-            android:importantForAutofill="no">
-            <requestFocus />
-        </EditText>
+            android:hint="@string/login_activity_please_enter_password"
+            app:errorEnabled="true"
+            android:layout_marginBottom="15dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:endIconMode="password_toggle">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="30dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            android:layout_gravity="center"
             android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:onClick="loginButton"
+            android:backgroundTint="#283F71"
             android:text="@string/title_activity_login_string" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            android:layout_gravity="center"
             android:id="@+id/forgot_password_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:onClick="forgotPassword"
-            android:text="@string/title_activity_forgot_password" />
+            android:text="@string/title_activity_forgot_password"
+            style="@style/Widget.MaterialComponents.Button.TextButton" />
 
     </LinearLayout>
 </ScrollView>

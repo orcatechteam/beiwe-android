@@ -1,5 +1,6 @@
 package org.beiwe.app.ui.user;
 
+import org.beiwe.app.BuildConfig;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.storage.PersistentData;
@@ -10,8 +11,11 @@ import org.beiwe.app.ui.utils.AlertsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 
 /**The LoginActivity presents the user with a password prompt.
@@ -30,8 +34,10 @@ public class LoginActivity extends RunningBackgroundServiceActivity {
 		setContentView(R.layout.activity_login);
 		appContext = getApplicationContext();
 
+		Log.i("LoginActivity.onCreate", "isDev: " + BuildConfig.APP_IS_DEV);
+
 		setContentView(R.layout.activity_login);
-		password = findViewById(R.id.editText2);
+		password = findViewById(R.id.passwordInput);
 
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 		textFieldKeyboard.makeKeyboardBehave(password);
@@ -42,13 +48,23 @@ public class LoginActivity extends RunningBackgroundServiceActivity {
 	 * IF session is logged in (value in shared prefs), keep the session logged in.
 	 * IF session is not logged in, wait for user input.
 	 * @param view*/
-	public void loginButton(View view) {		
-		if ( PersistentData.checkPassword( password.getText().toString() ) ) {
+	public void loginButton(View view) {
+		TextInputLayout passwordInputLayout = findViewById(R.id.passwordInputLayout);
+		EditText passwordInput = findViewById(R.id.passwordInput);
+		passwordInputLayout.setError(null);
+		if ( PersistentData.checkPassword( passwordInput.getText().toString() ) ) {
 			PersistentData.loginOrRefreshLogin();
 			finish();
 			return;
 		}
-		AlertsManager.showAlert("Incorrect password", this);
+		String password = passwordInput.getText().toString();
+		String errMsg = "Incorrect password";
+		if (password.length() == 0) {
+			errMsg = "Please enter a password";
+		}
+		passwordInputLayout.setError(errMsg);
+//		AlertsManager.showAlert("Incorrect password", this);
+
 	}
 	
 	
