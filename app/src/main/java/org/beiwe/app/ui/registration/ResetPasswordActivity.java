@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.session.ResetPassword;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 /**
@@ -51,9 +54,45 @@ public class ResetPasswordActivity extends RunningBackgroundServiceActivity {
 		// Get the confirmation of the new, permanent password (should be the same as the previous field)
 		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
 
-		/* Pass all three to the ResetPassword class, which will check validity, and, if valid,
-		 * reset the permanent password */
-		ResetPassword resetPassword = new ResetPassword(this);
-		resetPassword.checkInputsAndTryToResetPassword(currentPassword, newPassword, confirmNewPassword);
+		if (isValidResetPass(currentPassword, newPassword)) {
+			/* Pass all three to the ResetPassword class, which will check validity, and, if valid,
+			 * reset the permanent password */
+			ResetPassword resetPassword = new ResetPassword(this);
+			resetPassword.checkInputsAndTryToResetPassword(currentPassword, newPassword, confirmNewPassword);
+		}
+	}
+
+	private boolean isValidResetPass(String currentPassword, String newPassword) {
+		boolean validResetPass = true;
+
+		TextInputLayout resetPasswordCurrentPasswordInputLayout = findViewById(R.id.resetPasswordCurrentPasswordInputLayout);
+		TextInputLayout resetPasswordNewPasswordInputLayout = findViewById(R.id.resetPasswordNewPasswordInputLayout);
+		TextInputLayout resetPasswordConfirmNewPasswordInputLayout = findViewById(R.id.resetPasswordConfirmNewPasswordInputLayout);
+		resetPasswordCurrentPasswordInputLayout.setError(null);
+		resetPasswordNewPasswordInputLayout.setError(null);
+		resetPasswordConfirmNewPasswordInputLayout.setError(null);
+
+		if (currentPassword.length() < 1) {
+			validResetPass = false;
+			// If the temporary registration password isn't filled in
+			resetPasswordCurrentPasswordInputLayout.setError("Please enter the current password.");
+		}
+		if (!PersistentData.checkPassword(currentPassword)) {
+			validResetPass = false;
+			resetPasswordCurrentPasswordInputLayout.setError("Current password is incorrect.");
+		}
+		if (!PersistentData.passwordMeetsRequirements(newPassword)) {
+			validResetPass = false;
+			// If the new password has too few characters
+			String errorMessage = String.format(getString(R.string.password_too_short), PersistentData.minPasswordLength());
+			resetPasswordNewPasswordInputLayout.setError(errorMessage);
+		}
+		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
+		if (!newPassword.equals(confirmNewPassword)) {
+			validResetPass = false;
+			// If the new password doesn't match the confirm new password
+			resetPasswordConfirmNewPasswordInputLayout.setError(getString(R.string.password_mismatch));
+		}
+		return validResetPass;
 	}
 }

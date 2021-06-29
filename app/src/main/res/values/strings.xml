@@ -59,21 +59,21 @@
 
     <!-- Login Activity Strings -->
     <string name="login_page_for_app">Login page for app</string>
-    <string name="login_activity_please_enter_password">Password:</string>
+    <string name="login_activity_please_enter_password">Password</string>
     <string name="incorrect_user_pass_combo">Incorrect user-password combination!</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_login">Log In</string>
     <string name="title_activity_login_string">Log In</string>
-    <string name="login_activity_welcoming_message">Log in to Beiwe</string>
+    <string name="login_activity_welcoming_message">Log in to the ORCATECH Mobile Research Tool</string>
     <string name="user_id_system_mismatch">User ID does not match the one in the system. Try again</string>
     <string name="password_system_mismatch">Incorrect user ID and password combination</string>
 
     <!-- Reset Password Activity Strings -->
     <string name="title_activity_reset_password">Change Password</string>
     <string name="reset_password_title">Change your password</string>
-    <string name="reset_password_current_password_caption">Current password:</string>
-    <string name="reset_password_new_password_caption">New password:</string>
-    <string name="reset_password_confirm_new_password_caption">Confirm new password:</string>
+    <string name="reset_password_current_password_caption">Current password</string>
+    <string name="reset_password_new_password_caption">New password</string>
+    <string name="reset_password_confirm_new_password_caption">Confirm new password</string>
     <string name="reset_password_submit">Change password</string>
     <string name="reset_password_error_alert_title">Can\'t change password</string>
     <string name="invalid_old_password">Old password incorrect</string>
@@ -91,6 +91,7 @@
 
     <!-- Registration Activity Strings -->
     <string name="registration_welcome_message">Welcome to the study</string>
+    <string name="registration_welcome_message_2">Welcome to the ORCATECH Mobile Research Tool. Please have your user ID and password, which were given to you by your clinician, available as you register.</string>
     <string name="registration_server_url_label">Study server</string>
     <string name="registration_server_url_hint">For example, www.example.com</string>
     <string name="registration_user_id_label">User ID</string>
@@ -126,7 +127,7 @@
     <string name="action_reply">Reply</string>
 
     <!-- Main menu strings -->
-    <string name="title_activity_main_menu">Beiwe Main Screen</string>
+    <string name="title_activity_main_menu">Registration complete</string>
     <string name="main_menu_top_message">Welcome to Beiwe!</string>
     <string name="main_menu_view_graph">View survey answers on graph</string>
     <string name="default_call_clinician_text">Call My Clinician</string>
@@ -186,8 +187,9 @@
     <string name="view_survey_answers">View Survey Answers</string>
 
     <!-- About Page -->
-    <string name="title_activity_about">About Beiwe</string>
-    <string name="default_about_page_text">Beiwe is an application that runs on your cell phone and helps researchers collect information about your health and behaviors. It asks you to fill out short surveys, and to make a recording of your voice, once a day. Beiwe continuously collects information about your location (using your phone\'s GPS) and how much you move around (using your phone\'s accelerometer). It also monitors how much you use your phone for calling and texting, and it keeps track of the different people you communicate with. Importantly, Beiwe does not record the names or phone numbers of anyone you communicate with. While it can tell if you call the same person more than once, it does not know who that person is. Beiwe does not record the content of your text messages or phone calls. It also keeps track of the different Wi-Fi networks in your area, but the names of those networks are replaced with random codes. Finally, Beiwe can tell if you are near another phone that is also running this application.\n\nAlthough Beiwe collects a large amount of data, all of this data is processed to protect your privacy. This means that the application does not know your name, your phone number, or anything else that could identify you. Beiwe only knows you by an identification number. Because Beiwe does not know who you are, it cannot communicate with your clinician if you are ill or in danger. Researchers will not review the data Beiwe collects until the end of the study. To make it easier for you to connect with your clinician, the \"Call my Clinician\" button appears at the top of every page. In order for the button to work, you must enter your clinician\'s phone number into Beiwe. You can change it as often as needed.\n\nBeiwe was conceived and designed by Dr. Jukka-Pekka \"JP\" Onnela at the Harvard School of Public Health. The research study in which you are enrolled is run by Dr. Roy Perlis at Massachusetts General Hospital. The software was built by Zagaran, Inc., in Cambridge, Massachusetts.</string>
+    <string name="title_activity_about">About</string>
+    <!-- NOTE: this text can be overridden by the server -->
+    <string name="default_about_page_text">ORCATECH Mobile Research Tool is an application that runs on your cell phone and helps researchers collect information about your health and behaviors. ORCATECH Mobile Research Tool continuously collects information about your location (using the GPS on your phone) and how much you move around (using the accelerometer on your phone). It also monitors how much you use your phone for calling and texting, and it keeps track of the different people you communicate with. Importantly, ORCATECH Mobile Research Tool does not record the names or phone numbers of anyone you communicate with. While it can tell if you call the same person more than once, it does not know who that person is. ORCATECH Mobile Research Tool does not record the content of your text messages or phone calls. It also keeps track of the different Wi-Fi networks in your area, but the names of those networks are replaced with random codes.\n\nAlthough ORCATECH Mobile Research Tool collects a large amount of data, all of this data is processed to protect your privacy. This means that the application does not know your name, your phone number, or anything else that could identify you. ORCATECH Mobile Research Tool only knows you by an identification number. Because ORCATECH Mobile Research Tool does not know who you are, it cannot communicate with your clinician if you are ill or in danger. Researchers will not review the data ORCATECH Mobile Research Tool collects until the end of the study.\n\nORCATECH Mobile Research Tool is inspired by the Beiwe app which was conceived and designed by Dr. Jukka-Pekka (JP) Onnela at the Harvard School of Public Health.</string>
 
     <!-- Phone Numbers -->
     <string name="phone_number_length_error" tools:ignore="PluralsCandidate"> "Phone numbers must be exactly %d digits long." </string>

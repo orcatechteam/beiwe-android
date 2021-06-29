@@ -13,8 +13,34 @@
         android:id="@+id/consent_form_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/default_consent_form_text" />
 
+    <View
+        android:id="@+id/view1"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_gravity="center"
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="consentButton"
+        android:backgroundTint="#283F71"
+        android:text="@string/consentButton" />
+
+    <com.google.android.material.button.MaterialButton
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="doNotConsentButton"
+        android:text="@string/doNotConsentButton"
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
+
+<!--
     <Button
         android:id="@+id/consentButton"
         style="@style/RegistrationSubmitButton"
@@ -26,5 +52,6 @@
         style="@style/RegistrationSubmitButton"
         android:onClick="doNotConsentButton"
         android:text="@string/doNotConsentButton" />
+-->
 
 </LinearLayout>
