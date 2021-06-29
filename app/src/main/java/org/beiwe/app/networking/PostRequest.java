@@ -280,7 +280,6 @@ public class PostRequest {
 		return data;
 	}
 
-
 	private static int doRegisterRequest(String parameters, URL url) throws IOException, NoSuchAlgorithmException, JSONException {
 		Log.i("register", "making request to " + url);
 		HttpsURLConnection connection = setupHTTP(parameters, url, null);
@@ -337,7 +336,6 @@ public class PostRequest {
 	 * @throws IOException */
 	private static int doFileUpload(File file, URL uploadUrl, long stopTime) throws IOException, NoSuchAlgorithmException, JSONException {
 		if (file.length() >  1024*1024*10) { Log.i("upload", "file length: " + file.length() ); }
-//		Log.i(LOG_TAG, "upload file length: " + file.length());
 
 		byte[] securityBytes = securityParameters(null).getBytes();
 		byte[] nameBytes = makeParameter("file_name", file.getName() ).getBytes();
@@ -349,18 +347,13 @@ public class PostRequest {
 		buff.put(fileBytes);
 
 		byte[] content = buff.array();
-//		Log.i(LOG_TAG, "doFileUp()//file: `"+ file.getName() +"`");
-//		Log.i(LOG_TAG, "doFileUp()//content: `"+ Arrays.toString(content) +"`");
 
 		HttpsURLConnection connection = minimalHTTP( uploadUrl );
-//		HttpsURLConnection connection = minimalHTTP( new URL("https://rnb02281.lan:8185/register") );
 		connection.setRequestProperty("X-Content-Digest-Type", "md5");
 		String nonce = getNonce(uploadUrl);
-//		String nonce = "xxx";
 		connection.setRequestProperty("X-Content-Nonce", nonce);
 		String digest = computeDigest(nonce, TextFileManager.calculateMD5(file,content));
 		connection.setRequestProperty("X-Content-Digest", digest);
-//		Log.i(LOG_TAG, "doFileUp()//digest: `"+ digest +"`");
 
 		BufferedOutputStream request = new BufferedOutputStream( connection.getOutputStream() , 65536);
 		BufferedInputStream inputStream = new BufferedInputStream( new FileInputStream(file) , 65536);
@@ -391,10 +384,6 @@ public class PostRequest {
 
 		// Get HTTP Response. Pretty sure this blocks, nothing can really be done about that.
 		int response = connection.getResponseCode();
-//		if (response != 200) {
-//			Log.i(LOG_TAG, "response code: `"+connection.getResponseCode()+"`");
-//			Log.i(LOG_TAG, "response msg: `"+connection.getResponseMessage()+"`");
-//		}
 		connection.disconnect();
 		if (BuildConfig.APP_IS_DEV) { Log.d("uploading", "finished attempt to upload " +
 				file.getName() + "; received code " + response); }
@@ -438,20 +427,12 @@ public class PostRequest {
 			}
 
 			for (String fileName : TextFileManager.getAllUploadableFiles()) {
-//				if (fileName.contains("debug")) {
-//				if (!fileName.contains(".jpg")) {
-//				if (!fileName.equals("1_gps_1611773082037.csv")) {
-//					Log.i("PostReq.doUpAllFiles", "skipping file: `"+fileName+"`");
-//					continue;
-//				}
 				try {
 					file = new File(appContext.getFilesDir() + "/" + fileName);
 				Log.d("uploading", "uploading " + file.getName());
 					int responseCode = PostRequest.doFileUpload(file, uploadUrl, stopTime);
 					if (responseCode == 200) {
-//						if (!fileName.contains(".mp3") || !fileName.contains(".jpg")) {
-//							TextFileManager.delete(fileName);
-//						}
+						TextFileManager.delete(fileName);
 					} else {
 						Log.e(LOG_TAG, "For file: `"+file.getName()+"`, Got response code `"+responseCode+"`");
 					}
