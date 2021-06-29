@@ -7,9 +7,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.BuildConfig;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.ui.DebugInterfaceActivity;
 import org.beiwe.app.ui.registration.ResetPasswordActivity;
 import org.beiwe.app.ui.user.AboutActivityLoggedIn;
 import org.beiwe.app.ui.user.GraphActivity;
@@ -98,6 +100,9 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 		if(!PersistentData.getViewSurveyAnswersEnabled()) {
 			menu.findItem(R.id.view_survey_answers).setVisible(false);
 		}
+		if (BuildConfig.APP_IS_BETA) {
+			menu.findItem(R.id.menu_debug_interface).setVisible(true);
+		}
 		return true;
 	}
 
@@ -119,6 +124,8 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 			return true;
 		case R.id.view_survey_answers:
 			startActivity(new Intent(getApplicationContext(), GraphActivity.class));
+		case R.id.menu_debug_interface:
+			startActivity(new Intent(getApplicationContext(), DebugInterfaceActivity.class));
 		default:
 			return super.onOptionsItemSelected(item);
 		}

@@ -104,11 +104,14 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 			startActivity(new Intent(this, RegisterActivity.class) );
 		} else {
 			// if device is registered push user to the main menu.
+/*
 			if (BuildConfig.APP_IS_BETA) {
 				startActivity(new Intent(this, DebugInterfaceActivity.class));
 			} else {
 				startActivity(new Intent(this, MainMenuActivity.class));
 			}
+*/
+			startActivity(new Intent(this, MainMenuActivity.class));
 		}
 		unbindService(backgroundServiceConnection);
 		finish(); //destroy the loading screen
