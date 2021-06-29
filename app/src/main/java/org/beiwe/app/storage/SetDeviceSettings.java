@@ -118,12 +118,12 @@ public class SetDeviceSettings {
 		// Call button toggles
 		boolean callClinicianButtonEnabled;
 		try { callClinicianButtonEnabled = deviceSettings.getBoolean("call_clinician_button_enabled"); }
-		catch (JSONException e) { callClinicianButtonEnabled = true; }
+		catch (JSONException e) { callClinicianButtonEnabled = false; }
 		PersistentData.setCallClinicianButtonEnabled(callClinicianButtonEnabled);
 
 		boolean callResearchAssistantButtonEnabled;
 		try { callResearchAssistantButtonEnabled = deviceSettings.getBoolean("call_research_assistant_button_enabled"); }
-		catch (JSONException e) { callResearchAssistantButtonEnabled = true; }
+		catch (JSONException e) { callResearchAssistantButtonEnabled = false; }
 		PersistentData.setCallResearchAssistantButtonEnabled(callResearchAssistantButtonEnabled);
 
 		// Survey button toggles
