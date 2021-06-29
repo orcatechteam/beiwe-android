@@ -236,12 +236,13 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				if (responseCode == 200) {
 					PersistentData.setPassword(newPassword);
 
-					if (PersistentData.getCallClinicianButtonEnabled() || PersistentData.getCallResearchAssistantButtonEnabled()) {
-						activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntryActivity.class));
-					}
-					else{
-						activity.startActivity(new Intent(activity.getApplicationContext(), ConsentFormActivity.class));
-					}
+//					if (PersistentData.getCallClinicianButtonEnabled() || PersistentData.getCallResearchAssistantButtonEnabled()) {
+//						activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntryActivity.class));
+//					}
+//					else{
+//						activity.startActivity(new Intent(activity.getApplicationContext(), ConsentFormActivity.class));
+//					}
+					activity.startActivity(new Intent(activity.getApplicationContext(), ConsentFormActivity.class));
 					activity.finish();
 				} else {
 					AlertsManager.showAlert(responseCode, currentActivity.getString(R.string.couldnt_register), currentActivity);
