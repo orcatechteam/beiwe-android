@@ -69,7 +69,7 @@ android {
         }
         commStatsCustomUrl {
             dimension "version"
-            manifestPlaceholders = [appName: "Beiwe"]
+            manifestPlaceholders = [appName: "ORCATECH Mobile Research Tool"]
             buildConfigField("boolean", "CUSTOMIZABLE_SERVER_URL", "true")
             buildConfigField("boolean", "READ_TEXT_AND_CALL_LOGS", 'true')
         }
