@@ -104,7 +104,7 @@ public class ForgotPasswordActivity extends RunningBackgroundServiceActivity {
 			/* Pass all three to the ResetPassword class, which will check validity, and, if valid,
 			 * reset the permanent password */
 			ResetPassword resetPassword = new ResetPassword(this);
-			resetPassword.checkInputsAndTryToResetPassword(tempPassword, newPassword, confirmNewPassword);
+			resetPassword.checkInputsAndTryToResetPassword(tempPassword, newPassword, confirmNewPassword, "forgot");
 		}
 	}
 

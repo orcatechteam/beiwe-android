@@ -2,6 +2,7 @@ package org.beiwe.app.session;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.beiwe.app.R;
@@ -26,20 +27,24 @@ import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
  * @author Josh Zagorsky, Dor Samet
  */
 public class ResetPassword {
+	public static final String LOG_TAG = "ResetPass";
 	
 	private Activity currentActivity;
 	private Context appContext;
 	private String hashedCurrentPassword;
 	private String newPassword;
+	private String pwMode;
 
 	public ResetPassword(Activity currentActivity) {
 		this.currentActivity = currentActivity;
 		this.appContext = currentActivity.getApplicationContext();
 	}
 	
-	public void checkInputsAndTryToResetPassword(String currentPassword, String newPassword, String confirmNewPassword) {
+	public void checkInputsAndTryToResetPassword(String currentPassword, String newPassword, String confirmNewPassword, String pwMode) {
+		Log.i(LOG_TAG, "checkInputsAndTryToResetPassword()");
 		this.hashedCurrentPassword = EncryptionEngine.safeHash(currentPassword);
 		this.newPassword = newPassword;
+		this.pwMode = pwMode;
 		// If the new password has too few characters, pop up an alert, and do nothing else
 		if (!PersistentData.passwordMeetsRequirements(newPassword)) {
 			String alertMessage = String.format(appContext.getString(R.string.password_too_short), PersistentData.minPasswordLength());
@@ -64,7 +69,8 @@ public class ResetPassword {
 			
 			@Override
 			protected Void doInBackground(Void... arg0) {
-				parameters = PostRequest.makeParameter("new_password", newPassword);
+				parameters = PostRequest.makeParameter("new_password", EncryptionEngine.safeHash(newPassword)) +
+						PostRequest.makeParameter("pw_mode", pwMode);
 				responseCode = PostRequest.httpRequestcode(parameters, url, hashedCurrentPassword);
 				return null;
 			}
