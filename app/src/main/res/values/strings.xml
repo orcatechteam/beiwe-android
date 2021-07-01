@@ -7,13 +7,13 @@
     <string name="action_settings">Settings</string>
 	
     <!-- Permissions Strings -->
-    <string name="permission_registration_read_sms_alert"> In order to register for a study, Beiwe requires access to some this device\'s telephone services. Please press \"Allow\" when you see a menu requesting permissions to access SMS. Depending on the details of the study, you are allowed to disable this permission in the Beiwe app\'s preferences after registration is complete.</string>
+    <string name="permission_registration_read_sms_alert"> In order to register for a study, ORCATECH Mobile Research Tool requires access to some this device\'s telephone services. Please press \"Allow\" when you see a menu requesting permissions to access SMS. Depending on the details of the study, you are allowed to disable this permission in the ORCATECH Mobile Research Tool app\'s preferences after registration is complete.</string>
 
-    <string name="permission_registration_actually_need_sms_alert"> Beiwe requires SMS permissions in order to register for a study, but you appear to have denied it permission. We are going to bump you to the Beiwe app\'s settings so that you can manually enable SMS access. </string>
+    <string name="permission_registration_actually_need_sms_alert"> ORCATECH Mobile Research Tool requires SMS permissions in order to register for a study, but you appear to have denied it permission. We are going to bump you to the ORCATECH Mobile Research Tool app\'s settings so that you can manually enable SMS access. </string>
 
-    <string name="power_management_exception_alert"> This permission prompt you are about to see is required to allow Beiwe to execute in the background. </string>
-    <string name="cant_make_phone_call_alert_title">Beiwe can\'t initiate phone calls</string>
-    <string name="cant_make_a_phone_call_permissions_alert">In order for Beiwe to initiate a phone call, you must go to Settings -> Permissions and grant the Beiwe app the \'Phone\' permission.\n\nOr, you can open the Phone app and make the phone call yourself.</string>
+    <string name="power_management_exception_alert"> This permission prompt you are about to see is required to allow ORCATECH Mobile Research Tool to execute in the background. </string>
+    <string name="cant_make_phone_call_alert_title">ORCATECH Mobile Research Tool can\'t initiate phone calls</string>
+    <string name="cant_make_a_phone_call_permissions_alert">In order for ORCATECH Mobile Research Tool to initiate a phone call, you must go to Settings -> Permissions and grant the Beiwe app the \'Phone\' permission.\n\nOr, you can open the Phone app and make the phone call yourself.</string>
 
 
     <!-- API URLs -->
@@ -33,13 +33,13 @@
     <string name="button_record">Record</string>
 
     <!-- Debug Menu Strings -->
-    <string name="title_activity_debug_interface">Beiwe debug interface</string>
+    <string name="title_activity_debug_interface">Debug interface</string>
     <string name="title_activity_survey">Survey</string>
 
     <!-- Error Messages -->
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>
     <string name="invalid_device">This device does not meet minimum specifications for this app, to avoid any issues resulting from this please uninstall the app.</string>
-    <string name="invalid_encryption_key">Received an invalid encryption key, please contact the a Beiwe administrator.</string>
+    <string name="invalid_encryption_key">Received an invalid encryption key, please contact the a ORCATECH Mobile Research Tool administrator.</string>
     <string name="http_message_1">Someone misconfigured the server! Please contact research staff.</string>
     <string name="http_message_400">This device could not be registered under the provided patient ID; please contact research staff.</string>
     <string name="http_message_403_during_registration">Sorry: either your Study URL, your User ID, or your Temporary Password is incorrect.</string>
@@ -47,7 +47,7 @@
     <string name="http_message_403_wrong_password_forgot_password_page">Sorry, your Temporary Password is incorrect.</string>
     <string name="http_message_405">Sorry, this User ID already has a phone registered. Please contact the research staff and ask them to clear your registration so that you can register this new phone.</string>
     <string name="http_message_internet_disconnected">It looks like you\'re not connected to the internet- please connect to the internet and try again.</string>
-    <string name="http_message_server_not_found">Are you sure the URL for the study is correct?  Beiwe can\'t connect to the server.</string>
+    <string name="http_message_server_not_found">Are you sure the URL for the study is correct?  ORCATECH Mobile Research Tool can\'t connect to the server.</string>
     <string name="http_message_unknown_response_code">An unknown error occurred.</string>
 
     <!-- Survey Activity Strings -->
@@ -104,7 +104,7 @@
     <string name="registration_confirm_new_password_hint">At least 6 characters</string>
     <string name="registration_replacement_password_hint" tools:ignore="PluralsCandidate">At least %d characters</string>
     <string name="registration_submit">Register</string>
-    <string name="title_activity_loading">Loading Beiwe</string>
+    <string name="title_activity_loading">Loading ORCATECH Mobile Research Tool</string>
     <string name="empty_temp_password">Please enter the Temporary Password you were given at signup.</string>
     <string name="url_too_short">Please enter the URL for the study.</string>
     <string name="invalid_user_id">Please enter your User ID.</string>
@@ -128,7 +128,7 @@
 
     <!-- Main menu strings -->
     <string name="title_activity_main_menu">Registration complete</string>
-    <string name="main_menu_top_message">Welcome to Beiwe!</string>
+    <string name="main_menu_top_message">Welcome to ORCATECH Mobile Research Tool!</string>
     <string name="main_menu_view_graph">View survey answers on graph</string>
     <string name="default_call_clinician_text">Call My Clinician</string>
     <string name="title_activity_graph">Previous Survey Answers</string>
@@ -149,7 +149,7 @@
     <string name="timeout_msg_2nd_half">" minutes, so your recording was automatically stopped and saved"</string>
 
     <!-- Notifications -->
-    <string name="survey_notification_app_name">Beiwe</string>
+    <string name="survey_notification_app_name">ORCATECH Mobile Research Tool</string>
     <string name="new_android_survey_notification_ticker">New survey</string>
     <string name="new_android_survey_notification_details">Please fill out this survey.</string>
     <string name="new_audio_survey_notification_ticker">New voice recording</string>

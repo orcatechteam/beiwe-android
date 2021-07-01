@@ -6,7 +6,7 @@
     android:tag="sliderQuestion"
     android:orientation="vertical" >
 
-	<org.beiwe.app.survey.MarkDownTextView
+	<org.orcatech.mobileresearchtool.survey.MarkDownTextView
 	    android:id="@+id/questionText"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
@@ -14,14 +14,14 @@
 	    android:padding="20dp"
 	    android:textSize="20sp"
 	    android:text="@string/question_error_text" >
-	</org.beiwe.app.survey.MarkDownTextView>
+	</org.orcatech.mobileresearchtool.survey.MarkDownTextView>
 
 	<View
 	    android:id="@+id/numbersPlaceholder"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content" />
 
-    <org.beiwe.app.survey.SeekBarEditableThumb
+    <org.orcatech.mobileresearchtool.survey.SeekBarEditableThumb
         android:id="@+id/slider"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,6 +31,6 @@
         android:paddingTop="10dp"
         android:paddingBottom="50dp"
         android:progress="2" >
-    </org.beiwe.app.survey.SeekBarEditableThumb>
+    </org.orcatech.mobileresearchtool.survey.SeekBarEditableThumb>
 
 </LinearLayout>

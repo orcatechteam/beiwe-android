@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.beiwe.app.survey.MarkDownTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<org.orcatech.mobileresearchtool.survey.MarkDownTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/MainTextStyle"
@@ -7,4 +7,4 @@
     android:textSize="20sp"
     android:tag="infoTextbox"
     android:text="@string/question_error_text" >
-</org.beiwe.app.survey.MarkDownTextView>
+</org.orcatech.mobileresearchtool.survey.MarkDownTextView>

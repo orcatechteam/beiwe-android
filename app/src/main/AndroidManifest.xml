@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="org.beiwe.app">
+    package="org.orcatech.mobileresearchtool">
 
 
 
@@ -33,7 +33,6 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
     
     <application
-        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_orcatech"
         android:label="${appName}${appNameSuffix}"
@@ -44,7 +43,7 @@
         <!-- ACTIVITIES -->
 
         <activity
-            android:name="org.beiwe.app.ui.LoadingActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.LoadingActivity"
             android:label="${appName}${appNameSuffix}" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,67 +52,67 @@
         </activity>
 
         <activity
-            android:name="org.beiwe.app.survey.AudioRecorderActivity"
+            android:name="org.orcatech.mobileresearchtool.survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
         </activity>
         
         <activity
-            android:name="org.beiwe.app.survey.AudioRecorderEnhancedActivity"
+            android:name="org.orcatech.mobileresearchtool.survey.AudioRecorderEnhancedActivity"
             android:label="@string/title_activity_audio_recorder"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
         </activity>
 
         <activity
-            android:name="org.beiwe.app.survey.SurveyActivity"
+            android:name="org.orcatech.mobileresearchtool.survey.SurveyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_survey">
         </activity>
         
         <activity
-            android:name="org.beiwe.app.ui.DebugInterfaceActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.DebugInterfaceActivity"
             android:label="@string/title_activity_debug_interface" />
         <activity
-            android:name="org.beiwe.app.ui.user.LoginActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.user.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name="org.beiwe.app.ui.registration.ForgotPasswordActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.registration.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" />
         <activity
-            android:name="org.beiwe.app.ui.registration.RegisterActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.registration.RegisterActivity"
             android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name="org.beiwe.app.ui.user.MainMenuActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.user.MainMenuActivity"
             android:label="@string/title_activity_main_menu"
             android:screenOrientation="fullSensor" />
         <activity
-            android:name="org.beiwe.app.ui.user.GraphActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.user.GraphActivity"
             android:label="@string/title_activity_graph" >
         </activity>
         <activity
-            android:name="org.beiwe.app.ui.registration.ResetPasswordActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.registration.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password" >
         </activity>
         <activity
-            android:name=".ui.user.AboutActivityLoggedOut"
+            android:name="org.orcatech.mobileresearchtool.ui.user.AboutActivityLoggedOut"
             android:label="@string/title_activity_about" >
         </activity>
         <activity
-            android:name=".ui.user.AboutActivityLoggedIn"
+            android:name="org.orcatech.mobileresearchtool.ui.user.AboutActivityLoggedIn"
             android:label="@string/title_activity_about" >
         </activity>
         <activity
-            android:name="org.beiwe.app.ui.registration.PhoneNumberEntryActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.registration.PhoneNumberEntryActivity"
             android:label="@string/title_activity_phone_number_entry"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
         </activity>
         <activity
-            android:name="org.beiwe.app.ui.registration.ConsentFormActivity"
+            android:name="org.orcatech.mobileresearchtool.ui.registration.ConsentFormActivity"
             android:label="@string/title_activity_consent_form"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
@@ -122,13 +121,13 @@
         <!-- SERVICE -->
 
         <service
-            android:name=".BackgroundService"
+            android:name="org.orcatech.mobileresearchtool.BackgroundService"
             android:exported="false"
             android:label="BackgroundService-thing" />
 
         <!-- RECEIVERS -->
 
-        <receiver android:name=".listeners.BootListener"
+        <receiver android:name="org.orcatech.mobileresearchtool.listeners.BootListener"
             android:permission="android.permission.BROADCAST_SMS"
             android:exported="false">
             <intent-filter>
@@ -139,7 +138,7 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".listeners.SmsReceivedLogger"
+        <receiver android:name="org.orcatech.mobileresearchtool.listeners.SmsReceivedLogger"
             android:permission="android.permission.BROADCAST_SMS"
             android:exported="false">
             <intent-filter>
@@ -151,10 +150,10 @@
             </intent-filter>
         </receiver>
         
-        <receiver android:name=".listeners.BluetoothListener" >
+        <receiver android:name="org.orcatech.mobileresearchtool.listeners.BluetoothListener" >
         </receiver>
         
-        <receiver android:name=".listeners.PowerStateListener" android:exported="false">
+        <receiver android:name="org.orcatech.mobileresearchtool.listeners.PowerStateListener" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />

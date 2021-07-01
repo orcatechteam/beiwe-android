@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
 
-    tools:context="org.beiwe.app.ui.user.GraphActivity" >
+    tools:context="org.orcatech.mobileresearchtool.ui.user.GraphActivity" >
 
     <WebView
         android:id="@+id/graph_pastResults"

@@ -17,12 +17,12 @@ android {
     }
     compileSdkVersion 29
     defaultConfig {
-        applicationId "org.beiwe.app"
+        applicationId "org.orcatech.mobileresearchtool"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 39       //TODO: update this Beiwe version code for new releases
-        versionName '2.6.0'  //TODO: update this Beiwe version number for new releases
-        setProperty("archivesBaseName", "Beiwe-$versionName")
+        versionCode 1       //TODO: update this version code for new releases
+        versionName '1.0.0'  //TODO: update this version number for new releases
+        setProperty("archivesBaseName", "ORCATECH-MRT-$versionName")
         buildConfigField("boolean", "BYPASS_MAIN_CONTENT", "true")
     }
     buildTypes {
@@ -57,13 +57,13 @@ android {
     productFlavors {
         onnelaLabServer {
             dimension "version"
-            manifestPlaceholders = [appName: "Beiwe"]
+            manifestPlaceholders = [appName: "ORCATECH Mobile Research Tool"]
             buildConfigField("boolean", "CUSTOMIZABLE_SERVER_URL", "false")
             buildConfigField("boolean", "READ_TEXT_AND_CALL_LOGS", 'true')
         }
         googlePlayStore {
             dimension "version"
-            manifestPlaceholders = [appName: "Beiwe2"]
+            manifestPlaceholders = [appName: "ORCATECH Mobile Research Tool"]
             buildConfigField("boolean", "CUSTOMIZABLE_SERVER_URL", 'true')
             buildConfigField("boolean", "READ_TEXT_AND_CALL_LOGS", 'false')
         }
